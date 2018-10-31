@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+import os, sys
+if __name__ != "__main__":
+    from testing.utils.test_processor import test_processor, set_test_steps, set_test_vars
+
+def test_get_all_branch_regexes(conf):
+    set_test_vars(conf, {
+        "direpa_test_src": conf["direpa_test_src"],
+    })
+    
+    set_test_steps(conf, """
+        cd {direpa_test_src}
+
+        {step} get_all_branch_regexes
+        git checkout master
+        git checkout -b support-1.0.X
+        {cmd}
+        _out:remote develop ^develop$
+        _out:remote master ^master$
+        _out:local develop ^develop$
+        _out:local master ^master$
+        _out:local support-1.0.X ^support-\d+?\.\d+?\.X$
+        _out:local_remote develop ^develop$
+        _out:local_remote master ^master$
+        git checkout master
+        git branch -D support-1.0.X
+    """)
+
+    test_processor(conf)
+
+if __name__ == "__main__":
+    direpa_script=os.path.realpath(__file__)
+    while os.path.basename(direpa_script) != "src":
+        direpa_script=os.path.dirname(direpa_script)
+    sys.path.insert(0,direpa_script)
+
+    if sys.argv[1] == "get_all_branch_regexes":
+        from git_helpers.get_all_branch_regexes import get_all_branch_regexes
+        from git_helpers.remote_repository import Remote_repository
+        for branch_regex in get_all_branch_regexes(Remote_repository()):
+            print("{} {} {}".format(branch_regex.location, branch_regex.text, branch_regex.string))
+
+    
