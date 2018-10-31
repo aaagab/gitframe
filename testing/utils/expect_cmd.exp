@@ -1,0 +1,39 @@
+#!/usr/bin/expect -f
+set has_passwd [lindex $argv 0]
+set cmd [lindex $argv 1]
+set params [lindex $argv 2]
+set prompt [lindex $argv 3]
+set value [lindex $argv 4]
+
+if { $has_passwd == "true" } {
+    set fifo /tmp/$value
+    if {[catch {set password [exec timeout .01 cat $fifo ]} err] } {
+        puts stderr "Can't Access Password Value For ssh connection with expect script\nError: $err"
+        catch { exec rm $fifo }
+        exit 1
+    }
+
+    set value $password
+
+    catch { exec rm $fifo }
+}
+
+set timeout -1
+
+# spawn $cmd $params
+# match_max 100000
+# # expect "password: "
+# expect $prompt
+# send -- "$value\r"
+
+spawn sudo ls
+# send "sudo ls\r"
+# send "ls\r"
+match_max 100000
+# expect "password: "
+# expect $prompt
+# send -- "$value\r"
+
+interact
+
+# expect eof

@@ -1,0 +1,100 @@
+{
+    "DEBUG": false,
+    "app_name": "gitframe",
+    "author": "Gabriel Auger",
+    "deps": [
+        {
+            "app": "git",
+            "cmd": "git"
+        },
+        {
+            "app": "scp",
+            "cmd": "scp"
+        },
+        {
+            "app": "ssh",
+            "cmd": "ssh"
+        },
+        {
+            "app": "ping",
+            "cmd": "ping"
+        },
+        {
+            "app": "openssh-server",
+            "cmd": "ssh-keygen"
+        },
+        {
+            "app": "openssh-client",
+            "cmd": "ssh"
+        }
+    ],
+    "diren_scripts": "scripts",
+    "diren_src": "src",
+    "filen_hotfix_history": "hotfix-history.json",
+    "filen_version": "version.txt",
+    "filer_deploy_release": "deploy_release",
+    "license": "mit",
+    "test": {
+        "clean_after": false,
+        "deps": [
+            {
+                "app": "bash",
+                "cmd": "bash"
+            },
+            {
+                "app": "xdotool",
+                "cmd": "xdotool"
+            },
+            {
+                "app": "wmctrl",
+                "cmd": "wmctrl"
+            },
+            {
+                "app": "screen",
+                "cmd": "screen"
+            },
+            {
+                "app": "sshpass",
+                "cmd": "sshpass"
+            },
+            {
+                "app": "expect",
+                "cmd": "expect"
+            },
+            {
+                "app": "konsole",
+                "cmd": "konsole"
+            },
+            {
+                "app": "tput",
+                "cmd": "tput"
+            },
+            {
+                "app": "xterm",
+                "cmd": "xterm"
+            }
+        ],
+        "diren": "test",
+        "diren_logs": "logs",
+        "direpa_root": "/tmp/test-gf",
+        "filen_blank_page": "print_blank_page.sh",
+        "filen_cmds": "cmds.sh",
+        "filen_conf": "test_config.json",
+        "filen_expect": "expect_cmd.exp",
+        "filen_read_log_bashrc": "read_log_bashrc",
+        "filen_screen_log": "screenlog.0",
+        "filen_screenrc": "screenrc",
+        "filen_xterm": "launch_xterm.sh",
+        "read_log_window_title": "#Error_Logs#",
+        "remote": {
+            "diren_root": "repository",
+            "domain": "localhost",
+            "ip": "127.0.0.1",
+            "user_git": "noa"
+        },
+        "txt_screen_cmd_error": "++ cmd error ++",
+        "txt_screen_log_eof": "++ End Unit Test ++",
+        "waiting_time_between_cmds": 20
+    },
+    "version": "undefined"
+}
