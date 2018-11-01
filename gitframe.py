@@ -27,8 +27,6 @@ install_dependencies(conf.get_value("deps"))
 
 class MyParser(argparse.ArgumentParser):
     def error(self, message):
-		# add version
-		# add description
         sys.stderr.write('error: %s\n' % message)
         self.print_help()
         sys.exit(1)
