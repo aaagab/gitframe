@@ -192,15 +192,28 @@ def get_commit_from_tag(tag, location="local"):
             if re.match(r"^commit (.*)", line):
                 return re.sub(r"^commit (.*)", r"\1", line)
     elif location == "remote":
-        for line in shell.cmd_get_value("git ls-remote --tags origin").splitlines():
-            this_match=re.match(r"^refs/tags/(.*)$", line.split("\t")[1])
-            if this_match:
-                if tag == this_match.group(1):
-                    return line.split("\t")[0]
+        all_tags=shell.cmd_get_value("git ls-remote --tags origin").splitlines()
+        # first test annotated tags
+        for line in all_tags:
+            reg_annotated_tag_str=r"^(.*)\trefs/tags/(.*)\^{}$"
+            annotated_tag_match=re.match(reg_annotated_tag_str, line)
+            if annotated_tag_match:
+                if tag == annotated_tag_match.group(2):
+                    return annotated_tag_match.group(1)
+
+        # then regular tags
+        for line in all_tags:
+            reg_regular_tag_str=r"^(.*)\trefs/tags/(.*)$"
+            regular_tag_match=re.match(reg_regular_tag_str, line)
+            if regular_tag_match:
+                if tag == regular_tag_match.group(2):
+                    return regular_tag_match.group(1)
+
             else:
                 msg.app_error(
-                    "'git ls-remote --tags origin' does not return a string of the form: ",
-                    "['8ca335fd8c80fe3e584b5ad0981dbf906dd73a4d\trefs/tags/v1.0.0']",
+                    "'git ls-remote --tags origin' does not return a string of the forms: ",
+                    "for regular tag: '"+reg_regular_tag_str+"'",
+                    "for annotated tag: '"+reg_annotated_tag_str+"'",
                     "instead it returns: "+line
                 )
                 sys.exit(1)
