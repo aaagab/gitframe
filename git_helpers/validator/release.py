@@ -23,7 +23,6 @@ def force_unique_release_branch_name(reg_branches):
         sys.exit(1)
     
     remotes_branches=get_branch_type_from_location("release", "remote", reg_branches)
-    for br in remotes_branches: print(br.text)
     if len(remotes_branches) > 1:
         msg.user_error("There are more than one release branch on remote ['{}'], please delete one".format("', '".join(br.text for br in remotes_branches)))
         sys.exit(1)
