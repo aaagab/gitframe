@@ -249,7 +249,7 @@ def test_gitframe(mode):
         msg.user_error("test_gitframe mode must be 'ssh_url' or 'local_path'.")
         sys.exit(1)
 
-    main_conf = Json_config().set_value("DEBUG", True)
+    main_conf = Json_config().set_value("debug", True)
 
     conf={
         "launching_window_hex_id": th.get_active_window_hex_id(),
