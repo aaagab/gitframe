@@ -25,6 +25,8 @@ release_err_msg="""
 
 def publish_release(release_version, all_version_tags, release_type=""):
     msg.title("Publish Tag v"+release_version )
+
+    sys.exit(1)
     
     tags=shell.cmd_get_value("git tag")
 
