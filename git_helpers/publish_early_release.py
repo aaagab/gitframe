@@ -46,7 +46,7 @@ def publish_early_release(repo, regex_branches):
  
         time_stamp=str(int(time.time()))
         version_value+="-"+time_stamp
-        git.set_annotated_tags(repo, "v"+version_value)
+        git.set_annotated_tags(repo, "v"+version_value, "early_release")
 
         publish_release(version_value, get_all_version_tags())
     else:
