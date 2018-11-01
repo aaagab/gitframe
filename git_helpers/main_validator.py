@@ -29,9 +29,6 @@ from pprint import pprint
 
 # this file tries to guarantee that the git flow structure is preserved so it runs once at start of each command to detect issues early.
 def validator(enabled):
-	print(git.get_commit_from_tag("marc", "local"))
-	print(git.get_commit_from_tag("test", "remote"))
-	sys.exit()
 	if not git.has_git_directory():
 		msg.user_error(
 			"Current Path '"+os.getcwd()+"' has no .git directory",
