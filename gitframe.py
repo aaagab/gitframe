@@ -8,7 +8,8 @@ if os.name != 'posix':
 
 from utils.json_config import Json_config
 conf = Json_config()
-conf.set_value("DEBUG", False)
+conf.set_value("debug", False)
+conf.data["validator"]=True
 
 import getopt
 from utils.install_dependencies import install_dependencies
@@ -40,6 +41,13 @@ parser.add_argument(
 	action="store_true",
 	dest="debug",
 	# help="debug mode in order to display all processing steps. Mainly use for testing",
+	help=argparse.SUPPRESS
+)
+parser.add_argument(
+	"--dv",
+	action="store_true",
+	dest="disable_validator",
+	# help="disable gitframe validator. Mainly use for testing",
 	help=argparse.SUPPRESS
 )
 parser.add_argument(
@@ -135,51 +143,65 @@ except:
 
 if args.debug is True:
 	msg.subtitle("Debug mode started")
-	conf.set_value("DEBUG", True)
+	conf.set_value("debug", True)
 	importlib.reload(msg)
+
+if args.disable_validator is True:
+	msg.subtitle("Validator mode disabled")
+	conf.data["validator"]=False
 
 if args.close_branch is True:
 	from git_helpers.close_branch import close_branch
-	close_branch(*validator())
-
+	close_branch(*validator(conf.data["validator"]))
+	sys.exit(0)
+	
 elif args.new_project is True:
 	from git_helpers.new_project import new_project
 	new_project()
+	sys.exit(0)
 
 elif args.new_project:
 	from git_helpers.new_project import new_project
 	new_project(args.new_project)
+	sys.exit(0)
 
 elif args.clone_project_to_remote is True:
 	from git_helpers.clone_project_to_remote import clone_project_to_remote
-	repo, regex_branches, all_version_tags=validator()
+	repo, regex_branches, all_version_tags=validator(conf.data["validator"])
 	clone_project_to_remote(repo)
+	sys.exit(0)
 
 elif args.open_branch is True:
 	from git_helpers.open_branch import open_branch
-	open_branch(*validator())
+	open_branch(*validator(conf.data["validator"]))
+	sys.exit(0)
 
 elif args.publish_early_release is True:
 	from git_helpers.publish_early_release import publish_early_release
-	repo, regex_branches, all_version_tags=validator()
+	repo, regex_branches, all_version_tags=validator(conf.data["validator"])
 	publish_early_release(repo, regex_branches)
+	sys.exit(0)
 
 elif args.publish_release:
 	from git_helpers.publish_release import publish_release
-	repo, regex_branches, all_version_tags=validator()
+	repo, regex_branches, all_version_tags=validator(conf.data["validator"])
 	publish_release(args.publish_release[0], all_version_tags)
+	sys.exit(0)
 
 elif args.synchronize_project is True:
-	validator()
+	validator(conf.data["validator"])
+	sys.exit(0)
 
 elif args.test:
 	from testing.test_gitframe import test_gitframe
 	test_gitframe(args.test[0])
+	sys.exit(0)
 
 elif args.update_branch is True:
 	from git_helpers.update_branch import update_branch			
-	repo, regex_branches, all_version_tags=validator()
+	repo, regex_branches, all_version_tags=validator(conf.data["validator"])
 	update_branch(all_version_tags)
+	sys.exit(0)
 
 elif args.version is True:
 	lspace="  "
@@ -187,3 +209,4 @@ elif args.version is True:
 	print(lspace+ft.bold("Author: ")+conf.get_value("author"))
 	print(lspace+ft.bold("License: ")+conf.get_value("license"))
 	print(lspace+ft.bold("Version: ")+conf.get_value("version"))
+	sys.exit(0)

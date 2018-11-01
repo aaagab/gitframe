@@ -100,5 +100,5 @@ def subtitle(msg):
 def dbg(funct, *msgs):
     from utils.json_config import Json_config
     conf = Json_config()
-    if conf.get_value("DEBUG"):
+    if conf.get_value("debug"):
         globals()[funct](*msgs)
