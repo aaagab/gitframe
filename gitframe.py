@@ -147,6 +147,12 @@ if args.debug is True:
 if args.disable_validator is True:
 	msg.subtitle("Validator mode disabled")
 	conf.data["validator"]=False
+	if not args.publish_release:
+		msg.user_error(
+			"Disable Validator can only be enabled with Publish Release (--pr tag).",
+			"It allows to work quickly with the deploy_release script."
+		)
+		sys.exit(1)
 
 if args.close_branch is True:
 	from git_helpers.close_branch import close_branch
@@ -182,8 +188,11 @@ elif args.publish_early_release is True:
 
 elif args.publish_release:
 	from git_helpers.publish_release import publish_release
-	repo, regex_branches, all_version_tags=validator(conf.data["validator"])
-	publish_release(args.publish_release[0], all_version_tags)
+	if not conf.data["validator"]:
+		publish_release(args.publish_release[0])
+	else:
+		repo, regex_branches, all_version_tags=validator(conf.data["validator"])
+		publish_release(args.publish_release[0], all_version_tags)
 	sys.exit(0)
 
 elif args.synchronize_project is True:
