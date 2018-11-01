@@ -61,7 +61,6 @@ def validator(enabled):
 		synchronize_branch_type(repo, regex_branches, "hotfix")
 		
 		tags_validator(repo)
-		sys.exit()
 
 		# update branches after synchronization
 		regex_branches=get_all_branch_regexes(repo)
