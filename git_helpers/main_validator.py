@@ -38,7 +38,10 @@ def validator(enabled):
 
 	if not enabled:
 		repo=Remote_repository()
-		return repo, get_all_branch_regexes(repo), get_all_version_tags()
+		regex_branches=get_all_branch_regexes(repo)
+		all_version_tags=get_all_version_tags()
+
+		return repo, regex_branches, all_version_tags
 	else:
 		msg.title("Git Frame Validator")
 

@@ -30,6 +30,38 @@ def test_publish_release(conf):
         echo 'echo $2' >> {direpa_test}/scripts/deploy_release.sh
         chmod +x {direpa_test}/scripts/deploy_release.sh
 
+        {step} notReleaseOrEarlyRelease
+        {cmd}
+        _out:× Release tag authorized forms:
+        _fail:
+    
+        {step} release noVchar
+        {cmd}
+        _out:# release
+        _out:× There is no tag in the project that matches v1.0.0
+        _fail:
+
+        {step} release withVchar
+        {cmd}
+        _out:# release
+        _out:× There is no tag in the project that matches v1.0.0
+        _fail:
+
+        {step} early_release fail
+        {cmd}
+        _out:# early_release 
+        _out:× There is no tag in the project that matches v1.0.0-beta-1541085957
+        _fail:
+
+        {step} early_release success
+        git tag -a v1.0.0-beta-1541085957 -m 'early-release'
+        {cmd}
+        _out:# early_release
+        _out:# launch script deploy_release
+        _out:1.0.0-beta-1541085957
+        _out:early_release
+
+        {step} release success
         {cmd}
         _out:# launch script deploy_release
         _out:1.0.1
@@ -39,12 +71,22 @@ def test_publish_release(conf):
 
 if __name__ == "__main__":
     direpa_script=os.path.realpath(__file__)
-    while os.path.basename(direpa_script) != "src":
+    while os.path.basename(direpa_script) != "testing":
         direpa_script=os.path.dirname(direpa_script)
-    sys.path.insert(0,direpa_script)
+    sys.path.insert(0,os.path.dirname(direpa_script))
 
     from git_helpers.publish_release import publish_release
     from git_helpers.get_all_version_tags import get_all_version_tags
     
+    if sys.argv[1] == "notReleaseOrEarlyRelease":
+        publish_release("myCustomTag", get_all_version_tags())
+    elif sys.argv[1] == "release":
+        if sys.argv[2] == "noVchar":
+            publish_release("1.0.0", get_all_version_tags())
+        elif sys.argv[2] == "withVchar":
+            publish_release("v1.0.0", get_all_version_tags())
+        elif sys.argv[2] == "success":
+            publish_release("1.0.1", get_all_version_tags())
+    elif sys.argv[1] == "early_release":
+        publish_release("v1.0.0-beta-1541085957", get_all_version_tags())
 
-    publish_release("1.0.1", get_all_version_tags())

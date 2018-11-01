@@ -66,9 +66,9 @@ def test_synchronize_branch_type(conf):
 
 if __name__ == "__main__":
     direpa_script=os.path.realpath(__file__)
-    while os.path.basename(direpa_script) != "src":
+    while os.path.basename(direpa_script) != "testing":
         direpa_script=os.path.dirname(direpa_script)
-    sys.path.insert(0,direpa_script)
+    sys.path.insert(0,os.path.dirname(direpa_script))
     
     from git_helpers.get_all_branch_regexes import get_all_branch_regexes
     from git_helpers.remote_repository import Remote_repository

@@ -188,9 +188,11 @@ def commit_empty(txt):
     
 def get_commit_from_tag(tag, location="local"):
     if location == "local":
-        for line in shell.cmd_get_value("git show "+tag).splitlines():
-            if re.match(r"^commit (.*)", line):
-                return re.sub(r"^commit (.*)", r"\1", line)
+        all_tags=shell.cmd_get_value("git tag").splitlines()
+        reg_tag_line_str=r"^commit (.*)"
+        for this_tag in all_tags:
+            if tag == this_tag:
+                return shell.cmd_get_value("git rev-list -n 1 "+this_tag).strip()
     elif location == "remote":
         all_tags=shell.cmd_get_value("git ls-remote --tags origin").splitlines()
         # first test annotated tags
@@ -201,7 +203,7 @@ def get_commit_from_tag(tag, location="local"):
                 if tag == annotated_tag_match.group(2):
                     return annotated_tag_match.group(1)
 
-        # then regular tags
+        # then all other tags
         for line in all_tags:
             reg_regular_tag_str=r"^(.*)\trefs/tags/(.*)$"
             regular_tag_match=re.match(reg_regular_tag_str, line)
