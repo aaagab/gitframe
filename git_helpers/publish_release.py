@@ -6,13 +6,14 @@ import sys
 from utils.json_config import Json_config
 import git_helpers.git_utils as git
 import git_helpers.regex_obj as ro
+from git_helpers.get_all_version_tags import get_all_version_tags
 
 release_err_msg="""
  Create a script file deploy_release.sh or deploy_release.py
      This file needs to be located at:
         - scripts directory,in parent directory of src directory.
      This file generally does the following:
-         - It receives one argument "release_version" 
+         - It receives two arguments "release_version" and "release_type" 
          - cd on src
          - git checkout release_version_tag
          - compile source (if needed)
@@ -22,9 +23,14 @@ release_err_msg="""
          - compress source code
              . copy source to destination directory(s)
          - git checkout on previous branch
+         - cd on previous directory
+         - You also have some differences depending if the release_type is release or early_release.
 """
 
-def publish_release(release_version, all_version_tags):
+def publish_release(release_version, all_version_tags=""):
+    if not all_version_tags:
+        all_version_tags=get_all_version_tags()
+        
     release_type=""
     if release_version[0]=="v":
         release_version=release_version[1:]
