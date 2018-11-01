@@ -46,9 +46,9 @@ def publish_early_release(repo, regex_branches):
  
         time_stamp=str(int(time.time()))
         version_value+="-"+time_stamp
-        git.set_annotated_tags(repo, "v"+version_value, "early-release")
+        git.set_annotated_tags(repo, "v"+version_value)
 
-        publish_release(version_value, get_all_version_tags(), "early_release")
+        publish_release(version_value, get_all_version_tags())
     else:
         msg.user_error(
             "Publish early version only applies to 'develop', 'feature' or 'release' branch type.",
