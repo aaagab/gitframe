@@ -4,7 +4,8 @@ if __name__ != "__main__":
     from testing.utils.test_processor import test_processor, set_test_steps, set_test_vars
 
 def test_version(conf):
-    
+    # from pprint import pprint
+    # pprint(conf)
     set_test_vars(conf, {
         "direpa_test_src": conf["direpa_test_src"],
     })
@@ -12,7 +13,7 @@ def test_version(conf):
     set_test_steps(conf,"""
         cd {direpa_test_src}
 
-        {step} bump_tag_file
+        {step} bump_version_in_version_txt
         git checkout master
         {cmd}
         _out:1.2.3
@@ -52,19 +53,23 @@ def test_version(conf):
         _out:3.3.0
         _out:3.2.2
 
+        {step} execute_bump_release_version
+        {cmd}
+        _out:3.2.1
+
     """)
 
     test_processor(conf)
 
 if __name__ == "__main__":
     direpa_script=os.path.realpath(__file__)
-    while os.path.basename(direpa_script) != "src":
+    while os.path.basename(direpa_script) != "testing":
         direpa_script=os.path.dirname(direpa_script)
-    sys.path.insert(0,direpa_script)
+    sys.path.insert(0,os.path.dirname(direpa_script))
 
-    if sys.argv[1] == "bump_tag_file":
-        from git_helpers.version import bump_tag_file
-        bump_tag_file("1.2.3")
+    if sys.argv[1] == "bump_version_in_version_txt":
+        from git_helpers.version import bump_version_in_version_txt
+        bump_version_in_version_txt("1.2.3")
         os.system("cat version.txt")
     elif sys.argv[1] == "get_content_version_file":
         from git_helpers.version import get_content_version_file
@@ -80,6 +85,7 @@ if __name__ == "__main__":
         print(increment_version_value("major", ro.Version_regex("3.2.1")))
         print(increment_version_value("minor", ro.Version_regex("3.2.1")))
         print(increment_version_value("patch", ro.Version_regex("3.2.1")))
-
-        
+    elif sys.argv[1] == "execute_bump_release_version":
+        from git_helpers.version import bump_version_for_user
+        bump_version_for_user("3.2.1")
     

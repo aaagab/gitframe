@@ -12,7 +12,6 @@ def test_publish_early_release(conf):
     set_test_steps(conf, """
         {step} prepare for publish_release
         cd {direpa_test_src}
-        # {create_deploy_release}
         mkdir -p {direpa_test}/scripts
         echo '#!/bin/bash' > {direpa_test}/scripts/deploy_release.sh
         echo 'echo $1' >> {direpa_test}/scripts/deploy_release.sh
@@ -99,9 +98,9 @@ def test_publish_early_release(conf):
 
 if __name__ == "__main__":
     direpa_script=os.path.realpath(__file__)
-    while os.path.basename(direpa_script) != "src":
+    while os.path.basename(direpa_script) != "testing":
         direpa_script=os.path.dirname(direpa_script)
-    sys.path.insert(0,direpa_script)
+    sys.path.insert(0,os.path.dirname(direpa_script))
 
     from git_helpers.publish_early_release import publish_early_release
     from git_helpers.get_all_branch_regexes import get_all_branch_regexes

@@ -48,7 +48,7 @@ def test_main_program_entry(conf):
 
         {step} clone_project_to_remote
         {clone_project_to_remote}
-        _out:× Remote Directory {diren_src}.git Already Exists on remote repository 'Origin'
+        _out:× Remote Directory {direpa_test_src}.git Already Exists on remote repository 'Origin'
         _fail:
 
         {step} open_branch

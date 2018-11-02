@@ -249,7 +249,11 @@ def test_gitframe(mode):
         msg.user_error("test_gitframe mode must be 'ssh_url' or 'local_path'.")
         sys.exit(1)
 
-    main_conf = Json_config().set_value("DEBUG", True)
+    if not os.environ.get("DISPLAY"):
+        msg.user_error("gitframe --test only works with an X session.")
+        sys.exit(1)
+
+    main_conf = Json_config().set_value("debug", True)
 
     conf={
         "launching_window_hex_id": th.get_active_window_hex_id(),
@@ -281,11 +285,15 @@ def test_gitframe(mode):
 
         remote_repository(conf)
 
+        delete_test_and_repo(conf)
         clone_project(conf)
 
         new_project(conf)
 
         create_directory_tree(conf)
+
+        delete_test_and_repo(conf)
+        set_new_project(conf)
 
         git_utils(conf)
 

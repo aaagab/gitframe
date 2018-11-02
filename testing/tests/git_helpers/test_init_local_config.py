@@ -42,9 +42,9 @@ def test_init_local_config(conf):
 
 if __name__ == "__main__":
     direpa_script=os.path.realpath(__file__)
-    while os.path.basename(direpa_script) != "src":
+    while os.path.basename(direpa_script) != "testing":
         direpa_script=os.path.dirname(direpa_script)
-    sys.path.insert(0,direpa_script)
+    sys.path.insert(0,os.path.dirname(direpa_script))
 
     from git_helpers.init_local_config import init_local_config
 

@@ -3,11 +3,13 @@ import sys, os
 import git_helpers.git_utils as git
 import utils.message as msg
 import re
+import utils.shell_helpers as shell
 
 from git_helpers.get_all_branch_regexes import get_branch_type_from_location, filter_all_regex_branches_from_location
 import git_helpers.version as version
 
 import git_helpers.regex_obj as ro
+from utils.json_config import Json_config
 
 # from git_helpers.validator.hotfix import compare_version_tag_with_hotfix_branch_name
 from git_helpers.validator.support import find_related_tag_for_support_branch_name
@@ -140,4 +142,63 @@ def match_branch_name_with_version_value(regex_branch, regex_version_value):
         msg.success("branch "+regex_branch.text+" name matches with its version.txt "+regex_version_value.text)
     else:
         msg.user_error("branch "+regex_branch.text+" name does not match with its version.txt "+regex_version_value.text)
+        sys.exit(1)
+
+def check_bump_release_version_script():
+    msg.subtitle("Check bump release version script.")
+    bump_release_version_script_err_msg="""
+    Create a script file bump_release_version.sh or bump_release_version.py
+        This file needs to be located at:
+            - scripts directory,in parent directory of src directory.
+        The script should do the following:
+            - It receives a release_version from git frame.
+            - Then this value is set in a file defined by the developer
+            - This value is then going to be retrieved by the user.
+            - Generally the user retrieves the release version by executing 
+              the software with -v parameter.
+            - For gitframe the release version is stored in config.json but
+              it can really be anywhere.
+            - That is the purpose of this script.
+            - The release_version stored for the user is somewhat different
+              than the version stored in version.txt.
+            - version.txt is automatically managed by gitframe and is necessary
+              to maintain the software structure.
+            - In short:
+                . version.txt is for the source code of the software that is
+                  read and maintained by the developers.
+                . bump_release_version script insert the software version for
+                  release and early_release purpose and it is read by the 
+                  software users.
+            - Early release version is never stored in version.txt whereas it
+              is stored in config.json for gitframe.
+            - However release version is always stored in version.txt and also 
+              in config.json.
+            - bump_release_version script is automatically called by gitframe 
+              just before setting an annotated tag for publishing a release or an
+              early_release.
+    """
+    conf = Json_config()
+    filer_bump_release_version=conf.get_value("filer_bump_release_version")
+    direpa_parent = os.path.abspath('..')
+
+    filerpa_bump_release_version=os.path.join(direpa_parent, conf.get_value("diren_scripts"), filer_bump_release_version)
+
+    filenpa_bump_release_version=""
+    if os.path.exists(filerpa_bump_release_version+".py"):
+        filenpa_bump_release_version=filerpa_bump_release_version+".py"
+    elif os.path.exists(filerpa_bump_release_version+".sh"):
+        filenpa_bump_release_version=filerpa_bump_release_version+".sh"
+    else:
+        filenpa_bump_release_version=""
+
+    if filenpa_bump_release_version:
+        is_cmd_executable= os.access(filenpa_bump_release_version, os.X_OK)
+        if not is_cmd_executable:
+            msg.user_error("script "+filer_bump_release_version+" is not executable")
+            sys.exit(1)
+
+        msg.dbg("success", sys._getframe().f_code.co_name)
+        
+    else:
+        msg.warning(bump_release_version_script_err_msg[1:])
         sys.exit(1)

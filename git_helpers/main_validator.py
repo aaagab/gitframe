@@ -13,58 +13,64 @@ from git_helpers.synchronize_branch_name import synchronize_branch_name
 
 from git_helpers.get_all_version_tags import get_all_version_tags
 
-from utils.json_config import Json_config
-
 from git_helpers.prompt_for_commit import prompt_for_commit
 
 from git_helpers.remote_repository import Remote_repository
 
 from git_helpers.get_all_branch_regexes import get_all_branch_regexes
 
-from git_helpers.validator.version_file import version_file_validator
+from git_helpers.validator.version_file import version_file_validator, check_bump_release_version_script
 
 import git_helpers.git_utils as git
 
 from pprint import pprint
 
 # this file tries to guarantee that the git flow structure is preserved so it runs once at start of each command to detect issues early.
-def validator():
-	msg.title("Git Frame Validator")
-
+def validator(enabled):
 	if not git.has_git_directory():
 		msg.user_error(
-            "Current Path '"+os.getcwd()+"' has no .git directory",
-            "cd into another directory or create a new project"
-        )
+			"Current Path '"+os.getcwd()+"' has no .git directory",
+			"cd into another directory or create a new project"
+		)
 		sys.exit(1)
 
-	prompt_for_commit()
+	if not enabled:
+		repo=Remote_repository()
+		regex_branches=get_all_branch_regexes(repo)
+		all_version_tags=get_all_version_tags()
 
-	repo=Remote_repository()
-	regex_branches=get_all_branch_regexes(repo)
+		return repo, regex_branches, all_version_tags
+	else:
+		msg.title("Git Frame Validator")
 
-	check_master_develop_exists(regex_branches)
-	force_unique_release_branch_name(regex_branches)
-	synchronize_branch_name(repo, regex_branches, "master")
-	synchronize_branch_name(repo, regex_branches, "develop")
+		check_bump_release_version_script()
 
-	synchronize_branch_type(repo, regex_branches, "feature")
-	synchronize_branch_type(repo, regex_branches, "support")
-	synchronize_branch_type(repo, regex_branches, "release")
-	synchronize_branch_type(repo, regex_branches, "hotfix")
-	
-	tags_validator(repo)
+		prompt_for_commit()
 
-	# update branches after synchronization
-	regex_branches=get_all_branch_regexes(repo)
+		repo=Remote_repository()
+		regex_branches=get_all_branch_regexes(repo)
 
-	# support and hotfix validator can only be executed after all the other branches have been synchronized
-	all_version_tags=get_all_version_tags()
-	check_one_branch_support_max_per_major(regex_branches, all_version_tags)
-	version_file_validator(regex_branches, all_version_tags)
-	hotfix_history_json_validator(regex_branches)
-	validate_release_branch_name(regex_branches, all_version_tags)
+		check_master_develop_exists(regex_branches)
+		force_unique_release_branch_name(regex_branches)
+		synchronize_branch_name(repo, regex_branches, "master")
+		synchronize_branch_name(repo, regex_branches, "develop")
 
-	msg.dbg("success", sys._getframe().f_code.co_name)
+		synchronize_branch_type(repo, regex_branches, "feature")
+		synchronize_branch_type(repo, regex_branches, "support")
+		synchronize_branch_type(repo, regex_branches, "release")
+		synchronize_branch_type(repo, regex_branches, "hotfix")
+		
+		tags_validator(repo)
 
-	return repo, regex_branches, all_version_tags
+		# update branches after synchronization
+		regex_branches=get_all_branch_regexes(repo)
+
+		# support and hotfix validator can only be executed after all the other branches have been synchronized
+		all_version_tags=get_all_version_tags()
+		check_one_branch_support_max_per_major(regex_branches, all_version_tags)
+		version_file_validator(regex_branches, all_version_tags)
+		hotfix_history_json_validator(regex_branches)
+		validate_release_branch_name(regex_branches, all_version_tags)
+
+		msg.dbg("success", sys._getframe().f_code.co_name)
+		return repo, regex_branches, all_version_tags

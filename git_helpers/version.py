@@ -5,9 +5,11 @@ import os
 import sys
 import re
 import git_helpers.regex_obj as ro
-from utils.json_config import Json_config 
+from utils.json_config import Json_config
+import utils.shell_helpers as shell
 
-def bump_tag_file(version):
+
+def bump_version_in_version_txt(version):
     msg.info("Bump Release Tag")
     
     try:
@@ -18,6 +20,26 @@ def bump_tag_file(version):
     except:
         msg.app_error("Inserting \""+version+"\" in version.txt failed!")
         sys.exit(1)
+
+def bump_version_for_user(version):
+    msg.info("Execute ")
+    conf = Json_config()
+    filer_bump_release_version=conf.get_value("filer_bump_release_version")
+    direpa_parent = os.path.dirname(git.get_root_dir_path())
+    filerpa_bump_release_version=os.path.join(direpa_parent, conf.get_value("diren_scripts"), filer_bump_release_version)
+
+    filenpa_bump_release_version=""
+    if os.path.exists(filerpa_bump_release_version+".py"):
+        filenpa_bump_release_version=filerpa_bump_release_version+".py"
+    elif os.path.exists(filerpa_bump_release_version+".sh"):
+        filenpa_bump_release_version=filerpa_bump_release_version+".sh"
+    else:
+        msg.user_error("'{}' not found with either extension .py or .sh".format(filerpa_bump_release_version))
+        sys.exit(1)
+
+    msg.dbg("info","Execute script "+filer_bump_release_version)
+    shell.cmd(filenpa_bump_release_version+" "+version)
+    git.commit("User version bumped with '"+version+"'")
 
 def get_content_version_file(debug=False, branch_name=""):
     filenpa_version=get_file_path()
