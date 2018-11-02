@@ -147,6 +147,8 @@ def new_project(path=""):
             sys.exit(1)
         else:
             clone_project_to_remote(repo)
+            shell.cmd_prompt("git push origin develop")
+            shell.cmd_prompt("git push origin master")
     else:
         msg.warning("Clone your project when connectivity is back.")
 

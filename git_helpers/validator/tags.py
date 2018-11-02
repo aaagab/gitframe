@@ -127,7 +127,9 @@ def get_remote_tags():
     for tag in tags.splitlines():
         this_match=re.match(r"^refs/tags/(.*)$", tag.split("\t")[1])
         if this_match:
-            tmp_tags.append(this_match.group(1))
+            # ignore git annotated tag with notation ^{}
+            if not this_match.group(1)[-3:] == "^{}":
+                tmp_tags.append(this_match.group(1))
         else:
             msg.app_error(
                 "'git ls-remote --tags origin' does not return a string of the form: ",

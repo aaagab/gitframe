@@ -117,9 +117,9 @@ def test_tags_validator(conf):
 
 if __name__ == "__main__":
     direpa_script=os.path.realpath(__file__)
-    while os.path.basename(direpa_script) != "src":
+    while os.path.basename(direpa_script) != "testing":
         direpa_script=os.path.dirname(direpa_script)
-    sys.path.insert(0,direpa_script)
+    sys.path.insert(0,os.path.dirname(direpa_script))
 
     if sys.argv[1] == "tags_validator":
         from git_helpers.remote_repository import Remote_repository

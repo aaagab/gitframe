@@ -13,6 +13,7 @@ def test_new_project(conf):
         "direpa_par_remote_src": conf["remote"]["direpa_par_src"],
         "direpa_testgf": conf["direpa_testgf"],
         "direpa_test": conf["direpa_test"],
+        "direpa_test_src": conf["direpa_test_src"],
         "direpa_repository": conf["direpa_repository"],
         "diren_src": conf["diren_src"],
         "block_user_input": """
@@ -196,7 +197,7 @@ def test_new_project(conf):
         _type:Thomas Edison
         _out:√ Remote Path '{direpa_par_remote_src}' is reachable.
         _out:∆ Remote Repository '{direpa_remote_src}' does not exist.
-        _out:√ git clone --bare src {direpa_remote_src}
+        _out:√ git clone --bare {direpa_test_src} {direpa_remote_src}
         _out:√ New Project test initialized.
         rm -rf {direpa_repository}
         rm -rf {direpa_test}
@@ -206,9 +207,9 @@ def test_new_project(conf):
 
 if __name__ == "__main__":
     direpa_script=os.path.realpath(__file__)
-    while os.path.basename(direpa_script) != "src":
+    while os.path.basename(direpa_script) != "testing":
         direpa_script=os.path.dirname(direpa_script)
-    sys.path.insert(0,direpa_script)
+    sys.path.insert(0,os.path.dirname(direpa_script))
 
     from git_helpers.new_project import new_project
     from git_helpers.remote_repository import Remote_repository

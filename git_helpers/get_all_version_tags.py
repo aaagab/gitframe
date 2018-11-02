@@ -10,9 +10,6 @@ import re
 import git_helpers.regex_obj as ro
 
 def get_all_version_tags():
-    start_branch=git.get_active_branch_name()
-    git.checkout("master")
-    # master is synchronized at launch by validator
     results=shell.cmd_get_value("git tag")
     versions=[]
     if results:
@@ -24,13 +21,11 @@ def get_all_version_tags():
                     if regex_version.match:
                         versions.append(result[1:])
     
-        git.checkout(start_branch)
         if versions:
             return tag_sort(versions)
         else:
             return ""
     else:
-        git.checkout(start_branch)
         return ""
 
 # # bubble sort

@@ -247,7 +247,8 @@ def close_hotfix(repo, regex_branch, regex_branches, all_version_tags):
 		)
 
 		# git.checkout(regex_branch.text)
-		version.bump_tag_file(release_version)
+		version.bump_version_in_version_txt(release_version)
+		version.bump_version_for_user(release_version)
 		git.set_annotated_tags(repo, "v"+release_version, "hotfix")
 		update_json_data_hotfix_on_close(regex_branch.text, filen_hotfix_history, release_version)
 
@@ -286,7 +287,8 @@ def close_hotfix(repo, regex_branch, regex_branches, all_version_tags):
 			ro.Version_regex(version.get_content_version_file())
 		)
 		git.checkout(regex_branch.text)
-		version.bump_tag_file(release_version)
+		version.bump_version_in_version_txt(release_version)
+		version.bump_version_for_user(release_version)
 		git.set_annotated_tags(repo, "v"+release_version, "hotfix")
 		update_json_data_hotfix_on_close(regex_branch.text, filen_hotfix_history, release_version)
 
