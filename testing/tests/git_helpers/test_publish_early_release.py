@@ -12,7 +12,6 @@ def test_publish_early_release(conf):
     set_test_steps(conf, """
         {step} prepare for publish_release
         cd {direpa_test_src}
-        # {create_deploy_release}
         mkdir -p {direpa_test}/scripts
         echo '#!/bin/bash' > {direpa_test}/scripts/deploy_release.sh
         echo 'echo $1' >> {direpa_test}/scripts/deploy_release.sh

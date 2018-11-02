@@ -249,6 +249,10 @@ def test_gitframe(mode):
         msg.user_error("test_gitframe mode must be 'ssh_url' or 'local_path'.")
         sys.exit(1)
 
+    if not os.environ.get("DISPLAY"):
+        msg.user_error("gitframe --test only works with an X session.")
+        sys.exit(1)
+
     main_conf = Json_config().set_value("debug", True)
 
     conf={
@@ -271,49 +275,53 @@ def test_gitframe(mode):
     th.clean_logs(conf)
 
     try:
-        # test_processor(conf)
+        test_processor(conf)
         
-        # message(conf)
+        message(conf)
 
-        # regex_obj(conf)
+        regex_obj(conf)
 
-        # init_local_config(conf)
+        init_local_config(conf)
 
-        # remote_repository(conf)
+        remote_repository(conf)
 
-        # clone_project(conf)
+        delete_test_and_repo(conf)
+        clone_project(conf)
 
-        # new_project(conf)
+        new_project(conf)
 
-        # create_directory_tree(conf)
+        create_directory_tree(conf)
 
-        # git_utils(conf)
+        delete_test_and_repo(conf)
+        set_new_project(conf)
 
-        # test_validator(conf)
+        git_utils(conf)
 
-        # get_all_branch_regexes(conf)
+        test_validator(conf)
 
-        # synchronize_branch_name(conf)
+        get_all_branch_regexes(conf)
 
-        # synchronize_branch_type(conf)
+        synchronize_branch_name(conf)
 
-        # update_branch(conf)
+        synchronize_branch_type(conf)
 
-        # version(conf)
+        update_branch(conf)
+
+        version(conf)
         
-        # open_branch(conf)
+        open_branch(conf)
         
-        # close_branch(conf)
+        close_branch(conf)
 
-        # get_all_version_tags(conf)
+        get_all_version_tags(conf)
 
-        # _license(conf)
+        _license(conf)
 
-        # publish_early_release(conf)
+        publish_early_release(conf)
 
         publish_release(conf)
 
-        # main_program_entry(conf)
+        main_program_entry(conf)
         
         if conf["num_test_failures"] > 0:
             msg.subtitle("Tests Result")

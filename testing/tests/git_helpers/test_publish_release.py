@@ -6,7 +6,8 @@ if __name__ != "__main__":
 def test_publish_release(conf):
     set_test_vars(conf, {
         "direpa_test_src": conf["direpa_test_src"],
-        "direpa_test": conf["direpa_test"],
+        "direpa_scripts": conf["direpa_scripts"],
+        "filenpa_deploy_release": conf["filenpa_deploy_release"]
     })
 
     set_test_steps(conf, """
@@ -24,11 +25,11 @@ def test_publish_release(conf):
         git commit -a -m 'version.txt'
         git tag -a v1.0.1 -m 'release'
 
-        mkdir -p {direpa_test}/scripts
-        echo '#!/bin/bash' > {direpa_test}/scripts/deploy_release.sh
-        echo 'echo $1' >> {direpa_test}/scripts/deploy_release.sh
-        echo 'echo $2' >> {direpa_test}/scripts/deploy_release.sh
-        chmod +x {direpa_test}/scripts/deploy_release.sh
+        mkdir -p {direpa_scripts}
+        echo '#!/bin/bash' > {filenpa_deploy_release}
+        echo 'echo $1' >> {filenpa_deploy_release}
+        echo 'echo $2' >> {filenpa_deploy_release}
+        chmod +x {filenpa_deploy_release}
 
         {step} notReleaseOrEarlyRelease
         {cmd}
