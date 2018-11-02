@@ -46,7 +46,7 @@ def mit():
 
 def get_license_content():
     licenses=[
-        "mit"
+        "MIT"
     ]
 
     menu="\n"

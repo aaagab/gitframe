@@ -34,7 +34,7 @@
     "filen_version": "version.txt",
     "filer_bump_release_version": "bump_release_version",
     "filer_deploy_release": "deploy_release",
-    "license": "mit",
+    "license": "MIT",
     "test": {
         "clean_after": false,
         "deps": [
