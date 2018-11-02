@@ -26,5 +26,5 @@ if __name__ == "__main__":
 
     from git_helpers.main_validator import validator
 
-    print(validator())
+    print(validator(True))
         

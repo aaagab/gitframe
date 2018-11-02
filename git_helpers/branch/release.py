@@ -87,8 +87,9 @@ def close_release(repo, branch_regex, regex_branches, all_version_tags):
 
     release_version=ro.Release_regex(branch_regex.text).version
     
-    version.bump_tag_file(release_version)
-
+    version.bump_version_in_version_txt(release_version)
+    version.bump_version_for_user(release_version)
+    
     git.checkout("develop")
     git.merge_noff(branch_regex.text)
     git.push_origin(repo, "develop")

@@ -11,9 +11,9 @@ def test_synchronize_branch_type(conf):
     set_test_steps(conf, """
         cd {direpa_test_src}
 
-        # {step} synchronize_branch_type release_no_branches
-        # {cmd}
-        # _out:√ synchronize_branch_type
+        {step} synchronize_branch_type release_no_branches
+        {cmd}
+        _out:√ synchronize_branch_type
 
         {step} synchronize_branch_type release_branche_local
         git checkout master
@@ -27,39 +27,39 @@ def test_synchronize_branch_type(conf):
         git checkout master
         git branch -D release-2.0.0
 
-        # {step} get_unique_regex_branch_names
-        # git checkout master
-        # git checkout -b release-2.0.0
-        # git push origin release-2.0.0
-        # git checkout -b hotfix-1.0.X-a_quick_repair
-        # git push origin hotfix-1.0.X-a_quick_repair
-        # git branch -rD origin/hotfix-1.0.X-a_quick_repair
-        # git checkout -b feature-super_function
-        # git push origin feature-super_function
-        # git checkout -b support-1.0.X
-        # git push origin support-1.0.X
-        # git checkout master
-        # git branch -D feature-super_function
-        # git branch -D support-1.0.X
-        # cp -r {direpa_test_src} {direpa_test_src}_tmp
-        # cd {direpa_test_src}_tmp
-        # git push origin --delete support-1.0.X
-        # cd {direpa_test_src}
-        # {cmd}
-        # _out:develop
-        # _out:feature-super_function
-        # _out:hotfix-1.0.X-a_quick_repair
-        # _out:master
-        # _out:release-2.0.0
-        # _out:support-1.0.X
-        # git checkout master
-        # rm -rf {direpa_test_src}_tmp
-        # git branch -D release-2.0.0
-        # git push origin --delete release-2.0.0
-        # git branch -D hotfix-1.0.X-a_quick_repair
-        # git push origin --delete hotfix-1.0.X-a_quick_repair
-        # git push origin --delete feature-super_function
-        # git branch -rD origin/support-1.0.X
+        {step} get_unique_regex_branch_names
+        git checkout master
+        git checkout -b release-2.0.0
+        git push origin release-2.0.0
+        git checkout -b hotfix-1.0.X-a_quick_repair
+        git push origin hotfix-1.0.X-a_quick_repair
+        git branch -rD origin/hotfix-1.0.X-a_quick_repair
+        git checkout -b feature-super_function
+        git push origin feature-super_function
+        git checkout -b support-1.0.X
+        git push origin support-1.0.X
+        git checkout master
+        git branch -D feature-super_function
+        git branch -D support-1.0.X
+        cp -r {direpa_test_src} {direpa_test_src}_tmp
+        cd {direpa_test_src}_tmp
+        git push origin --delete support-1.0.X
+        cd {direpa_test_src}
+        {cmd}
+        _out:develop
+        _out:feature-super_function
+        _out:hotfix-1.0.X-a_quick_repair
+        _out:master
+        _out:release-2.0.0
+        _out:support-1.0.X
+        git checkout master
+        rm -rf {direpa_test_src}_tmp
+        git branch -D release-2.0.0
+        git push origin --delete release-2.0.0
+        git branch -D hotfix-1.0.X-a_quick_repair
+        git push origin --delete hotfix-1.0.X-a_quick_repair
+        git push origin --delete feature-super_function
+        git branch -rD origin/support-1.0.X
     """)
 
     test_processor(conf)

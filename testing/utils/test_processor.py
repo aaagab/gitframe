@@ -31,7 +31,7 @@ def init_config(direpa_script):
 
     install_dependencies(cf["test"]["deps"])
 
-    app_name=Json_config().get_value("app_name")
+    app_name=cf["app_name"]
 
     conf=dict(
         filen_app=app_name+".py",
@@ -49,7 +49,7 @@ def init_config(direpa_script):
         direpa_repository=os.path.join(cf["test"]["direpa_root"], cf["test"]["remote"]["diren_root"]),
         direpa_logs=os.path.join(direpa_script, cf["test"]["diren_logs"]),
         direpa_remote_src=os.path.join(cf["test"]["direpa_root"], cf["test"]["remote"]["diren_root"], cf["test"]["diren"], cf["diren_src"]+".git"),
-        direpa_scripts=os.path.join(cf["test"]["direpa_root"], Json_config().get_value("diren_scripts")),
+        direpa_scripts=os.path.join(cf["test"]["direpa_root"], cf["test"]["diren"], cf["diren_scripts"]),
 
         filenpa_blank_page=os.path.join(direpa_script, "utils", cf["test"]["filen_blank_page"]),
         filenpa_conf=os.path.join( cf["test"]["direpa_root"],cf["test"]["filen_conf"] ),
@@ -58,6 +58,8 @@ def init_config(direpa_script):
         filenpa_screen_log=os.path.join(cf["test"]["direpa_root"], cf["test"]["filen_screen_log"]),
         filenpa_screenrc=os.path.join(cf["test"]["direpa_root"], cf["test"]["filen_screenrc"]),
         filenpa_xterm=os.path.join(direpa_script, "utils", cf["test"]["filen_xterm"]),
+        filenpa_deploy_release=os.path.join(cf["test"]["direpa_root"], cf["test"]["diren"], cf["diren_scripts"], cf["filer_deploy_release"]+".sh"),
+        filenpa_bump_release_version=os.path.join(cf["test"]["direpa_root"], cf["test"]["diren"], cf["diren_scripts"], cf["filer_bump_release_version"]+".sh"),
 
         main_session_name="#"+app_name+"-test#",
 
@@ -485,12 +487,13 @@ def check_for_KeyboardInterrupt_in_screen_file(file, last_position):
 
 def set_test_steps(conf, cmds):
     frame,caller_filename,caller_line_number,function_name,lines,index=inspect.stack()[1]
-
     count_line=0
     with open(caller_filename) as f:
         for i, line in enumerate(f, 1):
             if "set_test_steps(conf" in line:
-                count_line+=i
+                count_line=i
+            # manage multiple set_test_steps
+            if i == caller_line_number:
                 break
 
     if not "{step}" in cmds:

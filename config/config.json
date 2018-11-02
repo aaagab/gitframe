@@ -1,7 +1,7 @@
 {
-    "debug": false,
     "app_name": "gitframe",
     "author": "Gabriel Auger",
+    "debug": false,
     "deps": [
         {
             "app": "git",
@@ -32,6 +32,7 @@
     "diren_src": "src",
     "filen_hotfix_history": "hotfix-history.json",
     "filen_version": "version.txt",
+    "filer_bump_release_version": "bump_release_version",
     "filer_deploy_release": "deploy_release",
     "license": "mit",
     "test": {
@@ -96,5 +97,5 @@
         "txt_screen_log_eof": "++ End Unit Test ++",
         "waiting_time_between_cmds": 20
     },
-    "version": "undefined"
+    "version": "3.0.1"
 }

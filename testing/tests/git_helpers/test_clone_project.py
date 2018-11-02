@@ -59,23 +59,22 @@ def test_clone_project(conf):
     elif conf["mode"] == "ssh_url":
         set_test_steps(conf,"""
             {step} clone_project_to_remote url
-            rm -rf {direpa_repository}
             {block_init_repo}
             {cmd}
             {block_user_input}
             _type:{ssh_url_domain_direpa_src}
             _out:Type ssh username [q to quit]:
             _type:{user_ssh}
-            _out:√ git clone --bare {diren_src} {diren_src}.git
+            _out:√ git clone --bare {direpa_test_src} {direpa_test_src}.git
             _out:{user_ssh}@{domain}'s password:
             _type:{sudo_pass}
-            _out:√ scp -r {diren_src}.git {scp_url_domain_direpa_par_src}
+            _out:√ scp -r {direpa_test_src}.git {scp_url_domain_direpa_par_src}
             _out:{user_ssh}@{domain}'s password:
             _type:{sudo_pass}
             _out:[sudo] password for {user_ssh}:
             _type:{sudo_pass}
             _out:√ ssh -t {user_ssh}@{domain} "sudo chown -R {user_git}:{user_git} {direpa_remote_src}"
-            _out:√ {diren_src}.git deleted on local.
+            _out:√ {direpa_test_src}.git deleted on local.
             rm -rf {direpa_testgf}/{diren_test}
             sudo rm -rf {direpa_repository}
             _out:[sudo] password for {user_ssh}:

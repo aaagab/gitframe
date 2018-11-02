@@ -6,7 +6,12 @@ import git_helpers.git_utils as git
 
 def create_directory(path):
     if os.path.exists(path):
-        msg.warning("'"+path+"' already exists.")
+        diren_path=os.path.basename(path)
+        if diren_path == "src":
+            msg.user_error("src folder already exists be sure that it is empty, erase it and relaunch the command.")
+            sys.exit(1)
+        else:
+            msg.warning("'"+path+"' already exists.")
     else:
         try:
             os.mkdir(path)
