@@ -200,8 +200,8 @@ elif args.synchronize_project is True:
 	sys.exit(0)
 
 elif args.test:
-	from testing.test_gitframe import test_gitframe
-	test_gitframe(args.test[0])
+	import processor.processor as processor
+	processor.main(args.test[0])
 	sys.exit(0)
 
 elif args.update_branch is True:
