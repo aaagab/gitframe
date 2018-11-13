@@ -24,24 +24,22 @@ from git_helpers.main_validator import validator
 import argparse
 from pprint import pprint
 
-def update_gitframe_bin(conf):
+def update_gitframe_bin(conf, parameters=""):
 	from distutils.dir_util import copy_tree
 	import shutil
 	import git_helpers.git_utils as git
 
 	msg.subtitle("Update Gitframe Bin")
 
-	direpa_task_bin=os.path.join(
+	direpa_source_app=git.get_root_dir_path()
+
+	direpa_source_dst=os.path.join(
 		conf["processor"]["task"]["direpa"],
 		conf["processor"]["task"]["diren_bin"]
 	)
-	if os.path.exists(direpa_task_bin):
-		shutil.rmtree(direpa_task_bin)
+	if os.path.exists(direpa_source_dst):
+		shutil.rmtree(direpa_source_dst)
 	
-	direpa_source_app=git.get_root_dir_path()
-	direpa_source_dst=os.path.join(direpa_task_bin, "src")
-
-	os.makedirs(direpa_task_bin, exist_ok=True)
 	os.makedirs(direpa_source_dst, exist_ok=True)
 
 	copy_tree(direpa_source_app, direpa_source_dst)
@@ -49,16 +47,11 @@ def update_gitframe_bin(conf):
 	os.remove(os.path.join(direpa_source_dst, "hotfix-history.json"))
 	os.remove(os.path.join(direpa_source_dst, "license.txt"))
 
-	os.symlink(
-		os.path.join(direpa_source_dst, "gitframe.py"),
-		os.path.join(direpa_task_bin, "gitframe")
+	cmd_str="{} {}".format(
+		os.path.join(direpa_source_dst, conf["processor"]["filen_launcher"]),
+		parameters
 	)
-	# os.system("gitframe -v")
-	# print('here')
-	# sys.path.append(direpa_task_bin)
-	# # os.system("gitframe -v")
-
-	print(os.environ["PATH"])
+	os.system(cmd_str)
 
 if __name__ == "__main__":
 	install_dependencies(conf.get_value("deps"))
@@ -160,6 +153,16 @@ if __name__ == "__main__":
 		help="if active branch has a linked branch, then depending on circumstances, linked branch is merged into active branch"
 	)
 	parser.add_argument(
+		"--ug",
+		"--update-gitframe",
+		const=True,
+		# action="store",
+		dest="update_gitframe",
+		help="This is for developer only. It allows development on GitFrame. It creates a temporary executable for gitframe and execute the remaining parameters.",
+		metavar="PARAMETERS",
+		nargs='?',
+	)
+	parser.add_argument(
 		"-v",
 		"--version",
 		action="store_true",
@@ -173,8 +176,17 @@ if __name__ == "__main__":
 
 	try:
 		args = parser.parse_args()
-	except:
+	except Exception as e:
+		print(e)
 		sys.exit(1)
+
+	if args.update_gitframe is True:
+		update_gitframe_bin(conf.data)
+		sys.exit(0)
+
+	if args.update_gitframe:
+		update_gitframe_bin(conf.data, args.update_gitframe)
+		sys.exit(0)
 
 	if args.debug is True:
 		msg.subtitle("Debug mode started")
