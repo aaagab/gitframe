@@ -29,8 +29,8 @@
         }
     ],
     "diren_scripts": "scripts",
-    "diren_src": "src",
     "filen_hotfix_history": "hotfix-history.json",
+    "filen_update_gitframe_bin": "updateGitFrameBin",
     "filen_version": "version.txt",
     "filer_bump_release_version": "bump_release_version",
     "filer_deploy_release": "deploy_release",
@@ -43,29 +43,24 @@
                 "cmd": "bash"
             },
             {
-                "app": "xdotool",
-                "cmd": "xdotool"
-            },
-            {
-                "app": "wmctrl",
-                "cmd": "wmctrl"
-            },
-            {
                 "app": "screen",
                 "cmd": "screen"
-            },
-            {
-                "app": "tput",
-                "cmd": "tput"
-            },
-            {
-                "app": "xterm",
-                "cmd": "xterm"
             }
         ],
+        "diren_logs": "logs",
+        "filen_cmds": "cmds.sh",
+        "filen_conf": "processor_config.json",
+        "filen_launcher": "gitframe.py",
+        "filen_read_log_bashrc": "read_log_bashrc",
+        "filen_screen_log": "processor_screen_log.0",
+        "filen_screenrc": "screenrc",
+        "filen_task_status": "task_status.log",
+        "read_log_window_title": "#Error_Logs#",
         "task": {
             "diren": "test",
-            "direpa_root": "/tmp/test-gf",
+            "diren_src": "src",
+            "direpa": "/tmp/test-gf",
+            "name": "gitframe",
             "remote": {
                 "diren_root": "repository",
                 "domain": "localhost",
@@ -73,18 +68,10 @@
                 "user_git": "noa"
             }
         },
-        "diren_logs": "logs",
-        "filen_blank_page": "print_blank_page.sh",
-        "filen_conf": "processor_config.json",
-        "filen_read_log_bashrc": "read_log_bashrc",
-        "filen_screen_log": "processor_screen_log.0",
-        "filen_screenrc": "screenrc",
-        "filen_xterm": "launch_xterm.sh",
-        "filen_tmux": "launch_tmux.sh",
-        "read_log_window_title": "#Error_Logs#",
         "txt_screen_cmd_error": "++ cmd error ++",
-        "txt_screen_log_eof": "++ End Unit ++",
+        "txt_screen_log_eof": "++ end unit ++",
         "waiting_time_between_cmds": 20
     },
-    "version": "1.0.0-beta-1541130477"
+    "validator": true,
+    "version": "new"
 }

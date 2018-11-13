@@ -11,10 +11,10 @@ def test_remote_repository(conf):
     set_task_vars(conf, {
         "direpa_par_remote_src": conf["remote"]["direpa_par_src"],
         "direpa_remote_src": conf["remote"]["direpa_src"],
-        "direpa_test": conf["direpa_test"],
+        "direpa_task": conf["direpa_task"],
         "direpa_repository": conf["direpa_repository"],
-        "direpa_test_src": conf["direpa_test_src"],
-        'direpa_testgf': conf["direpa_testgf"],        
+        "direpa_task_src": conf["direpa_task_src"],
+        'direpa_task_conf': conf["direpa_task_conf"],        
         "diren_src": conf["diren_src"],
         "block_user_input": """
             _out:Enter user name [q to quit]:
@@ -34,11 +34,11 @@ def test_remote_repository(conf):
         "ip": conf["remote"]["ip"],
     })
 
-    if conf["mode"] == "local_path":
+    if conf["task_mode"] == "local_path":
         set_task_steps(conf, """
             {step} local
-            mkdir -p {direpa_test}
-            cd {direpa_test}
+            mkdir -p {direpa_task}
+            cd {direpa_task}
             git init .
             {cmd}
             {block_user_input}
@@ -47,21 +47,21 @@ def test_remote_repository(conf):
             _out:direpa_src: {direpa_remote_src}
             _out:path_type: directory
             _out:direpa_par_src: {direpa_par_remote_src}
-            cd {direpa_testgf}
-            rm -rf {direpa_test}
+            cd {direpa_task_conf}
+            rm -rf {direpa_task}
         """)
-    elif conf["mode"] == "ssh_url":
+    elif conf["task_mode"] == "ssh_url":
         set_task_steps(conf, """
             {step} remote url_with_name
-            mkdir -p {direpa_test_src}
-            cd {direpa_test_src}
+            mkdir -p {direpa_task_src}
+            cd {direpa_task_src}
             git init .
             touch myfile.txt
             git add .
             # git commit -am "myfile"
             git -c user.name='user_name' -c user.email='test@test.com' commit -am "myfile"
             mkdir -p {direpa_remote_src}
-            cd {direpa_test}
+            cd {direpa_task}
             git clone --bare {diren_src} {direpa_remote_src}
             sudo -k
             sudo chown -R {user_git}:{user_git} {direpa_remote_src}
@@ -79,20 +79,20 @@ def test_remote_repository(conf):
             _out:user_git: {user_git}
             _out:path_type: url
             _out:direpa_par_src: {direpa_par_remote_src}
-            cd {direpa_testgf}
-            rm -rf {direpa_test}
+            cd {direpa_task_conf}
+            rm -rf {direpa_task}
             sudo rm -rf {direpa_repository}
 
             {step} remote url_with_ip
-            mkdir -p {direpa_test_src}
-            cd {direpa_test_src}
+            mkdir -p {direpa_task_src}
+            cd {direpa_task_src}
             git init .
             touch myfile.txt
             git add .
             # git commit -am "myfile"
             git -c user.name='user_name' -c user.email='test@test.com' commit -am "myfile"
             mkdir -p {direpa_remote_src}
-            cd {direpa_test}
+            cd {direpa_task}
             git clone --bare {diren_src} {direpa_remote_src}
             sudo -k
             sudo chown -R {user_git}:{user_git} {direpa_remote_src}
@@ -110,8 +110,8 @@ def test_remote_repository(conf):
             _out:user_git: {user_git}
             _out:path_type: url
             _out:direpa_par_src: {direpa_par_remote_src}
-            cd {direpa_testgf}
-            rm -rf {direpa_test}
+            cd {direpa_task_conf}
+            rm -rf {direpa_task}
             sudo rm -rf {direpa_repository}
         """)
 

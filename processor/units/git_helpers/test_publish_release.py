@@ -5,13 +5,13 @@ if __name__ != "__main__":
 
 def test_publish_release(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
         "direpa_scripts": conf["direpa_scripts"],
         "filenpa_deploy_release": conf["filenpa_deploy_release"]
     })
 
     set_task_steps(conf, """
-        cd {direpa_test_src}
+        cd {direpa_task_src}
         git checkout master
 
         # create a file

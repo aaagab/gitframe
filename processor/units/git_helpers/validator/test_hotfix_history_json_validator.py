@@ -10,7 +10,7 @@ def test_hotfix_history_json_validator(conf):
     hotfix_json=Json_config().get_value("filen_hotfix_history")    
     
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
         "commit": "git commit --allow-empty -m \"one commit\"",
         "hotfix_json": hotfix_json,
         "clean_tags": 'git tag | grep -Ev "start_develop|start_master" | xargs git tag -d',
@@ -19,7 +19,7 @@ def test_hotfix_history_json_validator(conf):
 
 
     set_task_steps(conf,"""
-        cd {direpa_test_src}
+        cd {direpa_task_src}
 
         {step} hotfix_history_json_validator no_json_file
         git checkout master

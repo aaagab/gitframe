@@ -16,57 +16,30 @@ import uuid
 import time
 import stat
 import git_helpers.git_utils as git
-from processor.utils.task_clean import delete_test_and_repo
+import re
+from datetime import datetime
 
-def get_active_window_dec_id():
-    dec_id=shell.cmd_get_value("xdotool getactivewindow")
-    if not dec_id:
-        msg.app_error("Can't get window_id")
-        sys.exit(1)
-    else:
-        return dec_id
+def log_to_task_status_file(task_status_file, elem_type, *args):
+    text=""
+    # step, unit, task
+    # open, closed
+    step_num=args[0]
+    obj_value=args[1]
+    text="{:.6f} {:<4} {:<6} {}".format(
+            datetime.now().timestamp(),
+            elem_type,
+            step_num,
+            obj_value
+        )
 
-def get_active_window_hex_id():
-    return hex(int(get_active_window_dec_id()))
-
-def get_win_dec_id_by_name(name):
-    out=subprocess.check_output(shlex.split('wmctrl -l'))
-    for line in out.decode("utf-8").strip().splitlines():
-        print(name)
-        print(line)
-        if name in line:
-            hex_id=line.split(" ")[0]
-            dec_id=int(hex_id, 16)
-            
-            return dec_id
-
-def window_set_above(window_hex_id):
-    shell.cmd("wmctrl -i -r "+window_hex_id+" -b add,above")
-
-def window_focus(window_hex_id):
-    shell.cmd("wmctrl -i -a "+window_hex_id)
-
-def window_unset_above(window_id):
-    shell.cmd("wmctrl -i -r "+window_id+" -b remove,above")
-
-def send_cmd_to_screen(session_name, cmd):
-    shell.cmd("screen -S '"+session_name+"' -X stuff '"+cmd+"^M'")
+    with open(task_status_file, 'a') as f:
+        f.write(text+"\n")
 
 def kill_screen_session(session_name):
-    timer=Time_out(3)
     for session_item in shell.cmd_get_value("screen -ls").splitlines():
         if session_name in session_item:
-            # session_pid=session_item.strip().split(".")[0]
             full_session_name=session_item.strip().split()[0]
             shell.cmd("screen -X -S '{}' quit".format(full_session_name))
-            # screen -X -S [session # you want to kill] quit
-        #     # try to correct bug hard to reproduce with dead screen
-        #     while session_item in shell.cmd_get_value("screen -ls"):
-        #         shell.cmd("kill "+session_pid)
-        #         if timer.has_ended():
-        #             msg.app_error("Can't kill '"+session_item+"'")
-        #             sys.exit(1)
-    # sys.exit(1)
 
 def open_logs(conf):
     log_files=os.listdir(conf["direpa_logs"])
@@ -83,22 +56,14 @@ def clean_logs(conf):
             if os.path.isfile(file_path):
                 os.unlink(file_path)
 
-    # kill any log window already open
-    os.system('wmctrl -c \"'+conf["read_log_window_title"]+'\"')
-
 def log(conf):
     src_file=conf["filenpa_screen_log"]
     dst_path=conf["direpa_logs"]
-    test_name=conf['tmp']['test_name']
+    unit_name=conf['tmp']['unit_name']
     
     prefix="{:%Y%m%d-%H%M%S%f}".format(datetime.now())[:-4]
-    dst_file=os.path.join(dst_path,prefix+"-"+test_name+".txt")
+    dst_file=os.path.join(dst_path,prefix+"-"+unit_name+".txt")
     copyfile(src_file, dst_file)
-
-# def ssh_cmd(conf, sudo_pass, cmd):
-#     ssh_user=conf["remote"]["ssh_user"]
-#     domain=conf["remote"]["domain"]
-#     ssh_url=ssh_user+"@"+domain
 
 def get_file_user_obj(passwd_file):
     file_user_obj={}
@@ -116,26 +81,6 @@ def get_file_user_obj(passwd_file):
 
     return file_user_obj
 
-def enable_sudo(sudo_pass_obj):
-    p = subprocess.Popen(shlex.split('sudo -p "" ls'))
-    try:
-        p.wait(.1)
-    except:
-        p.kill()
-        os.system("stty sane")
-
-        sudo_pass=sudo_pass_obj.get_sudo_pass()
-
-        cmd="""pass=$(cat<<'EOF'
-            {}
-            EOF
-            )
-        """.format(sudo_pass).replace(" ","")
-
-        if os.system(cmd+' echo $pass | sudo -S -p "" echo -n') != 0:
-            msg.user_error("Wrong pass")
-            sys.exit(1)
-
 def setup_mock_repository(conf):  
     msg.subtitle("Setup remote repository for testing")
 
@@ -143,10 +88,10 @@ def setup_mock_repository(conf):
 
     # create  test path
     try:
-        os.makedirs(conf["direpa_testgf"], exist_ok=True)
-        os.chdir(conf["direpa_testgf"])
+        os.makedirs(conf["direpa_task_conf"], exist_ok=True)
+        os.chdir(conf["direpa_task_conf"])
     except:
-        msg.app_error("Cannot create "+conf["direpa_testgf"])
+        msg.app_error("Cannot create "+conf["direpa_task_conf"])
         sys.exit(1)
 
     # create remote path
@@ -254,35 +199,40 @@ def setup_mock_repository(conf):
         msg.user_error("ssh not connecting: unknown error")
         sys.exit(1)
 
-    if conf["mode"] == "local_path":
+    if conf["task_mode"] == "local_path":
         user_and_group_root_dir=shell.cmd_get_value("sudo stat --format '%U:%G' '{}'".format(conf["remote"]["direpa_src"]).strip())
         if user_and_group_root_dir != current_user_and_group:
             shell.cmd_prompt("sudo chown -R {} '{}'".format(current_user_and_group, conf["remote"]["direpa_src"]))
 
-class Sudo_pass():
+class Sudo():
     def __init__(self):
-        self.sudo_pass=""
+        self.pswd=""
         self.count=0
 
-    def get_sudo_pass(self):
+    def get_pswd(self):
         if self.count == 0:
-            if not self.sudo_pass:
-                self.sudo_pass=getpass.getpass("Sudo Password: ")
+            if not self.pswd:
+                self.pswd=getpass.getpass("Sudo Password: ")
                 self.count+=1
 
-        return self.sudo_pass
+        return self.pswd
 
-class Time_out():
-    import time
-    def __init__(self, seconds, sleep_time=0.001):
-        self.waiting_time=seconds
-        self.start_time = time.time()
-        self.sleep_time=sleep_time
+    def enable(self):
+        p = subprocess.Popen(shlex.split('sudo -p "" echo -n'))
+        try:
+            p.wait(.1)
+        except:
+            p.kill()
+            os.system("stty sane")
 
-    def has_ended(self):
-        elapsed_time = time.time() - self.start_time
-        if elapsed_time >= self.waiting_time:
-            return True
-        else:
-            time.sleep(self.sleep_time)
-            return False
+            cmd=re.sub(r"\n\s*", "\n","""
+            echo $(cat<<'EOF'
+                {}
+                EOF
+                ) | sudo -S -p "" echo -n
+            """.format(self.get_pswd()))[1:-1]
+
+            if os.system(cmd) != 0:
+                msg.user_error("Wrong pass")
+                sys.exit(1)
+

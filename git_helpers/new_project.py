@@ -110,6 +110,7 @@ def new_project(path=""):
         file="license.txt"
         test_file_not_exist(file)
         license_content=get_license_content()
+        print(license_content)
         with open(file,"w") as f:
             f.write(license_content+'\n')
 

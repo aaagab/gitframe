@@ -11,21 +11,21 @@ def test_clone_project(conf):
     set_task_vars(conf, {
         "direpa_remote_src": conf["remote"]["direpa_src"],
         "direpa_par_remote_src": conf["remote"]["direpa_par_src"],
-        "direpa_test_src": conf["direpa_test_src"],
-        "direpa_test": conf["direpa_test"],
+        "direpa_task_src": conf["direpa_task_src"],
+        "direpa_task": conf["direpa_task"],
         "direpa_repository": conf["direpa_repository"],
-        "diren_test": conf["diren_test"],
+        "diren_task": conf["diren_task"],
         "diren_src": conf["diren_src"],
         "ssh_url_domain_direpa_src": conf["remote"]["ssh_url_domain_direpa_src"],
         "scp_url_domain_direpa_par_src": conf["remote"]["scp_url_domain_direpa_par_src"],
-        "direpa_testgf": conf["direpa_testgf"],
+        "direpa_task_conf": conf["direpa_task_conf"],
         "user_ssh": conf["user_current"],
         "user_git": conf["remote"]["user_git"],
         "domain": conf["remote"]['domain'],
         "sudo_pass": conf.get("sudo_pass"),
         "block_init_repo":"""
-            mkdir -p {direpa_test_src}
-            cd {direpa_test_src}
+            mkdir -p {direpa_task_src}
+            cd {direpa_task_src}
             git init .
             touch myfile.txt
             git add .
@@ -41,7 +41,7 @@ def test_clone_project(conf):
         """    
     })
 
-    if conf["mode"] == "local_path":
+    if conf["task_mode"] == "local_path":
         set_task_steps(conf,"""
             {step} clone_project_to_remote directory existing
             {block_init_repo}
@@ -52,11 +52,11 @@ def test_clone_project(conf):
             _out:∆ Remote Repository '{direpa_remote_src}' does not exist.
             _out:# repo is a directory
             # # _out:√ git clone --bare src {direpa_remote_src}
-            rm -rf {direpa_test}
+            rm -rf {direpa_task}
             rm -rf {direpa_repository}
 
         """)
-    elif conf["mode"] == "ssh_url":
+    elif conf["task_mode"] == "ssh_url":
         set_task_steps(conf,"""
             {step} clone_project_to_remote url
             {block_init_repo}
@@ -65,17 +65,17 @@ def test_clone_project(conf):
             _type:{ssh_url_domain_direpa_src}
             _out:Type ssh username [q to quit]:
             _type:{user_ssh}
-            _out:√ git clone --bare {direpa_test_src} {direpa_test_src}.git
+            _out:√ git clone --bare {direpa_task_src} {direpa_task_src}.git
             _out:{user_ssh}@{domain}'s password:
             _type:{sudo_pass}
-            _out:√ scp -r {direpa_test_src}.git {scp_url_domain_direpa_par_src}
+            _out:√ scp -r {direpa_task_src}.git {scp_url_domain_direpa_par_src}
             _out:{user_ssh}@{domain}'s password:
             _type:{sudo_pass}
             _out:[sudo] password for {user_ssh}:
             _type:{sudo_pass}
             _out:√ ssh -t {user_ssh}@{domain} "sudo chown -R {user_git}:{user_git} {direpa_remote_src}"
-            _out:√ {direpa_test_src}.git deleted on local.
-            rm -rf {direpa_testgf}/{diren_test}
+            _out:√ {direpa_task_src}.git deleted on local.
+            rm -rf {direpa_task_conf}/{diren_task}
             sudo rm -rf {direpa_repository}
             _out:[sudo] password for {user_ssh}:
             _type:{sudo_pass}

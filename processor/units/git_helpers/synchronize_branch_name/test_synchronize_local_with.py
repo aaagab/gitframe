@@ -5,13 +5,13 @@ if __name__ != "__main__":
 
 def test_synchronize_local_with(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
         "commit": "git commit --allow-empty -m"        
     })
 
     set_task_steps(conf, """
         {step} cd
-        cd {direpa_test_src}
+        cd {direpa_task_src}
     
         {step} up_to_date
         {cmd}

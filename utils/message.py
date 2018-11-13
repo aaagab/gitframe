@@ -53,49 +53,16 @@ def draw_line(char, n):
     return tmp_str
 
 def title(msg):
-    char="="
-    len_title=len(msg)
-    margin_out_len=5
-    border_len=1
-    margin_in_len=1
-
-    dmo=draw_line(" ", margin_out_len)
-    db=draw_line("|", border_len)
-    dmi=draw_line(" ", margin_in_len)
-
-    frame_len= \
-    border_len + \
-    margin_in_len + \
-    len_title + \
-    margin_in_len + \
-    border_len
-
-    line=draw_line(char, frame_len)
-
-    title=(
-        line,
-        db+dmi+msg+dmi+db,
-        line
-    )
-
     print()
-    for i, s in enumerate(title):
-        ft.center(s)
-        if i == 1:
-            print(ft.bold(s))
-        else:
-            print(s)
-
-    # print()
+    print(ft.lGreen("  @@@@ ")+ft.bold(msg)+ft.lGreen(" @@@@"))
+    print()
 
 def subtitle(msg):
     print()
-    ldeco="-->> # "
-    rdeco=" # <<--"
+    ldeco="### "
+    rdeco=""
     tmp_str=ldeco+msg+rdeco;
-    ft.center(tmp_str)
-    print(ft.lCyan(ldeco)+ft.bold(msg)+ft.lCyan(rdeco))
-    # print()
+    print("  "+ft.lBlue(ldeco)+ft.bold(msg)+ft.lCyan(rdeco))
 
 def dbg(funct, *msgs):
     from utils.json_config import Json_config

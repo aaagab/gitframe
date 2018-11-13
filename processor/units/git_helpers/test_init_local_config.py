@@ -10,8 +10,8 @@ def test_init_local_config(conf):
     # pprint(conf)
     set_task_vars(conf, {
         "direpa_remote_src": conf["remote"]["direpa_src"],
-        "direpa_test": conf["direpa_test"],
-        "direpa_testgf": conf["direpa_testgf"],
+        "direpa_task": conf["direpa_task"],
+        "direpa_task_conf": conf["direpa_task_conf"],
         "direpa_repository": conf["direpa_repository"],
         "diren_src": conf["diren_src"],
         "block_user_input": """
@@ -25,16 +25,16 @@ def test_init_local_config(conf):
 
     set_task_steps(conf, """
         {step} start
-        mkdir -p {direpa_test}
-        cd {direpa_test}
+        mkdir -p {direpa_task}
+        cd {direpa_task}
         git init .
         {cmd}
         {block_user_input}
         _type:{direpa_remote_src}
         _out:# Repository set to '{direpa_remote_src}'
 
-        cd {direpa_testgf}
-        rm -rf {direpa_test}
+        cd {direpa_task_conf}
+        rm -rf {direpa_task}
         rm -rf {direpa_repository}
     """)
 

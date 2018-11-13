@@ -12,33 +12,54 @@ from pprint import pprint
 from utils.json_config import Json_config
 import time
 import utils.shell_helpers as shell
+
+def execute_task_cmds(conf, unit_name):
     
+    num_panes=len(shell.cmd_get_value("tmux list-panes").splitlines())
+    if num_panes == 3:
+        cmd=re.sub(r"\n\s*", "\n","""
+            tmux break-pane -d -s 2
+            tmux select-layout even-horizontal
+            tmux select-pane -t 0
+        """)[1:-1]
+        os.system(cmd)
 
-def execute_task_cmds(conf, test_name):
+    elif num_panes == 2:
+        cmd=re.sub(r"\n\s*", "\n","""
+            tmux select-pane -t 0
+            tmux join-pane -hs {task_name}:1.0
+            tmux break-pane -d -s 2
+            tmux select-layout even-horizontal
+            tmux select-pane -t 0
+        """.format(
+            task_name=conf["task_name"]
+        ))[1:-1]
+        os.system(cmd)  
 
-    # print a blank page kirk for visual rendering on terminal
-    ph.send_cmd_to_screen(conf["main_session_name"], conf["filenpa_blank_page"])
-
-    # create a new session
-    command="screen -c '{}' -S '{}' -d -m -L".format(conf["filenpa_screenrc"], conf[test_name]["session_name"])
+    command="screen -c '{}' -S '{}' -d -m -L".format(conf["filenpa_screenrc"], unit_name)
     if subprocess.call(shlex.split(command)) != 0:
         msg.user_error(command)
         sys.exit(1)
 
-    # attach it
-    open(conf["filenpa_screen_log"], 'w').close()
-    ph.send_cmd_to_screen(conf["main_session_name"], "screen -r -d \""+conf[test_name]["session_name"]+"\"")
-    # clear scrolling
-    ph.send_cmd_to_screen(conf["main_session_name"], "echo -en \"\ec\e[3J\"")
+    cmd=re.sub(r"\n\s*", "\n","""
+        tmux send-keys -t 1 "screen -r -d '{unit_name}'"
+        tmux send-keys -t 1 KPEnter
+    """.format( unit_name=unit_name)
+    )[1:-1]
+    os.system(cmd)
 
     cmds=[]
     
     cmds.append(r"#!/bin/bash")
-    cmds.append(r'echo -ne "\e]0;'+conf[test_name]["session_name"]+r'\007"')
-    cmds.append(r'echo -e "\t\e[1;33mTEST: '+conf["filen_app"]+' '+test_name+'\e[0m\n"')
+    cmds.append(r'echo -ne "\ec\e[3J"')
+    # send-keys "echo -en '\e]2;processor\e[0m'" \\; \\
+    # cmds.append(r'echo -ne "\e]2;'+unit_name+r'\e[0m"')
+    cmds.append(r'echo -e "\t\e[1;33mUNIT: '+conf["filen_launcher"]+' '+unit_name+'\e[0m"')
+    cmds.append('echo')
+
     cmd_num=0
     step_num=0
-    for i, cmd in enumerate(conf[test_name]["cmds"]):
+    for i, cmd in enumerate(conf[unit_name]["cmds"]):
         step=re.match(r"{step}(.*)",cmd)
         info=re.match(r"{info}(.*)",cmd)
         if step:
@@ -47,7 +68,7 @@ def execute_task_cmds(conf, test_name):
                 step_value=""
 
             step_num+=1
-            cmds.append(r'echo -e "\n\t\e[1;35m### Step '+str(step_num)+':\e[0m '+step_value+'"')
+            cmds.append(r'echo -e "\n\t\e[1;35m___ Step '+str(step_num)+':\e[0m '+step_value+'"')
             cmd_num=0
         elif info:
             info_value=info.group(1).strip()
@@ -59,27 +80,33 @@ def execute_task_cmds(conf, test_name):
             cmds.append(r'echo -e " \e[4;2mINFO\e[0m: '+info_value+'"')
         else:
             cmd_num+=1
-            cmd_display=cmd.replace(conf["direpa_app"], ".../"+os.path.basename(os.path.normpath(conf["direpa_app"])))
+            cmd_display=cmd.replace(conf["direpa_launcher"], ".../"+os.path.basename(os.path.normpath(conf["direpa_launcher"])))
             cmd_display=cmd_display.replace('"','\'')
             cmds.append('echo;')
             cmds.append('echo -e "\e[1;33m==\e[0m" '+str(cmd_num)+' "\e[1;33m==\e[0m" :'+str(conf["tmp"]["cmds_line_num"][i])+': "'+cmd_display+'"')
             cmds.append(cmd+' || ( echo -e "\e[1;31m'+conf["txt_screen_cmd_error"]+'\e[0m" && sleep .4 )')
 
     cmds.append(r'echo -e "\n'+conf["txt_screen_log_eof"]+'"')
-    cmds.append(r'rm '+conf["direpa_cmds"])
+    cmds.append(r'rm '+conf["filenpa_cmds"])
 
     # copy cmds to file
-    with open(conf["direpa_cmds"], 'w') as f:
+    with open(conf["filenpa_cmds"], 'w') as f:
         for cmd in cmds:
             f.write(cmd)
             f.write("\n")
 
     # make file executable
-    os.chmod(conf["direpa_cmds"], 0o755)    
+    os.chmod(conf["filenpa_cmds"], 0o755)    
     
     # for cmd in cmds:
     #     print(cmd)
+    open(conf["filenpa_screen_log"], 'w').close()
     
     # launch script with screen session
-    ph.send_cmd_to_screen(conf[test_name]["session_name"], conf["direpa_cmds"])
+    cmd=re.sub(r"\n\s*", "\n","""
+        tmux send-keys -t 1 {cmd}
+        tmux send-keys -t 1 KPEnter
+    """.format(cmd=conf["filenpa_cmds"]))[1:-1]
+    os.system(cmd)
+
     

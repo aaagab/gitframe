@@ -5,11 +5,11 @@ if __name__ != "__main__":
 
 def test_release_validator(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
     })
 
     set_task_steps(conf,"""
-        cd {direpa_test_src}
+        cd {direpa_task_src}
 
         {step} force_unique_release_branch_name two_releases_on_local
         {info} Failing Command due to 2 releases on local
