@@ -9,7 +9,6 @@ from git_helpers.get_all_branch_regexes import get_branch_type_from_location, fi
 import git_helpers.version as version
 
 import git_helpers.regex_obj as ro
-from utils.json_config import Json_config
 
 # from git_helpers.validator.hotfix import compare_version_tag_with_hotfix_branch_name
 from git_helpers.validator.support import find_related_tag_for_support_branch_name
@@ -145,6 +144,7 @@ def match_branch_name_with_version_value(regex_branch, regex_version_value):
         sys.exit(1)
 
 def check_bump_release_version_script():
+    from utils.json_config import Json_config
     msg.subtitle("Check bump release version script.")
     bump_release_version_script_err_msg="""
     Create a script file bump_release_version.sh or bump_release_version.py

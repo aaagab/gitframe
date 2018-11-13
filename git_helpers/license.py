@@ -65,7 +65,7 @@ def get_license_content():
         if user_choice.isdigit():
             if int(user_choice) >= 1 and int(user_choice) <= len(licenses):
                 selected_license=licenses[int(user_choice)-1]
-                if  selected_license == "mit":
+                if  selected_license == "MIT":
                     print()
                     return mit()
 

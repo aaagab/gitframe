@@ -47,11 +47,15 @@ def hotfix_history_json_validator(regex_branches):
                 git.checkout(start_branch)
                 sys.exit(1)
 
+    print("here1")
     compare_git_tags_to_hotfix_json_tags(regex_branches_to_monitor, hotfix_tags, filen_hotfix_history)
+    print("here2")
 
     for regex_branch in regex_branches_to_monitor:
         git.checkout(regex_branch.text)
+        print("here3")
         hotfix_objs=Json_config(filen_hotfix_history).data
+        print("here4")
 
         for obj in hotfix_objs:
             end_tag=hotfix_objs[obj]["end_tag"]
