@@ -76,7 +76,7 @@ if __name__ == "__main__":
 		"--dv",
 		action="store_true",
 		dest="disable_validator",
-		help="disable gitframe validator. This function should be used only to test and write the deploy_release script. For instance: gitframe --dv --pr v1.0.0-beta-1541095625",
+		help="disable gitframe validator. This function should be used only to test and write the deploy_release script. For instance: gitframe --dv --pr v1.0.0",
 	)
 	parser.add_argument(
 		"-c",
@@ -158,7 +158,7 @@ if __name__ == "__main__":
 		const=True,
 		# action="store",
 		dest="update_gitframe",
-		help="This is for developer only. It allows development on GitFrame. It creates a temporary executable for gitframe and execute the remaining parameters.",
+		help="this is for gitframe developers only. This command is needed in order to allow development on gitframe with gitframe. It copies the src code to a temporary folder and execute gitframe from this folder with the remaining parameters. ex: ./gitframe.py --ug=\"--per\" will execute /tmp/test-gf/bin/gitframe.py --per. NOTE: --test command does not need --update_gitframe and it must be executed from the main source code.",
 		metavar="PARAMETERS",
 		nargs='?',
 	)
