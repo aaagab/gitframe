@@ -19,7 +19,7 @@ from git_helpers.remote_repository import Remote_repository
 
 from git_helpers.get_all_branch_regexes import get_all_branch_regexes
 
-from git_helpers.validator.version_file import version_file_validator, check_bump_release_version_script
+from git_helpers.validator.version_file import version_file_validator
 
 import git_helpers.git_utils as git
 
@@ -42,8 +42,6 @@ def validator(enabled):
 		return repo, regex_branches, all_version_tags
 	else:
 		msg.title("Git Frame Validator")
-
-		check_bump_release_version_script()
 
 		prompt_for_commit()
 
