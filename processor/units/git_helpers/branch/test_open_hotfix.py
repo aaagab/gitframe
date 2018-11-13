@@ -5,14 +5,14 @@ if __name__ != "__main__":
 
 def test_open_hotfix(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
         "clean_tag": 'git tag | grep -Ev "start_develop|start_master" | xargs git tag -d',
         "commit": "git commit --allow-empty -m 'empty_commit'",
         "hotfix_branch": "hotfix-1.0.X-my_repair"
     })
 
     set_task_steps(conf,"""
-        cd {direpa_test_src}
+        cd {direpa_task_src}
         
         {step} get_tag_for_hotfix
         {cmd}

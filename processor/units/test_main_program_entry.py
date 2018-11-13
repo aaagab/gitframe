@@ -8,47 +8,47 @@ if __name__ != "__main__":
 
 def test_main_program_entry(conf):
     set_task_vars(conf, {
-        'direpa_test_src': conf["direpa_test_src"],
-        'direpa_test': conf["direpa_test"],
-        'direpa_testgf': conf["direpa_testgf"],
+        'direpa_task_src': conf["direpa_task_src"],
+        'direpa_task': conf["direpa_task"],
+        'direpa_task_conf': conf["direpa_task_conf"],
         'diren_src': conf["diren_src"],
-        'debug_close_branch':conf["direpa_app"]+"/"+conf["filen_app"]+" -d --cb",
-        'new_project':conf["direpa_app"]+"/"+conf["filen_app"]+" --np",
-        'new_project_directory':conf["direpa_app"]+"/"+conf["filen_app"]+" --np "+conf["diren_src"],
-        'clone_project_to_remote':conf["direpa_app"]+"/"+conf["filen_app"]+" --cp",
-        'open_branch':conf["direpa_app"]+"/"+conf["filen_app"]+" --ob",
-        'publish_early_release':conf["direpa_app"]+"/"+conf["filen_app"]+" --per",
-        'publish_release':conf["direpa_app"]+"/"+conf["filen_app"]+" --pr 1.0.0",
-        'synchronize_project':conf["direpa_app"]+"/"+conf["filen_app"]+" -d --sp",
-        'update_branch':conf["direpa_app"]+"/"+conf["filen_app"]+" -u",
-        'version':conf["direpa_app"]+"/"+conf["filen_app"]+" -v",
+        'debug_close_branch':conf["filenpa_launcher"]+" -d --cb",
+        'new_project':conf["filenpa_launcher"]+" --np",
+        'new_project_directory':conf["filenpa_launcher"]+" --np "+conf["diren_src"],
+        'clone_project_to_remote':conf["filenpa_launcher"]+" --cp",
+        'open_branch':conf["filenpa_launcher"]+" --ob",
+        'publish_early_release':conf["filenpa_launcher"]+" --per",
+        'publish_release':conf["filenpa_launcher"]+" --pr 1.0.0",
+        'synchronize_project':conf["filenpa_launcher"]+" -d --sp",
+        'update_branch':conf["filenpa_launcher"]+" -u",
+        'version':conf["filenpa_launcher"]+" -v",
     })
 
     set_task_steps(conf,"""
-        cd {direpa_test_src}
+        cd {direpa_task_src}
         
         {step} close_branch and debug
         git checkout develop
         {debug_close_branch}
-        _out:-->> # Debug mode started # <<--
+        _out:### Debug mode started
         _out:× You can't close on branch 'develop'.
         _fail:
 
         {step} new_project
         {new_project}
-        _out:× Current Path '{direpa_test_src}' has a .git directory
+        _out:× Current Path '{direpa_task_src}' has a .git directory
         _fail:
 
         {step} new_project_directory
-        cd {direpa_test}
+        cd {direpa_task}
         {new_project_directory}
-        _out:× Current Path '{direpa_test_src}' has a .git directory
+        _out:× Current Path '{direpa_task_src}' has a .git directory
         _fail:
-        cd {direpa_test_src}
+        cd {direpa_task_src}
 
         {step} clone_project_to_remote
         {clone_project_to_remote}
-        _out:× Remote Directory {direpa_test_src}.git Already Exists on remote repository 'Origin'
+        _out:× Remote Directory {direpa_task_src}.git Already Exists on remote repository 'Origin'
         _fail:
 
         {step} open_branch

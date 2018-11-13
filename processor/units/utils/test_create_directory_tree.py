@@ -7,24 +7,24 @@ def test_create_directory_tree(conf):
     # from pprint import pprint
     # pprint(conf)
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
-        "direpa_testgf": conf["direpa_testgf"],
-        "direpa_test": conf["direpa_test"]
+        "direpa_task_src": conf["direpa_task_src"],
+        "direpa_task_conf": conf["direpa_task_conf"],
+        "direpa_task": conf["direpa_task"]
     })
 
     set_task_steps(conf,"""
-        mkdir -p {direpa_test_src}
-        cd {direpa_test_src}
+        mkdir -p {direpa_task_src}
+        cd {direpa_task_src}
         {step} draft
         {cmd}
-        _out:√ Path '{direpa_test_src}/brainstorming' created.
-        _out:√ Path '{direpa_test_src}/documentation' created.
-        _out:√ Path '{direpa_test_src}/scripts' created.
-        _out:√ Path '{direpa_test_src}/todo' created.
-        _out:√ Path '{direpa_test_src}/src' created.
+        _out:√ Path '{direpa_task_src}/brainstorming' created.
+        _out:√ Path '{direpa_task_src}/documentation' created.
+        _out:√ Path '{direpa_task_src}/scripts' created.
+        _out:√ Path '{direpa_task_src}/todo' created.
+        _out:√ Path '{direpa_task_src}/src' created.
 
-        cd {direpa_testgf}
-        rm -rf {direpa_test}        
+        cd {direpa_task_conf}
+        rm -rf {direpa_task}        
     """)
 
     start_processor(conf)

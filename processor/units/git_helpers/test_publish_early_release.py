@@ -5,18 +5,18 @@ if __name__ != "__main__":
 
 def test_publish_early_release(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
-        "direpa_test": conf["direpa_test"],
+        "direpa_task_src": conf["direpa_task_src"],
+        "direpa_task": conf["direpa_task"],
     })
     
     set_task_steps(conf, """
         {step} prepare for publish_release
-        cd {direpa_test_src}
-        mkdir -p {direpa_test}/scripts
-        echo '#!/bin/bash' > {direpa_test}/scripts/deploy_release.sh
-        echo 'echo $1' >> {direpa_test}/scripts/deploy_release.sh
-        echo 'echo $2' >> {direpa_test}/scripts/deploy_release.sh
-        chmod +x {direpa_test}/scripts/deploy_release.sh
+        cd {direpa_task_src}
+        mkdir -p {direpa_task}/scripts
+        echo '#!/bin/bash' > {direpa_task}/scripts/deploy_release.sh
+        echo 'echo $1' >> {direpa_task}/scripts/deploy_release.sh
+        echo 'echo $2' >> {direpa_task}/scripts/deploy_release.sh
+        chmod +x {direpa_task}/scripts/deploy_release.sh
      
         {step} publish_early_release on_release
         git checkout -b release-2.1.0
@@ -91,7 +91,7 @@ def test_publish_early_release(conf):
         _out:× Publish early version only applies to 'develop', 'feature' or 'release' branch type.
         _fail:
 
-        rm {direpa_test}/scripts/deploy_release.sh
+        rm {direpa_task}/scripts/deploy_release.sh
     """)
 
     start_processor(conf)

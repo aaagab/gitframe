@@ -9,12 +9,12 @@ import getpass
 import utils.shell_helpers as shell
 
 def delete_test_and_repo(conf):
-    msg.subtitle("Cleaning Test assets")
-    os.chdir(conf["direpa_testgf"])
+    msg.subtitle("Cleaning Unit assets")
+    os.chdir(conf["direpa_task_conf"])
 
-    if os.path.exists(conf["direpa_test"]):
-        shutil.rmtree(conf["direpa_test"])
-        msg.success("'"+conf["direpa_test"]+"' deleted.")
+    if os.path.exists(conf["direpa_task"]):
+        shutil.rmtree(conf["direpa_task"])
+        msg.success("'"+conf["direpa_task"]+"' deleted.")
     
     if os.path.exists(conf["remote"]["direpa_src"]):
         user_group_repository=shell.cmd_get_value("sudo stat --format '%U:%G' '{}'".format(conf["remote"]["direpa_src"]).strip())
@@ -57,15 +57,16 @@ def clean_end_cmds(conf):
         git push origin --force develop
 
         # delete tmp directory for dual directory test
-        rm -rf {direpa_test_src}_tmp
-        rm {direpa_test}/scripts/deploy_release.sh       
-    """.format(direpa_test=conf["direpa_test"], direpa_test_src=conf["direpa_test_src"] )
+        rm -rf {direpa_task_src}_tmp
+        rm {direpa_task}/scripts/deploy_release.sh
+        rm {direpa_task}/mock_project     
+    """.format(direpa_task=conf["direpa_task"], direpa_task_src=conf["direpa_task_src"] )
 
     return re.sub(r'\n\s*','\n',clean_heredoc)[1:-1]
 
 def clean_after_cmd(conf):
-    msg.subtitle("Cleaning Test")
-    path=os.path.join(conf['direpa_testgf'],conf['diren_test'], conf['diren_src'])
+    msg.subtitle("Cleaning Unit")
+    path=os.path.join(conf['direpa_task_conf'],conf['diren_task'], conf['diren_src'])
     dev_null=" > /dev/null 2>&1"
     if os.path.exists(path):
         os.chdir(path)
@@ -94,7 +95,7 @@ def clean_after_cmd(conf):
 
             # clean local_remote
             os.system("git fetch --prune"+dev_null)
-            os.chdir(conf['direpa_testgf'])
+            os.chdir(conf['direpa_task_conf'])
         else:
             msg.user_error("Not a git directory.")
             sys.exit(1)

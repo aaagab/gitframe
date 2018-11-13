@@ -5,11 +5,11 @@ if __name__ != "__main__":
 
 def test_synchronize_branch_name(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
     })
     
     set_task_steps(conf, """
-        cd {direpa_test_src}
+        cd {direpa_task_src}
 
         {step} regex_branches local
         git checkout master
@@ -40,7 +40,7 @@ def test_synchronize_branch_name(conf):
         git push origin feature-add
         {cmd}
         _out:# True_True_True
-        _out:-->> # synchronize_local_with 'remote' for 'feature-add' # <<--
+        _out:### synchronize_local_with 'remote' for 'feature-add'
         _out:# cmp_status: up_to_date
         _out:√ No action needed for 'synchronize' with "feature-add" on "remote"
         git checkout master
@@ -55,7 +55,7 @@ def test_synchronize_branch_name(conf):
         git branch -D feature-add
         {cmd}
         _out:# False_True_True
-        _out:-->> # synchronize_local_with 'remote' for 'feature-add' # <<--
+        _out:### synchronize_local_with 'remote' for 'feature-add'
         _out:# cmp_status: pull_not_local
         _out:choice or 'q' to quit: 
         _type:2
@@ -83,7 +83,7 @@ def test_synchronize_branch_name(conf):
         git branch -D feature-add
         {cmd}
         _out:# False_False_True
-        _out:-->> # synchronize_local_with 'remote' for 'feature-add' # <<--
+        _out:### synchronize_local_with 'remote' for 'feature-add'
         _out:# cmp_status: pull_not_local
         _out:choice or 'q' to quit:
         _type:2
@@ -93,10 +93,10 @@ def test_synchronize_branch_name(conf):
         git checkout master
         git checkout -b feature-add
         git push origin feature-add
-        cp -r {direpa_test_src} {direpa_test_src}_tmp
-        cd {direpa_test_src}_tmp
+        cp -r {direpa_task_src} {direpa_task_src}_tmp
+        cd {direpa_task_src}_tmp
         git push origin --delete feature-add
-        cd {direpa_test_src}
+        cd {direpa_task_src}
         {cmd}
         _out:# True_True_False 
         _out:# Git Pretty 'feature-add'
@@ -105,10 +105,10 @@ def test_synchronize_branch_name(conf):
         _out:# Git Pretty 'origin/feature-add'
         _out:Do you want to delete 'feature-add' from local_remote? [y/N/q]:
         _type:n
-        _out:-->> # synchronize_local_with 'remote' for 'feature-add' # <<--
+        _out:### synchronize_local_with 'remote' for 'feature-add'
         _out:choice or 'q' to quit:
         _type:2
-        rm -rf {direpa_test_src}_tmp
+        rm -rf {direpa_task_src}_tmp
         git checkout master
         git branch -rd origin/feature-add
         git branch -D feature-add
@@ -117,11 +117,11 @@ def test_synchronize_branch_name(conf):
         git checkout master
         git checkout -b feature-add
         git push origin feature-add
-        cp -r {direpa_test_src} {direpa_test_src}_tmp
-        cd {direpa_test_src}_tmp
+        cp -r {direpa_task_src} {direpa_task_src}_tmp
+        cd {direpa_task_src}_tmp
         git push origin --delete feature-add
-        cd {direpa_test_src}
-        rm -rf {direpa_test_src}_tmp
+        cd {direpa_task_src}
+        rm -rf {direpa_task_src}_tmp
         git checkout master
         git branch -D feature-add
         {cmd}
@@ -129,11 +129,11 @@ def test_synchronize_branch_name(conf):
         _out:# Git Pretty 'origin/feature-add'
         _out:Do you want to delete 'feature-add' from local_remote? [y/N/q]:
         _type:n
-        _out:-->> # get_branch_compare_status_repository local_remote' for 'feature-add' # <<--
+        _out:### get_branch_compare_status_repository local_remote' for 'feature-add'
         _out:# cmp_status: pull_not_local
         _out:∆ Branch 'feature-add' is on local_remote but not on local. No need to checkout.
-        _out:-->> # synchronize_local_with 'remote' for 'feature-add' # <<--
-        _out:-->> # get_branch_compare_status_repository remote' for 'feature-add' # <<--
+        _out:### synchronize_local_with 'remote' for 'feature-add'
+        _out:### get_branch_compare_status_repository remote' for 'feature-add'
         _out:# cmp_status: null
         _out:∆ Branch 'feature-add' does not exist on local nor on remote.
         git checkout master
@@ -144,8 +144,8 @@ def test_synchronize_branch_name(conf):
         git checkout -b feature-add
         {cmd}
         _out:# True_False_False
-        _out:-->> # synchronize_local_with 'remote' for 'feature-add' # <<--
-        _out:-->> # get_branch_compare_status_repository remote' for 'feature-add' # <<--
+        _out:### synchronize_local_with 'remote' for 'feature-add'
+        _out:### get_branch_compare_status_repository remote' for 'feature-add'
         _out:# cmp_status: push
         _out:choice or 'q' to quit:
         _type:2
@@ -163,15 +163,15 @@ def test_synchronize_branch_name(conf):
         git checkout master
         git checkout -b feature-add
         git push origin feature-add
-        cp -r {direpa_test_src} {direpa_test_src}_tmp
-        cd {direpa_test_src}_tmp
+        cp -r {direpa_task_src} {direpa_task_src}_tmp
+        cd {direpa_task_src}_tmp
         git push origin --delete feature-add
-        cd {direpa_test_src}
-        rm -rf {direpa_test_src}_tmp        
+        cd {direpa_task_src}
+        rm -rf {direpa_task_src}_tmp        
         {cmd}
         _out:# True_True_False
-        _out:-->> # synchronize_local_with 'local_remote' for 'feature-add' # <<--
-        _out:-->> # get_branch_compare_status_repository local_remote' for 'feature-add' # <<--
+        _out:### synchronize_local_with 'local_remote' for 'feature-add'
+        _out:### get_branch_compare_status_repository local_remote' for 'feature-add'
         _out:# cmp_status: up_to_date
         git checkout master
         git branch -rd origin/feature-add
@@ -181,18 +181,18 @@ def test_synchronize_branch_name(conf):
         git checkout master
         git checkout -b feature-add
         git push origin feature-add
-        cp -r {direpa_test_src} {direpa_test_src}_tmp
-        cd {direpa_test_src}_tmp
+        cp -r {direpa_task_src} {direpa_task_src}_tmp
+        cd {direpa_task_src}_tmp
         git push origin --delete feature-add
-        cd {direpa_test_src}
-        rm -rf {direpa_test_src}_tmp        
+        cd {direpa_task_src}
+        rm -rf {direpa_task_src}_tmp        
         git checkout master
         git branch -D feature-add
         {cmd}
         _out:# False_True_False
         _out:∆ Remote is not reachable thus it is not possible to compare local branch with remote branch.
-        _out:-->> # synchronize_local_with 'local_remote' for 'feature-add' # <<--
-        _out:-->> # get_branch_compare_status_repository local_remote' for 'feature-add' # <<--
+        _out:### synchronize_local_with 'local_remote' for 'feature-add'
+        _out:### get_branch_compare_status_repository local_remote' for 'feature-add'
         _out:# cmp_status: pull_not_local
         _out:∆ Branch 'feature-add' is on local_remote but not on local. No need to checkout.
         git checkout master

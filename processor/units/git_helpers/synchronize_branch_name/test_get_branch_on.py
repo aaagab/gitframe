@@ -5,11 +5,11 @@ if __name__ != "__main__":
 
 def test_get_branch_on(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
     })
 
     set_task_steps(conf, """
-        cd {direpa_test_src}
+        cd {direpa_task_src}
 
         {step} online_and_local_and_local_remote_and_remote
         git checkout -b test
@@ -18,10 +18,10 @@ def test_get_branch_on(conf):
         _out:# branch_on True_True_True
 
         {step} online_and_local_and_local_remote_and_not_remote
-        cp -r {direpa_test_src} {direpa_test_src}_tmp
-        cd {direpa_test_src}_tmp
+        cp -r {direpa_task_src} {direpa_task_src}_tmp
+        cd {direpa_task_src}_tmp
         git push origin --delete test
-        cd {direpa_test_src}
+        cd {direpa_task_src}
         {cmd}
         _out:# branch_on True_True_False
 
@@ -44,9 +44,9 @@ def test_get_branch_on(conf):
         _out:# branch_on False_True_True
 
         {step} online_and_not_local_and_local_remote_and_not_remote
-        cd {direpa_test_src}_tmp
+        cd {direpa_task_src}_tmp
         git push origin --delete test
-        cd {direpa_test_src}
+        cd {direpa_task_src}
         {cmd}
         _out:# branch_on False_True_False
 
@@ -67,9 +67,9 @@ def test_get_branch_on(conf):
         {step} offline_and_local_and_local_remote_and_not_remote
         git checkout -b test
         git push origin test
-        cd {direpa_test_src}_tmp
+        cd {direpa_task_src}_tmp
         git push origin --delete test
-        cd {direpa_test_src}
+        cd {direpa_task_src}
         {cmd}
         _out:# branch_on True_True_False
 
@@ -90,7 +90,7 @@ def test_get_branch_on(conf):
         {cmd}
         _out:# branch_on False_False_False
 
-        rm -rf {direpa_test_src}_tmp
+        rm -rf {direpa_task_src}_tmp
 
     """)
     start_processor(conf)

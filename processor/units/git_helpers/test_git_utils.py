@@ -5,14 +5,14 @@ if __name__ != "__main__":
 
 def test_git_utils(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
         "commit": "git commit --allow-empty -m",
         "clean_compare": "git checkout develop; git reset --hard start_develop; git branch -D test",
-        "direpa_testgf": conf["direpa_testgf"]
+        "direpa_task_conf": conf["direpa_task_conf"]
     })
 
     set_task_steps(conf,"""
-        cd {direpa_test_src}
+        cd {direpa_task_src}
 
         {step} get_latest_release_for_each_major
         {cmd}
@@ -66,7 +66,7 @@ def test_git_utils(conf):
         _out:False
 
         {step} has_git_directory directory
-        cd {direpa_testgf}
+        cd {direpa_task_conf}
         git init
         {cmd}
         _out:True
@@ -97,7 +97,7 @@ if __name__ == "__main__":
         conf=Json_config().data
         
         if sys.argv[2] == "no_directory":
-            print(git.has_git_directory(conf["processor"]["task"]["direpa_root"]))
+            print(git.has_git_directory(conf["processor"]["task"]["direpa"]))
         elif sys.argv[2] == "directory":
             print(git.has_git_directory())
     

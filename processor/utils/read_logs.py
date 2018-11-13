@@ -22,14 +22,10 @@ def read_logs(conf, log_files):
                 if "\ec\e[3J" in line:
                     continue
 
-                # remove line when launching cmds script 
-                # if conf["direpa_cmds"] in line:
-                #     continue
-                
                 # change absolute ansii escape position to relative
                 line=re.sub(r"\x1b\[\d+;(\d+)H","\x1b["+r"\1C",line)
                 # remove hidden scroll delete
-                line=re.sub(r"\x1bc\x1b\[3J\x1b","",line)
+                line=re.sub(r"\x1bc\x1b\[3J","",line)
                 logs+=line
 
         with open(file_full_path[-1], "w") as f:
@@ -37,7 +33,6 @@ def read_logs(conf, log_files):
 
     with open(conf["filenpa_read_log_bashrc"], "w") as f:
         f.write("source ~/.bashrc\n")
-        f.write("stty -echo\n")
         for file in sorted(file_full_path):
             f.write("echo\n")
             f.write("echo \"===============================================================\"\n")
@@ -45,32 +40,23 @@ def read_logs(conf, log_files):
             f.write("echo \"===============================================================\"\n")
             f.write("cat \""+file+"\"\n")
         f.write("echo\n")
-        f.write("read -p \"Press Enter to Exit\"\n")
-        f.write("stty echo\n")
-        f.write("exit\n")
 
-    command=conf["filenpa_xterm"]+" \""+conf["read_log_window_title"]+"\" \""+conf["filenpa_read_log_bashrc"]+"\" lock_title &"
-
-    import processor.utils.processor_helpers as ph
-
-    ph.window_set_above(conf["launching_window_hex_id"])
-
-    if subprocess.call(shlex.split(command)) != 0:
-        msg.user_error(command)
-        sys.exit(1)
-
-    timer=ph.Time_out(3)
-    while True:
-        if conf["read_log_window_title"] in shell.cmd_get_value("wmctrl -l"):
-            time.sleep(.5)
-            break
-        
-        if timer.has_ended():
-            print("exit")
-            break
+    os.chmod(conf["filenpa_read_log_bashrc"], 0o755)    
     
-        ph.window_focus(conf["launching_window_hex_id"])
-
-    ph.window_unset_above(conf["launching_window_hex_id"])
-    ph.window_focus(conf["current_window_hex_id"])
-
+    cmd=re.sub(r"\n\s*", "\n","""
+        tmux select-pane -t 1
+        tmux join-pane -hs {task_name}:1.0
+        tmux select-pane -t 0
+        tmux send-keys -t 2 'echo -en "\ec\e[3J"'
+        tmux send-keys -t 2 KPEnter
+        tmux send-keys -t 2 "{cmd}"
+        tmux send-keys -t 2 KPEnter
+        tmux break-pane -d -s 1
+        tmux select-layout even-horizontal
+    """.format(
+        task_name=conf["task_name"],
+        cmd=conf["filenpa_read_log_bashrc"]
+    )
+    )[1:-1]
+    os.system(cmd)
+    

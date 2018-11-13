@@ -25,55 +25,140 @@ from pprint import pprint
 import tempfile
 import getpass
 
-def init_config(direpa_script):
+def get_screen_session_conf(conf):
+    return dict(
+        direpa_task=os.path.join(conf["processor"]["task"]["direpa"], conf["processor"]["task"]["diren"]),
+        filenpa_conf=os.path.join( conf["processor"]["task"]["direpa"],conf["processor"]["filen_conf"] ),
+        filenpa_screen_log=os.path.join(conf["processor"]["task"]["direpa"], conf["processor"]["filen_screen_log"]),
+        filenpa_screenrc=os.path.join(conf["processor"]["task"]["direpa"], conf["processor"]["filen_screenrc"]),
+        task_name=conf["processor"]["task"]["name"],
+    )
 
-    cf=Json_config().data
+def terminal_setup(launcher_conf, args):
+    direpa_script=os.path.dirname(os.path.realpath(__file__))
+    filepa_processor=os.path.join(
+        os.path.dirname(direpa_script),
+        "processor.py"
+    )
+    task_name=launcher_conf["processor"]["task"]["name"]
 
-    install_dependencies(cf["processor"]["deps"])
+    screen_conf=get_screen_session_conf(launcher_conf)
+    os.makedirs(screen_conf["direpa_task"], exist_ok=True)
 
-    app_name=cf["app_name"]
+    open(screen_conf["filenpa_conf"], 'w').close()
+
+    text=re.sub(r'\n\s*','\n',"""
+        # get output in logfile in realtime
+        logfile flush 0
+        # use custom logfile
+        logfile {filenpa_screen_log}
+        # enable scrolling mode in screen session
+        termcapinfo xterm* ti@:te@
+    """.format(filenpa_screen_log=screen_conf["filenpa_screen_log"]))[1:-1]
+
+    with open(screen_conf["filenpa_screenrc"], "w") as f:
+        f.write(text)
+
+    if shell.cmd_devnull("tmux info") == 0:
+        tmux_sessions=shell.cmd_get_value("tmux ls")
+        for tmux_session in tmux_sessions.splitlines():
+            if task_name in tmux_session:
+                shell.cmd_prompt("tmux kill-session -t '"+task_name+"'")
+                
+    cmd=re.sub(r"\n\s*", "\n","""
+        tmux new-session -s '{task_name}' -d \\; \\
+        set -g mouse on \\; \\
+        send-keys "echo -en '\e]2;{task_name}\e[0m'" \\; \\
+        send-keys KPEnter \\; \\
+        send-keys 'echo -en "\ec\e[3J"' \\; \\
+        send-keys KPEnter \\; \\
+        split-window -h \\; \\
+        send-keys "echo -en '\e]2;processor\e[0m'" \\; \\
+        send-keys KPEnter \\; \\
+        send-keys 'echo -en "\ec\e[3J"' \\; \\
+        send-keys KPEnter \\; \\
+        split-window -h \\; \\
+        send-keys "echo -en '\e]2;logs\e[0m'" \\; \\
+        send-keys KPEnter \\; \\
+        send-keys 'echo -en "\ec\e[3J"' \\; \\
+        send-keys KPEnter \\; \\
+        select-layout even-horizontal \\; \\
+        select-pane -t 0 \\; \\
+        send-keys "{cmd_processor}" \\; \\
+        send-keys KPEnter \\; \\
+        attach-session -d
+        """.format(
+        task_name=task_name,
+        cmd_processor=filepa_processor+" '"+"' '".join(args)+"'",
+        )
+    )[1:-1]
+
+    os.system(cmd)
+
+def init_config(direpa_processor_script):
+    launcher_conf=Json_config().data
+    ft.clear_screen()
+
+    install_dependencies(launcher_conf["processor"]["deps"])
 
     conf=dict(
-        filen_app=app_name+".py",
 
-        clean_after=cf["processor"]["clean_after"],
+        clean_after=launcher_conf["processor"]["clean_after"],
 
-        diren_src=cf["diren_src"],
-        diren_test=cf["processor"]["task"]["diren"],
+        direpa_logs=os.path.join(direpa_processor_script, launcher_conf["processor"]["diren_logs"]),
+        direpa_launcher=os.path.dirname(direpa_processor_script),
 
-        direpa_app=os.path.dirname(direpa_script),
-        direpa_cmds=os.path.join(cf["processor"]["task"]["direpa_root"], cf["processor"]["filen_cmds"]),
-        direpa_testgf=cf["processor"]["task"]["direpa_root"],
-        direpa_test=os.path.join(cf["processor"]["task"]["direpa_root"], cf["processor"]["task"]["diren"]),
-        direpa_test_src=os.path.join(cf["processor"]["task"]["direpa_root"], cf["processor"]["task"]["diren"],cf["diren_src"]),
-        direpa_repository=os.path.join(cf["processor"]["task"]["direpa_root"], cf["processor"]["task"]["remote"]["diren_root"]),
-        direpa_logs=os.path.join(direpa_script, cf["processor"]["diren_logs"]),
-        direpa_remote_src=os.path.join(cf["processor"]["task"]["direpa_root"], cf["processor"]["task"]["remote"]["diren_root"], cf["processor"]["task"]["diren"], cf["diren_src"]+".git"),
-        direpa_scripts=os.path.join(cf["processor"]["task"]["direpa_root"], cf["processor"]["task"]["diren"], cf["diren_scripts"]),
+        filen_launcher=launcher_conf["processor"]["filen_launcher"],
+        
+        filenpa_launcher=os.path.join(os.path.dirname(direpa_processor_script), launcher_conf["processor"]["filen_launcher"]),
+        
+        num_unit_failures=0,
 
-        filenpa_blank_page=os.path.join(direpa_script, "utils", cf["processor"]["filen_blank_page"]),
-        filenpa_conf=os.path.join( cf["processor"]["task"]["direpa_root"],cf["processor"]["filen_conf"] ),
-        filenpa_read_log_bashrc=os.path.join(cf["processor"]["task"]["direpa_root"], cf["processor"]["filen_read_log_bashrc"]),
-        filenpa_screen_log=os.path.join(cf["processor"]["task"]["direpa_root"], cf["processor"]["filen_screen_log"]),
-        filenpa_screenrc=os.path.join(cf["processor"]["task"]["direpa_root"], cf["processor"]["filen_screenrc"]),
-        filenpa_xterm=os.path.join(direpa_script, "utils", cf["processor"]["filen_xterm"]),
-        filenpa_tmux=os.path.join(direpa_script, "utils", cf["processor"]["filen_tmux"]),
-        filenpa_deploy_release=os.path.join(cf["processor"]["task"]["direpa_root"], cf["processor"]["task"]["diren"], cf["diren_scripts"], cf["filer_deploy_release"]+".sh"),
-        filenpa_bump_release_version=os.path.join(cf["processor"]["task"]["direpa_root"], cf["processor"]["task"]["diren"], cf["diren_scripts"], cf["filer_bump_release_version"]+".sh"),
+        read_log_window_title=launcher_conf["processor"]["read_log_window_title"],
 
-        main_session_name="#"+app_name+"-test#",
-
-        num_test_failures=0,
-
-        read_log_window_title=cf["processor"]["read_log_window_title"],
-        remote=cf["processor"]["task"]["remote"],
-
-        txt_screen_cmd_error=cf["processor"]["txt_screen_cmd_error"],
-        txt_screen_log_eof=cf["processor"]["txt_screen_log_eof"],
+        txt_screen_cmd_error=launcher_conf["processor"]["txt_screen_cmd_error"],
+        txt_screen_log_eof=launcher_conf["processor"]["txt_screen_log_eof"],
 
         user_current=getpass.getuser(),
 
-        waiting_time_between_cmds=cf["processor"]["waiting_time_between_cmds"],
+        waiting_time_between_cmds=launcher_conf["processor"]["waiting_time_between_cmds"],
+    )
+
+    set_task_conf(launcher_conf, conf)
+    open(conf["filenpa_task_status"], 'w').close()
+
+    cmd=re.sub(r"\n\s*", "\n","""
+        tmux send-keys -t 1 'echo -en "\ec\e[3J"'
+        tmux send-keys -t 1 KPEnter
+        tmux send-keys -t 1 ^c
+    """)[1:-1]
+    os.system(cmd)
+
+    return conf
+
+def set_task_conf(launcher_conf, conf):
+    conf.update(
+        diren_src=launcher_conf["processor"]["task"]["diren_src"],
+        diren_task=launcher_conf["processor"]["task"]["diren"],
+
+        direpa_task_conf=launcher_conf["processor"]["task"]["direpa"],
+        direpa_task_src=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["task"]["diren"],launcher_conf["processor"]["task"]["diren_src"]),
+        direpa_repository=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["task"]["remote"]["diren_root"]),
+        direpa_remote_src=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["task"]["remote"]["diren_root"], launcher_conf["processor"]["task"]["diren"], launcher_conf["processor"]["task"]["diren_src"]+".git"),
+        direpa_scripts=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["task"]["diren"], launcher_conf["diren_scripts"]),
+
+        filenpa_bump_release_version=os.path.join(launcher_conf["processor"]["task"]["direpa"],launcher_conf["processor"]["task"]["diren"], launcher_conf["diren_scripts"], launcher_conf["filer_bump_release_version"]+".sh"),
+        filenpa_cmds=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["filen_cmds"]),
+        filenpa_deploy_release=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["task"]["diren"], launcher_conf["diren_scripts"], launcher_conf["filer_deploy_release"]+".sh"),
+        filenpa_read_log_bashrc=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["filen_read_log_bashrc"]),
+
+        filenpa_task_status=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["filen_task_status"]),
+
+        remote=launcher_conf["processor"]["task"]["remote"],
+    )
+
+    conf.update(
+        get_screen_session_conf(launcher_conf)
     )
 
     ip=conf["remote"]["ip"]
@@ -96,125 +181,15 @@ def init_config(direpa_script):
         direpa_par_src=direpa_par_src
     )
 
-    # setting test conf file
-    os.makedirs(conf["direpa_testgf"], exist_ok=True)
-    open(conf["filenpa_conf"], 'w').close()
-
-    # get active window id
-    launching_window_hex_id=ph.get_active_window_hex_id()
-
-    # config file for screen
-    text=re.sub(r'\n\s*','\n',"""
-        # get output in logfile in realtime
-        logfile flush 0
-        # use custom logfile
-        logfile {filenpa_screen_log}
-        # enable scrolling mode in screen session
-        termcapinfo xterm* ti@:te@
-    """.format(filenpa_screen_log=conf["filenpa_screen_log"]))[1:-1]
-
-    with open(conf["filenpa_screenrc"], "w") as f:
-        f.write(text)
-
-    # kill previous existing sessions
-    ph.kill_screen_session(conf["main_session_name"])
-
-    # create a new session
-    # command="screen -c '{}' -S '{}' -d -m -L".format(conf["filenpa_screenrc"], conf["main_session_name"])
-    command="screen -c '{}' -S '{}' -d -m".format(conf["filenpa_screenrc"], conf["main_session_name"])
-
-    if shell.cmd(command) != 0:
-        msg.app_error(command+" failed.")
-        sys.exit(1)
-
-    # kill previous terminal window
-    DEVNULL = open(os.devnull, 'w')
-    subprocess.call(shlex.split('wmctrl -c '+conf["main_session_name"]), stdout=DEVNULL, stderr=DEVNULL)
-    
-     # config file for bash with xterm
-    fd, tmp_file = tempfile.mkstemp()
-
-    text=re.sub(r'\n\s*','\n',"""
-        source ~/.bashrc
-        > {filenpa_screen_log}
-        screen -r -d '{session_name}'
-        # trying to correct a bug hard to reproduce with screen can't attach due to dead screen.
-        # while true;do 
-        #     if screen -r -d '{session_name}'; then 
-        #         break;
-        #     fi
-        #     screen -wipe
-        #     sleep .2
-        # done
-        
-    """.format(
-        session_name=conf["main_session_name"],
-        filenpa_screen_log=conf["filenpa_screen_log"]
-    ))[1:-1]
-
-    with open(tmp_file, "w") as f:
-        f.write(text)
-
-    main_window_hex_id=ph.get_active_window_hex_id()
-    ph.window_set_above(main_window_hex_id)
-
-    os.chdir(conf["direpa_testgf"])
-
-    # open testing window
-    # launch xterm
-
-    print("here")
-    # command=conf["filenpa_tmux"]+" \""+conf["main_session_name"]+"\" \""+tmp_file+"\" &"
-    # if subprocess.call(shlex.split(command)) != 0:
-        # msg.user_error(command)
-        # sys.exit(1)
-        
-    sys.exit()
-
-    command=conf["filenpa_xterm"]+" \""+conf["main_session_name"]+"\" \""+tmp_file+"\" &"
-    if subprocess.call(shlex.split(command)) != 0:
-        msg.user_error(command)
-        sys.exit(1)
-   
-    #wait until the screen session has been attached in xterm
-    timer=ph.Time_out(10)
-    screen_session_started=False
-    while not screen_session_started:
-        for session_item in shell.cmd_get_value("screen -ls").splitlines():
-            if conf["main_session_name"] in session_item:
-                if "Attached" in session_item:
-                    screen_session_started=True
-                    # clear scrolling
-                    ph.send_cmd_to_screen(conf["main_session_name"], "echo -en \"\ec\e[3J\"")
-                    
-                    # focus_back on previous windows
-                    # ph.window_focus(launching_window_hex_id)
-                    ph.window_unset_above(main_window_hex_id)
-                    ph.window_focus(main_window_hex_id)
-                    time.sleep(.5)
-                    ph.send_cmd_to_screen(conf["main_session_name"], "rm "+tmp_file)
-                    break
-                
-        if timer.has_ended():
-            ph.window_unset_above(main_window_hex_id)
-            msg.app_error("session: '"+conf["main_session_name"]+"' has not been found in 'screen -ls' or session couldn't be attached.")
-            sys.exit(1)
-
-    return conf
-
-def set_conf_json(conf):
+def set_unit_conf(conf):
     frame,filename,line_number,function_name,lines,index=inspect.stack()[2]
-    test_direpa_script=os.path.dirname(filename)
 
-    test_name=conf["tmp"]["test_name"]
+    unit_name=conf["tmp"]["unit_name"]
 
     conf.update({
-        test_name:{
-            'session_name':'#'+test_name+'#',
-            'test_path': conf["direpa_testgf"],
+        unit_name:{
             'filenpa_screen_log': conf["filenpa_screen_log"],
             'cmds': conf["tmp"]["exec_cmds"],
-            'active_window_id': hex(int(shell.cmd_get_value("xdotool getactivewindow")))
         }
     })
 
@@ -225,22 +200,31 @@ def set_conf_json(conf):
     Json_config(conf["filenpa_conf"]).set_file_with_data(conf_for_json)
     
 def start_processor(conf):
-    test_name=conf["tmp"]["test_name"].strip().replace(" ","_")
-    conf['tmp']['test_name']=test_name
+
+    unit_name=conf["tmp"]["unit_name"].strip().replace(" ","_")
+    conf['tmp']['unit_name']=unit_name
+    if not conf.get('unit_num'):
+        conf['unit_num']=1
+    else:
+        conf['unit_num']+=1
+
+    print(conf['unit_num'])
+    ph.log_to_task_status_file(conf["filenpa_task_status"],"unit", conf['unit_num'], unit_name)
+
 
     try:
         caller_filename=inspect.stack()[1][1]
 
-        set_conf_json(conf)
-        execute_task_cmds(conf, test_name)
+        set_unit_conf(conf)
+        execute_task_cmds(conf, unit_name)
 
         if not os.path.exists(conf["filenpa_screen_log"]):
             msg.app_error(conf["filenpa_screen_log"]+" not found.")
             sys.exit(1)
 
-        msg.title("TEST: "+conf["filen_app"]+" "+test_name)
+        msg.title("UNIT: "+conf["filen_launcher"]+" "+unit_name)
         
-        msg.subtitle("Starting Test")
+        msg.subtitle("Starting Unit")
         tail_obj=dict(
             interrupted=False,
             file_start_position=0,
@@ -277,7 +261,13 @@ def start_processor(conf):
                     sys.exit(1)
                 continue
             elif key == "type":
-                ph.send_cmd_to_screen(conf["main_session_name"], obj_value.replace("type:", "").strip())
+                cmd=re.sub(r"\n\s*", "\n","""
+                    tmux send-keys -t 1 '{user_input}'
+                    tmux send-keys -t 1 KPEnter
+                """.format(
+                    user_input=obj_value.replace("type:", "").strip()
+                ))[1:-1]
+                os.system(cmd)
                 continue
             elif key == "step":
                 if not obj_value:
@@ -285,6 +275,7 @@ def start_processor(conf):
 
                 step_num+=1
                 print("\n  "+ft.lMagenta("### Step "+str(step_num)+": ")+obj_value)
+                ph.log_to_task_status_file(conf["filenpa_task_status"],"step", step_num, obj_value)
                 continue
             elif key == "out":
                 tail_obj["searched_value"]=obj_value
@@ -306,7 +297,7 @@ def start_processor(conf):
 
         if tail_obj["interrupted"]:
             ph.log(conf)
-            ph.kill_screen_session(conf[test_name]["session_name"])
+            ph.kill_screen_session(unit_name)
             sys.exit(1)
         else:
             # continue processing the script until the end
@@ -315,52 +306,50 @@ def start_processor(conf):
             # if error
             if tmp_tail_obj["interrupted"]:
                 ph.log(conf)
-                ph.kill_screen_session(conf[test_name]["session_name"])
+                ph.kill_screen_session(unit_name)
                 sys.exit(1)
             else:
                 print()
-                msg.success("All steps succeeded for test: "+ test_name)
+                msg.success("All steps succeeded for unit: "+ unit_name)
 
     except KeyboardInterrupt:
-        conf["num_test_failures"]+=1
-        # when a test is stopped by ctrl+c on the test windows
-        # kill any test window already open
-        # subprocess.call(shlex.split('wmctrl -c '+conf[test_name]["main_session_name"]))
-        msg.user_error("Test "+test_name+" canceled.")
+        conf["num_unit_failures"]+=1
+        # when a unit is stopped by ctrl+c on the unit windows
+        msg.user_error("Unit "+unit_name+" canceled.")
         sys.exit(1)
     except SystemExit:
-        conf["num_test_failures"]+=1
-        # msg.title(conf[test_name]["session_name"])
-        msg.user_error("Predictable Error for Test "+test_name)
+        conf["num_unit_failures"]+=1
+        # msg.title(unit_name)
+        msg.user_error("Predictable Error for Unit "+unit_name)
 
         time.sleep(1)
-        ph.kill_screen_session(conf[test_name]["session_name"])
+        ph.kill_screen_session(unit_name)
 
     except Exception as e:
-        conf["num_test_failures"]+=1
-        msg.app_error("Not Predictable Error for Test "+test_name)
+        conf["num_unit_failures"]+=1
+        msg.app_error("Not Predictable Error for Unit "+unit_name)
         time.sleep(1)
-        ph.kill_screen_session(conf[test_name]["session_name"])
+        ph.kill_screen_session(unit_name)
         
         sys.exit(1)
     finally:
-        ph.kill_screen_session(conf[test_name]["session_name"])
+        ph.kill_screen_session(unit_name)
         
         if conf["clean_after"]:
             clean_after_cmd(conf)
             conf["clean_after"]=False
 
-        # delete individual test data in conf
-        del conf[test_name]
+        # delete individual unit data in conf
+        del conf[unit_name]
         del conf["tmp"]
         conf_for_json=deepcopy(conf)
         conf_for_json.pop('sudo_pass', None)
 
         Json_config(conf["filenpa_conf"]).set_file_with_data(conf_for_json)
-        ph.send_cmd_to_screen(
-            conf["main_session_name"], 
-            r'echo -ne "\e]0;'+conf["main_session_name"]+r'\\007"'
-        )
+        # ph.send_cmd_to_screen(
+        #     conf["task_name"], 
+        #     r'echo -ne "\e]2;'+conf["task_name"]+r'\e[0m"'
+        # )
 
 def tail_screen_file(conf, tail_obj):
     try:
@@ -402,11 +391,11 @@ def tail_screen_file(conf, tail_obj):
                 else:
                     if line == conf["txt_screen_cmd_error"]:
                         check_for_KeyboardInterrupt_in_screen_file(f, previous_p)
-                        msg.user_error("cmd_error Test "+conf['tmp']['test_name']+" failed on '"+tail_obj["searched_value"]+"'")
+                        msg.user_error("cmd_error Unit "+conf['tmp']['unit_name']+" failed on '"+tail_obj["searched_value"]+"'")
                         tail_return_obj["interrupted"]=True
                         return tail_return_obj
                     elif line == conf["txt_screen_log_eof"]:
-                        msg.user_error("EOF Test "+conf['tmp']['test_name']+" failed on '"+tail_obj["searched_value"]+"'")
+                        msg.user_error("EOF Unit "+conf['tmp']['unit_name']+" failed on '"+tail_obj["searched_value"]+"'")
                         tail_return_obj["interrupted"]=True
                         return tail_return_obj
 
@@ -424,7 +413,7 @@ def tail_screen_file(conf, tail_obj):
                 return tail_return_obj
 
     except KeyboardInterrupt:
-        conf["num_test_failures"]+=1
+        conf["num_unit_failures"]+=1
         print()
         msg.user_error("Program Exited Ctrl+C")
         sys.exit(1)
@@ -476,7 +465,7 @@ def check_for_KeyboardInterrupt_in_screen_file(file, last_position):
 
     if grabbed_input:
         if clean_ansii_code(read_text).strip() == text:
-            msg.user_error("keyboard interrupt in test window")
+            msg.user_error("keyboard interrupt in unit window")
             sys.exit(1)
 
 def set_task_steps(conf, cmds):
@@ -491,7 +480,7 @@ def set_task_steps(conf, cmds):
                 break
 
     if not "{step}" in cmds:
-        cmds="\n{step} "+conf["tmp"]["test_name"]+cmds
+        cmds="\n{step} "+conf["tmp"]["unit_name"]+cmds
         count_line-=1
 
     # add cmds to json file

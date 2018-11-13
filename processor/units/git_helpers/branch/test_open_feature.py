@@ -5,11 +5,11 @@ if __name__ != "__main__":
 
 def test_open_feature(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
     })
     
     set_task_steps(conf, """
-        cd {direpa_test_src}
+        cd {direpa_task_src}
 
         {step} open_feature branch_exists_on_local
         git checkout develop

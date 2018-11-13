@@ -5,11 +5,11 @@ if __name__ != "__main__":
 
 def test_synchronize_branch_type(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
     })
     
     set_task_steps(conf, """
-        cd {direpa_test_src}
+        cd {direpa_task_src}
 
         {step} synchronize_branch_type release_no_branches
         {cmd}
@@ -41,10 +41,10 @@ def test_synchronize_branch_type(conf):
         git checkout master
         git branch -D feature-super_function
         git branch -D support-1.0.X
-        cp -r {direpa_test_src} {direpa_test_src}_tmp
-        cd {direpa_test_src}_tmp
+        cp -r {direpa_task_src} {direpa_task_src}_tmp
+        cd {direpa_task_src}_tmp
         git push origin --delete support-1.0.X
-        cd {direpa_test_src}
+        cd {direpa_task_src}
         {cmd}
         _out:develop
         _out:feature-super_function
@@ -53,7 +53,7 @@ def test_synchronize_branch_type(conf):
         _out:release-2.0.0
         _out:support-1.0.X
         git checkout master
-        rm -rf {direpa_test_src}_tmp
+        rm -rf {direpa_task_src}_tmp
         git branch -D release-2.0.0
         git push origin --delete release-2.0.0
         git branch -D hotfix-1.0.X-a_quick_repair

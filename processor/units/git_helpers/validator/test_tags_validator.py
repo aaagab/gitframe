@@ -7,13 +7,13 @@ if __name__ != "__main__":
 
 def test_tags_validator(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
         "commit": "git commit --allow-empty -m \"one commit\"",
         "clean_tags": 'git tag | grep -Ev "start_develop|start_master" | xargs git tag -d'
     })
 
     set_task_steps(conf,"""
-        cd {direpa_test_src}
+        cd {direpa_task_src}
 
         {step} tags_validator local_tag
         {cmd}

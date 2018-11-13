@@ -5,11 +5,11 @@ if __name__ != "__main__":
 
 def test_support_validator(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
     })
 
     set_task_steps(conf,"""
-        cd {direpa_test_src}
+        cd {direpa_task_src}
 
         {step} find_related_tag_for_support_branch_name notfound
         {info} support version not found in tags

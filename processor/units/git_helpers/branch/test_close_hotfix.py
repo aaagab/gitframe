@@ -5,14 +5,14 @@ if __name__ != "__main__":
 
 def test_close_hotfix(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
         "clean_tag": 'git tag | grep -Ev "start_develop|start_master" | xargs git tag -d',
         "commit": "git commit --allow-empty -m 'empty_commit'",
         "hotfix_branch": "hotfix-1.0.X-my-repair"
     })
 
     set_task_steps(conf,"""
-        cd {direpa_test_src}
+        cd {direpa_task_src}
 
         {step} close_hotfix hotfix_on_latest_release has_release_branch
         git checkout master
@@ -25,9 +25,9 @@ def test_close_hotfix(conf):
         git tag start-hotfix-1.0.X-my_repair
         {cmd}
         _out:# hotfix-1.0.X-my_repair is on latest release
-        _out:-->> # close hotfix-1.0.X-my_repair on master # <<--
-        _out:-->> # close hotfix-1.0.X-my_repair on release-1.0.0 # <<--
-        _out:-->> # close hotfix-1.0.X-my_repair on develop # <<--
+        _out:### close hotfix-1.0.X-my_repair on master
+        _out:### close hotfix-1.0.X-my_repair on release-1.0.0
+        _out:### close hotfix-1.0.X-my_repair on develop
         _out:√ hotfix-1.0.X-my_repair has been closed.
         _out:∆  Create a script file deploy_release.sh or deploy_release.py
         _fail:
@@ -47,7 +47,7 @@ def test_close_hotfix(conf):
         git checkout -b hotfix-1.0.X-my_repair
         git tag start-hotfix-1.0.X-my_repair
         {cmd}
-        _out:-->> # close hotfix-1.0.X-my_repair on support-1.0.X # <<--
+        _out:### close hotfix-1.0.X-my_repair on support-1.0.X
         _out:√ hotfix-1.0.X-my_repair has been closed.
         _out:∆  Create a script file deploy_release.sh or deploy_release.py
         _fail:

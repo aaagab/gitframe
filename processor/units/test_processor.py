@@ -5,9 +5,9 @@ if __name__ != "__main__":
 
 def test_processor(conf):
     set_task_vars(conf, {
-        "direpa_test_src": conf["direpa_test_src"],
+        "direpa_task_src": conf["direpa_task_src"],
         'this_pass':"mock_pass",
-        'new_cmd':conf["direpa_app"]+"/"+conf["filen_app"]+" "+conf["tmp"]["opt"]+" "+conf["diren_test"],
+        'new_cmd':conf["filenpa_launcher"]+" "+conf["tmp"]["opt"]+" "+conf["diren_task"],
         'heredoc_var': "This is my var",
         'hello':"HeredocHelloVar",
         "block_user_input": """
