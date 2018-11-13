@@ -39,7 +39,6 @@ def clone_project_to_remote(repo):
     direpa_app_git=os.path.join(path_root_dir, diren_app+".git")
     direpa_app=os.path.join(path_root_dir, diren_app)
 
-
     if not os.path.exists(direpa_app_git):
         if repo.is_reachable:
             if not repo.has_directory:

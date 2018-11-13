@@ -7,6 +7,7 @@ from utils.json_config import Json_config
 import git_helpers.git_utils as git
 import git_helpers.regex_obj as ro
 from git_helpers.get_all_version_tags import get_all_version_tags
+from git_helpers.validator.version_file import check_bump_release_version_script
 
 release_err_msg="""
  Create a script file deploy_release.sh or deploy_release.py
@@ -28,6 +29,8 @@ release_err_msg="""
 """
 
 def publish_release(release_version, all_version_tags=""):
+    check_bump_release_version_script()
+
     if not all_version_tags:
         all_version_tags=get_all_version_tags()
         
