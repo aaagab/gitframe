@@ -67,15 +67,15 @@ def validator(enabled):
 
 		# support and hotfix validator can only be executed after all the other branches have been synchronized
 		all_version_tags=get_all_version_tags()
-		print(git.get_active_branche_name())
+		print(git.get_active_branch_name())
 		check_one_branch_support_max_per_major(regex_branches, all_version_tags)
-		print(git.get_active_branche_name())
+		print(git.get_active_branch_name())
 		version_file_validator(regex_branches, all_version_tags)
-		print(git.get_active_branche_name())
+		print(git.get_active_branch_name())
 		hotfix_history_json_validator(regex_branches)
-		print(git.get_active_branche_name())
+		print(git.get_active_branch_name())
 		validate_release_branch_name(regex_branches, all_version_tags)
-		print(git.get_active_branche_name())
+		print(git.get_active_branch_name())
 
 		msg.dbg("success", sys._getframe().f_code.co_name)
 		return repo, regex_branches, all_version_tags
