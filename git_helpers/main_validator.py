@@ -43,33 +43,33 @@ def validator(enabled):
 	else:
 		msg.title("Git Frame Validator")
 
-		check_bump_release_version_script()
+		# check_bump_release_version_script()
 
 		prompt_for_commit()
 
 		repo=Remote_repository()
 		regex_branches=get_all_branch_regexes(repo)
 
-		check_master_develop_exists(regex_branches)
-		force_unique_release_branch_name(regex_branches)
-		synchronize_branch_name(repo, regex_branches, "master")
-		synchronize_branch_name(repo, regex_branches, "develop")
+		# check_master_develop_exists(regex_branches)
+		# force_unique_release_branch_name(regex_branches)
+		# synchronize_branch_name(repo, regex_branches, "master")
+		# synchronize_branch_name(repo, regex_branches, "develop")
 
-		synchronize_branch_type(repo, regex_branches, "feature")
-		synchronize_branch_type(repo, regex_branches, "support")
-		synchronize_branch_type(repo, regex_branches, "release")
-		synchronize_branch_type(repo, regex_branches, "hotfix")
+		# synchronize_branch_type(repo, regex_branches, "feature")
+		# synchronize_branch_type(repo, regex_branches, "support")
+		# synchronize_branch_type(repo, regex_branches, "release")
+		# synchronize_branch_type(repo, regex_branches, "hotfix")
 		
-		tags_validator(repo)
+		# tags_validator(repo)
 
-		# update branches after synchronization
-		regex_branches=get_all_branch_regexes(repo)
+		# # update branches after synchronization
+		# regex_branches=get_all_branch_regexes(repo)
 
-		# support and hotfix validator can only be executed after all the other branches have been synchronized
-		all_version_tags=get_all_version_tags()
-		print(git.get_active_branch_name())
-		check_one_branch_support_max_per_major(regex_branches, all_version_tags)
-		print(git.get_active_branch_name())
+		# # support and hotfix validator can only be executed after all the other branches have been synchronized
+		# all_version_tags=get_all_version_tags()
+		# print(git.get_active_branch_name())
+		# check_one_branch_support_max_per_major(regex_branches, all_version_tags)
+		# print(git.get_active_branch_name())
 		# version_file_validator(regex_branches, all_version_tags)
 		# print(git.get_active_branch_name())
 		hotfix_history_json_validator(regex_branches)
