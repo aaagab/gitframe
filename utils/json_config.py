@@ -6,6 +6,7 @@ from utils.format_text import Format_text as ft
 import traceback
 import utils.message as msg
 from utils.prompt import prompt_boolean
+import inspect
 
 class Json_config():
 	def __init__(self, file_path=""):
@@ -18,8 +19,10 @@ class Json_config():
 			self.file_path = file_path
 		
 		if not os.path.exists(self.file_path):
+			frame,caller_filename,caller_line_number,function_name,lines,index=inspect.stack()[1]
+			msg.warning("From file '{}' at line '{}': ".format(caller_filename, caller_line_number))
 			if prompt_boolean("File '"+self.file_path+"' does not exist, Do you want to create it."):
-			    open(self.file_path, 'w').close()
+				open(self.file_path, 'w').close()
 			else:
 				msg.user_error("Command Cancelled, File '"+self.file_path+"' not found!")
 				sys.exit(1)

@@ -29,13 +29,13 @@
         }
     ],
     "diren_scripts": "scripts",
-    "diren_src": "src",
+    "diren_update_gitframe": "bin",
     "filen_hotfix_history": "hotfix-history.json",
     "filen_version": "version.txt",
     "filer_bump_release_version": "bump_release_version",
     "filer_deploy_release": "deploy_release",
     "license": "MIT",
-    "test": {
+    "processor": {
         "clean_after": false,
         "deps": [
             {
@@ -43,59 +43,36 @@
                 "cmd": "bash"
             },
             {
-                "app": "xdotool",
-                "cmd": "xdotool"
-            },
-            {
-                "app": "wmctrl",
-                "cmd": "wmctrl"
-            },
-            {
                 "app": "screen",
                 "cmd": "screen"
-            },
-            {
-                "app": "sshpass",
-                "cmd": "sshpass"
-            },
-            {
-                "app": "expect",
-                "cmd": "expect"
-            },
-            {
-                "app": "konsole",
-                "cmd": "konsole"
-            },
-            {
-                "app": "tput",
-                "cmd": "tput"
-            },
-            {
-                "app": "xterm",
-                "cmd": "xterm"
             }
         ],
-        "diren": "test",
         "diren_logs": "logs",
-        "direpa_root": "/tmp/test-gf",
-        "filen_blank_page": "print_blank_page.sh",
         "filen_cmds": "cmds.sh",
-        "filen_conf": "test_config.json",
-        "filen_expect": "expect_cmd.exp",
+        "filen_conf": "processor_config.json",
+        "filen_launcher": "gitframe.py",
         "filen_read_log_bashrc": "read_log_bashrc",
-        "filen_screen_log": "screenlog.0",
+        "filen_screen_log": "processor_screen_log.0",
         "filen_screenrc": "screenrc",
-        "filen_xterm": "launch_xterm.sh",
+        "filen_task_status": "task_status.log",
         "read_log_window_title": "#Error_Logs#",
-        "remote": {
-            "diren_root": "repository",
-            "domain": "localhost",
-            "ip": "127.0.0.1",
-            "user_git": "noa"
+        "task": {
+            "diren": "test",
+            "diren_bin": "bin",
+            "diren_src": "src",
+            "direpa": "/tmp/test-gf",
+            "name": "gitframe",
+            "remote": {
+                "diren_root": "repository",
+                "domain": "localhost",
+                "ip": "127.0.0.1",
+                "user_git": "noa"
+            }
         },
         "txt_screen_cmd_error": "++ cmd error ++",
-        "txt_screen_log_eof": "++ End Unit Test ++",
+        "txt_screen_log_eof": "++ end unit ++",
         "waiting_time_between_cmds": 20
     },
-    "version": "1.0.0-beta-1541130477"
+    "validator": true,
+    "version": "new"
 }
