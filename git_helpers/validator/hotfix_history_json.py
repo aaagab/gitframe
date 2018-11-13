@@ -28,6 +28,8 @@ import git_helpers.regex_obj as ro
 
 def hotfix_history_json_validator(regex_branches):
     conf = Json_config()
+    print("here")
+    sys.exit()
     filen_hotfix_history=conf.get_value("filen_hotfix_history")
 
     tags=shell.cmd_get_value("git tag").splitlines()
