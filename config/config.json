@@ -30,6 +30,7 @@
     ],
     "diren_scripts": "scripts",
     "diren_update_gitframe": "bin",
+    "direpa_dev_sources": "/data/projs/apps/dt/gitframe/src",
     "filen_hotfix_history": "hotfix-history.json",
     "filen_version": "version.txt",
     "filer_bump_release_version": "bump_release_version",

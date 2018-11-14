@@ -24,19 +24,80 @@ from git_helpers.main_validator import validator
 import argparse
 from pprint import pprint
 
+def is_direpa_dev_sources(conf, path=""):
+	import git_helpers.git_utils as git
+	is_direpa_dev_sources=True
+	if path:
+		if git.has_git_directory(path):
+
+			if os.path.exists(
+				os.path.join(
+					git.get_root_dir_path(path),
+					conf.data["processor"]["filen_launcher"]
+					)
+				):
+				return True
+			else:
+				return False
+		else:
+			return False
+	else:
+		if git.has_git_directory():
+			if os.path.exists(
+				os.path.join(
+					git.get_root_dir_path(),
+					conf.data["processor"]["filen_launcher"]
+					)
+				):
+				return True
+			else:
+				return False
+		else:
+			return False
+
+def get_direpa_dev_sources(conf):
+	if is_direpa_dev_sources(conf):
+		if conf.data["direpa_dev_sources"] != os.getcwd():
+			conf.set_value("direpa_dev_sources", os.getcwd())
+	else:
+		if conf.data["direpa_dev_sources"]:
+			if not os.path.exists(conf.data["direpa_dev_sources"]):
+				msg.user_error(
+					"Current 'direpa_dev_sources' '{}' does not exists".format(conf.data["direpa_dev_sources"]),
+					"Go to real path development sources and run './gitframe.py --update-gitframe' to set direpa_dev_sources."
+				)
+				sys.exit(1)
+			else:
+				if not is_direpa_dev_sources(conf, conf.data["direpa_dev_sources"]):
+					msg.user_error(
+						"Current 'direpa_dev_sources' '{}' exists but it is not the real path development sources for gitframe.".format(conf.data["direpa_dev_sources"]),
+						"Go to real path development sources and run './gitframe.py --update-gitframe' to set direpa_dev_sources."
+					)
+					sys.exit(1)
+		else:
+			msg.user_error(
+				"'direpa_dev_sources' has not been defined",
+				"Go to real path development sources and run './gitframe.py --update-gitframe' to set direpa_dev_sources."
+			)
+			sys.exit(1)
+
+	return conf.data["direpa_dev_sources"]
+
 def update_gitframe_bin(conf, parameters=""):
 	from distutils.dir_util import copy_tree
 	import shutil
 	import git_helpers.git_utils as git
 
 	msg.subtitle("Update Gitframe Bin")
+	msg.info("Make sure you publish a release or early-release when the fix has been applied.")
 
-	direpa_source_app=git.get_root_dir_path()
+	direpa_source_app=get_direpa_dev_sources(conf)
 
 	direpa_source_dst=os.path.join(
-		conf["processor"]["task"]["direpa"],
-		conf["processor"]["task"]["diren_bin"]
+		conf.data["processor"]["task"]["direpa"],
+		conf.data["processor"]["task"]["diren_bin"]
 	)
+
 	if os.path.exists(direpa_source_dst):
 		shutil.rmtree(direpa_source_dst)
 	
@@ -47,11 +108,30 @@ def update_gitframe_bin(conf, parameters=""):
 	os.remove(os.path.join(direpa_source_dst, "hotfix-history.json"))
 	os.remove(os.path.join(direpa_source_dst, "license.txt"))
 
-	cmd_str="{} {}".format(
-		os.path.join(direpa_source_dst, conf["processor"]["filen_launcher"]),
-		parameters
-	)
-	os.system(cmd_str)
+	if parameters:
+		if parameters == "per":
+			direpa_previous=os.getcwd()
+			if direpa_source_app != direpa_previous:
+				os.chdir(direpa_source_app)
+			
+			cmd_str="{} {}".format(
+					os.path.join(direpa_source_dst, conf.data["processor"]["filen_launcher"]),
+					"--per"
+				)
+			try:
+				os.system(cmd_str)
+			except:
+				if direpa_previous != os.getcwd():
+					os.chdir(direpa_previous)
+				
+			if direpa_previous != os.getcwd():
+				os.chdir(direpa_previous)
+		else:
+			cmd_str="{} {}".format(
+				os.path.join(direpa_source_dst, conf.data["processor"]["filen_launcher"]),
+				parameters
+			)
+			os.system(cmd_str)
 
 if __name__ == "__main__":
 	install_dependencies(conf.get_value("deps"))
@@ -181,11 +261,11 @@ if __name__ == "__main__":
 		sys.exit(1)
 
 	if args.update_gitframe is True:
-		update_gitframe_bin(conf.data)
+		update_gitframe_bin(conf)
 		sys.exit(0)
 
 	if args.update_gitframe:
-		update_gitframe_bin(conf.data, args.update_gitframe)
+		update_gitframe_bin(conf, args.update_gitframe)
 		sys.exit(0)
 
 	if args.debug is True:
