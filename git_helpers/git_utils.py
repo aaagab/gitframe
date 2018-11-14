@@ -29,8 +29,21 @@ def get_root_dir_name():
     root_dir=shell.cmd_get_value("git rev-parse --show-toplevel")
     return os.path.basename(root_dir)
 
-def get_root_dir_path():
+def get_root_dir_path(path=""):
+    previous_path=""
+    if path:
+        if not os.path.exists(path):
+            msg.user_error("Path '{}' not found.".format(path))
+        
+        if path != os.getcwd():
+            previous_path=os.getcwd()
+            os.chdir(path)
+
     root_dir=shell.cmd_get_value("git rev-parse --show-toplevel")
+
+    if previous_path:
+        os.chdir(previous_path)
+
     return root_dir
 
 def get_active_branch_name():
