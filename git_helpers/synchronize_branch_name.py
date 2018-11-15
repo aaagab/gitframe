@@ -198,8 +198,9 @@ def synchronize_local_with(location, branch_name, repo):
                 msg.warning("Branch '"+branch_name+"' is on local_remote but not on local. No need to checkout.")
                 msg.success("No action needed for 'synchronize' with \""+branch_name+"\" on \""+location+"\"")
         elif location == "remote":
-            action=get_value_from_menu(["fetch", "ignore", "exit"], branch_name)
-            execute_action(action, branch_name)
+            if not branch_on["local_remote"]:
+                action=get_value_from_menu(["fetch", "ignore", "exit"], branch_name)
+                execute_action(action, branch_name)
     elif cmp_status == "push":
         if location == "local_remote":
             msg.warning("Push is never done to local_remote branches, local is already the newest")
