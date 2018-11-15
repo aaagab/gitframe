@@ -191,10 +191,10 @@ def synchronize_local_with(location, branch_name, repo):
     elif cmp_status == "pull_not_local":
         branch_type=ro.get_element_regex(branch_name).type
         if location == "local_remote":
-            if branch_type in ["master", "develop"]:
-                action=get_value_from_menu(["merge", "ignore", "exit"], branch_name)
-                execute_action(action, branch_name)
-            else:
+            # if branch_type in ["master", "develop"]:
+                # action=get_value_from_menu(["merge", "ignore", "exit"], branch_name)
+                # execute_action(action, branch_name)
+            # else:
                 msg.warning("Branch '"+branch_name+"' is on local_remote but not on local. No need to checkout.")
                 msg.success("No action needed for 'synchronize' with \""+branch_name+"\" on \""+location+"\"")
         elif location == "remote":
