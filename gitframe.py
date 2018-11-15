@@ -300,8 +300,9 @@ if __name__ == "__main__":
 
 	elif args.clone_project_to_remote is True:
 		from git_helpers.clone_project_to_remote import clone_project_to_remote
-		repo, regex_branches, all_version_tags=validator(conf.data["validator"])
-		clone_project_to_remote(repo)
+		# repo, regex_branches, all_version_tags=validator(conf.data["validator"])
+
+		clone_project_to_remote(Remote_repository())
 		sys.exit(0)
 
 	elif args.open_branch is True:

@@ -28,34 +28,38 @@ import re
 # else:
 #     code needs to be in a src directory
 
-
-
 def clone_project_to_remote(repo):
     msg.title("clone project to remote repository")
 
-    direpath_git_root=git.get_root_dir_path()
-    diren_app=os.path.basename(direpath_git_root)
-    path_root_dir=os.path.dirname(direpath_git_root)
-    direpa_app_git=os.path.join(path_root_dir, diren_app+".git")
-    direpa_app=os.path.join(path_root_dir, diren_app)
+    direpa_app=git.get_root_dir_path()
+    diren_app=os.path.basename(direpa_app)
+    direpa_par_app=os.path.dirname(direpa_app)
+    direpa_app_git=os.path.join(direpa_par_app, diren_app+".git")
 
     if not os.path.exists(direpa_app_git):
         if repo.is_reachable:
             if not repo.has_directory:
                 if repo.path_type == "directory":
                     msg.dbg("info", "repo is a directory")
-                    shell.cmd_prompt("git clone --bare "+direpa_app+" "+repo.path)
+                    shell.cmd_prompt("git clone --bare "+direpa_app+" "+repo.path, True)
                     os.chdir(direpa_app)
+                    
+                    shell.cmd_prompt("git push origin master")
+                    shell.cmd_prompt("git push origin develop")
                 elif repo.path_type == "url":
                     user_ssh=prompt("Type ssh username")
-                    scp_path=os.path.dirname(re.sub(r"^.*?(@.*)$",user_ssh+r"\1",repo.path))
+                    scp_path=re.sub(r"^.*?(@.*)$",user_ssh+r"\1",repo.path)
                     ssh_url=user_ssh+"@"+repo.domain
-
-                    shell.cmd_prompt("git clone --bare "+direpa_app+" "+direpa_app_git)
+                    shell.cmd_prompt("git clone --bare "+direpa_app+" "+direpa_app_git, True)
                     os.chdir(direpa_app)
-                    shell.cmd_prompt("scp -r "+direpa_app+".git "+scp_path)
-                    shell.cmd_prompt("ssh -t "+ssh_url+" \"sudo chown -R "+repo.user_git+":"+repo.user_git+" "+repo.direpa_src+"\"")
+
+                    shell.cmd_prompt("ssh "+ssh_url+" \"mkdir -p "+repo.direpa_par_src+"\"", True)
+                    shell.cmd_prompt("scp -r "+direpa_app+".git "+scp_path, True)
+                    shell.cmd_prompt("ssh -t "+ssh_url+" \"sudo chown -R "+repo.user_git+":"+repo.user_git+" "+repo.direpa_src+"\"",True)
                     repo.has_directory=True
+
+                    shell.cmd_prompt("git push origin master")
+                    shell.cmd_prompt("git push origin develop")
 
                     try:
                         shutil.rmtree(direpa_app_git)

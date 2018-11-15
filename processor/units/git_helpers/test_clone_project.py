@@ -17,7 +17,7 @@ def test_clone_project(conf):
         "diren_task": conf["diren_task"],
         "diren_src": conf["diren_src"],
         "ssh_url_domain_direpa_src": conf["remote"]["ssh_url_domain_direpa_src"],
-        "scp_url_domain_direpa_par_src": conf["remote"]["scp_url_domain_direpa_par_src"],
+        "scp_url_domain_direpa_src": conf["remote"]["scp_url_domain_direpa_src"],
         "direpa_task_conf": conf["direpa_task_conf"],
         "user_ssh": conf["user_current"],
         "user_git": conf["remote"]["user_git"],
@@ -30,6 +30,7 @@ def test_clone_project(conf):
             touch myfile.txt
             git add .
             git -c user.name='user_name' -c user.email='test@test.com' commit -am "myfile"
+            git checkout -b develop
             mkdir -p {direpa_par_remote_src}
         """,
         "block_user_input": """
@@ -68,7 +69,10 @@ def test_clone_project(conf):
             _out:√ git clone --bare {direpa_task_src} {direpa_task_src}.git
             _out:{user_ssh}@{domain}'s password:
             _type:{sudo_pass}
-            _out:√ scp -r {direpa_task_src}.git {scp_url_domain_direpa_par_src}
+            _out:√ ssh {user_ssh}@{domain} "mkdir -p {direpa_par_remote_src}"
+            _out:{user_ssh}@{domain}'s password:
+            _type:{sudo_pass}
+            _out:√ scp -r {direpa_task_src}.git {scp_url_domain_direpa_src}
             _out:{user_ssh}@{domain}'s password:
             _type:{sudo_pass}
             _out:[sudo] password for {user_ssh}:
@@ -80,7 +84,6 @@ def test_clone_project(conf):
             _out:[sudo] password for {user_ssh}:
             _type:{sudo_pass}
         """)
-    
 
     start_processor(conf)
 
