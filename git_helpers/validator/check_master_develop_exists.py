@@ -15,7 +15,7 @@ def check_master_develop_exists(regex_branches):
     master_found=False
     develop_found=False
     for reg_branch in regex_branches:
-        if reg_branch.location == "local":
+        if reg_branch.location == "local" or reg_branch.location == "local_remote":
             if reg_branch.text == "master":
                 master_found=True
             elif reg_branch.text == "develop":
@@ -23,7 +23,7 @@ def check_master_develop_exists(regex_branches):
 
             if master_found and develop_found:
                 break
-            
+
     if not master_found:
         msg.user_error("Branch \"master\" does not exist as a local branch.")
         sys.exit(1)

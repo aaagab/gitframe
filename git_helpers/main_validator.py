@@ -45,6 +45,8 @@ def validator(enabled):
 
 		prompt_for_commit()
 
+		sys.exit()
+
 		repo=Remote_repository()
 		regex_branches=get_all_branch_regexes(repo)
 
