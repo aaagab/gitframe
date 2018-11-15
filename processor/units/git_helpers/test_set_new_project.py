@@ -19,7 +19,7 @@ def test_set_new_project(conf):
         "direpa_task_src": conf["direpa_task_src"],
         'this_cmd':conf["filenpa_launcher"]+" "+conf["tmp"]["opt"]+" "+conf["diren_task"],
         "ssh_url_domain_direpa_src": conf["remote"]["ssh_url_domain_direpa_src"],
-        "scp_url_domain_direpa_par_src": conf["remote"]["scp_url_domain_direpa_par_src"],
+        "scp_url_domain_direpa_src": conf["remote"]["scp_url_domain_direpa_src"],
         "user_git": conf["remote"]["user_git"],
         "user_current": conf["user_current"],
         "domain": conf["remote"]["domain"],
@@ -89,7 +89,10 @@ def test_set_new_project(conf):
             _out:√ git clone --bare {direpa_task_src} {direpa_task_src}.git
             _out:{user_current}@{domain}'s password:
             _type:{sudo_pass}
-            _out:√ scp -r {direpa_task_src}.git {scp_url_domain_direpa_par_src}
+            _out:√ ssh {user_current}@{domain} "mkdir -p {direpa_par_remote_src}"
+            _out:{user_current}@{domain}'s password:
+            _type:{sudo_pass}
+            _out:√ scp -r {direpa_task_src}.git {scp_url_domain_direpa_src}
             _out:{user_current}@{domain}'s password:
             _type:{sudo_pass}
             _out:[sudo] password for {user_current}:

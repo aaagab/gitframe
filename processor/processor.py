@@ -181,7 +181,7 @@ def open_branch(conf):
     
     from processor.units.git_helpers.branch.test_open_hotfix import test_open_hotfix
     set_new_project(conf)
-    conf["tmp"]={"unit_name":"open_branch_hotfix"}    
+    conf["tmp"]={"unit_name":"test_open_branch_hotfix"}    
     test_open_hotfix(conf)
 
 def close_branch(conf):
@@ -275,9 +275,7 @@ def main(*args):
     ft.clear_scrolling_history()
     ph.clean_logs(conf)
 
-    os.system("prompt \"Processor: Task '"+conf["filen_launcher"]+"' finished.\"")
-    sys.exit(1)
-
+    
     try:
         test_processor(conf)
         
@@ -287,14 +285,13 @@ def main(*args):
 
         init_local_config(conf)
 
+        create_directory_tree(conf)
+
         remote_repository(conf)
 
-        delete_test_and_repo(conf)
         clone_project(conf)
 
         new_project(conf)
-
-        create_directory_tree(conf)
 
         delete_test_and_repo(conf)
         set_new_project(conf)

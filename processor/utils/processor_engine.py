@@ -175,8 +175,8 @@ def set_task_conf(launcher_conf, conf):
         ssh_url_ip_direpa_par_src=user_ip+":"+os.path.join(direpa_par_src),
         ssh_url_domain_direpa_src=user_domain+":"+direpa_src,
         ssh_url_ip_direpa_src=user_ip+":"+direpa_src,
-        scp_url_domain_direpa_par_src=conf["user_current"]+"@"+domain+":"+direpa_par_src,
-        scp_url_ip_direpa_par_src=conf["user_current"]+"@"+ip+":"+direpa_par_src,
+        scp_url_domain_direpa_src=conf["user_current"]+"@"+domain+":"+direpa_src,
+        scp_url_ip_direpa_src=conf["user_current"]+"@"+ip+":"+direpa_src,
         direpa_src=direpa_src,
         direpa_par_src=direpa_par_src
     )
