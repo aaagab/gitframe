@@ -152,7 +152,8 @@ def get_local_remote_branch_names(remote_name="origin"):
     branches=[]
     # remove all unneeded string
     for branch in raw_branches:
-        branches.append(re.sub("^.*?"+remote_name+"/","",branch).strip())
+        if not "HEAD ->" in branch:
+            branches.append(re.sub("^.*?"+remote_name+"/","",branch).strip())
 
     return branches
 
