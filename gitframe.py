@@ -330,9 +330,7 @@ if __name__ == "__main__":
 		sys.exit(0)
 
 	elif args.test:
-		import processor.utils.processor_engine as pe
-		conf.set_value("debug", True)
-		
+		import processor.utils.processor_engine as pe		
 		pe.terminal_setup(conf.data, args.test)
 		
 		sys.exit(0)

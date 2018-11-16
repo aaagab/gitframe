@@ -221,9 +221,11 @@ if __name__ == "__main__":
             
         elif sys.argv[2] == "has_hotfix_obj_has_related_support":
             from utils.json_config import Json_config
+            from git_helpers.tags_commits import Tags_commits
+
             fname=Json_config().get_value("filen_hotfix_history")
             data=Json_config(fname).data
-            data["hotfix-1.0.X-my_repair"]["end_commit"]=git.get_commit_from_tag("v1.0.1")
+            data["hotfix-1.0.X-my_repair"]["end_commit"]=Tags_commits("local").get_tag_commit("v1.0.1")
             data["hotfix-1.0.X-my_repair"]["end_tag"]="v1.0.1"
             Json_config(fname).set_file_with_data(data)
             os.system("git add .")

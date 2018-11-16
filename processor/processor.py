@@ -247,7 +247,15 @@ def clone_project(conf):
     conf["tmp"]={"unit_name":"test_clone_project"}
     test_clone_project(conf)
 
+def tags_commits(conf):
+    set_new_project(conf)
+    from processor.units.git_helpers.test_tags_commits import test_tags_commits
+    conf["tmp"]={"unit_name":"test_tags_commits"}
+    test_tags_commits(conf)
+
 def main(*args):
+    Json_config().set_value("debug", True)
+
     args=args[0]
     task_mode=""
     if len(args) == 2:
@@ -263,10 +271,12 @@ def main(*args):
 
     direpa_processor_script=os.path.dirname( os.path.realpath(__file__))
     conf.update(init_config(direpa_processor_script))
-    os.chdir(conf["direpa_task_conf"])
 
     sudo=ph.Sudo()
+    sudo.pswd=ph.get_pass_from_private_conf()
     sudo.enable()
+
+    os.chdir(conf["direpa_task_conf"])
 
     if task_mode == "ssh_url":
         conf["sudo_pass"]=sudo.get_pswd()
@@ -290,6 +300,8 @@ def main(*args):
         remote_repository(conf)
 
         clone_project(conf)
+
+        tags_commits(conf)
 
         new_project(conf)
 

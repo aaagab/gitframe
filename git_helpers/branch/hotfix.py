@@ -17,7 +17,8 @@ from utils.prompt import prompt, prompt_boolean
 from pprint import pprint
 import git_helpers.regex_obj as ro
 
-from git_helpers.update_branch import update_branch			
+from git_helpers.update_branch import update_branch
+from git_helpers.tags_commits import Tags_commits			
 
 
 def open_hotfix(repo, all_version_tags):
@@ -186,7 +187,7 @@ def create_json_data_hotfix(branch_name, hotfix_description, fname):
 			"description": hotfix_description,
 			"start_tag": "start-"+branch_name,
 			"end_tag": "",
-			"start_commit": git.get_commit_from_tag("start-"+branch_name),
+			"start_commit": Tags_commits("local").get_tag_commit("start-"+branch_name),
 			"end_commit": ""
 		}
 	})
@@ -308,11 +309,14 @@ def update_json_data_hotfix_on_close(branch_name, fname, release_version):
 	hotfix_objs=Json_config(fname).data	
 
 	obj_found=False
+
+	tags_commits=Tags_commits("local")
+	
 	for index in hotfix_objs:
 		if hotfix_objs[index]["start_tag"] == "start-"+branch_name:
 			obj_found=True
 			hotfix_objs[index]["end_tag"]="v"+release_version
-			hotfix_objs[index]["end_commit"]=git.get_commit_from_tag("v"+release_version)
+			hotfix_objs[index]["end_commit"]=tags_commits.get_tag_commit("v"+release_version)
 			Json_config(fname).set_file_with_data(hotfix_objs)
 			git.commit("Updating "+fname+" for "+branch_name+" with "+release_version)
 			break

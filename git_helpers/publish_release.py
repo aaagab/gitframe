@@ -8,6 +8,7 @@ import git_helpers.git_utils as git
 import git_helpers.regex_obj as ro
 from git_helpers.get_all_version_tags import get_all_version_tags
 from git_helpers.validator.version_file import check_bump_release_version_script
+from git_helpers.tags_commits import Tags_commits			
 
 release_err_msg="""
  Create a script file deploy_release.sh or deploy_release.py
@@ -57,7 +58,7 @@ def publish_release(release_version, all_version_tags=""):
     msg.title("Publish Tag v"+release_version )
     msg.dbg("info", release_type)
 
-    if not git.get_commit_from_tag("v"+release_version):
+    if not Tags_commits("local").get_tag_commit("v"+release_version):
         msg.user_error("There is no tag in the project that matches v"+ release_version)
         sys.exit(1)
 

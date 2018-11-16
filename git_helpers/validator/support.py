@@ -41,6 +41,8 @@ def find_related_tag_for_support_branch_name(regex_branch, all_version_tags):
 
 
 def check_one_branch_support_max_per_major(regex_branches, all_version_tags):
+    msg.subtitle("one support branch max per major version.")
+
     major_array=[]
     version_value_regex=ro.Version_regex()
     

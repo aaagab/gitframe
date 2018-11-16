@@ -18,7 +18,7 @@ def test_tags_validator(conf):
         {step} tags_validator local_tag
         {cmd}
         _out:∆ tag 'start_master' exists on local but not on remote. tag not pushed.
-        _out:√ tags_validator passed
+        _out:√ tags_validator
 
         {step} tags_validator remote_tag
         git tag my_tag
@@ -26,37 +26,14 @@ def test_tags_validator(conf):
         git tag --delete my_tag
         {cmd}
         _out:∆ tag 'my_tag' exists on remote but not on local. tag not pulled.
-        _out:√ tags_validator passed
+        _out:√ tags_validator
         git push origin --delete my_tag
 
         {step} tags_validator not_reachable
         {cmd}
         _out:∆ Remote is not reachable, Tags can't be compared from local to remote
 
-        {step} compare_commits_from_tag_name success
-        git tag v1.0.0
-        git push origin v1.0.0
-        {cmd}
-        _out:√ compare_commits_from_tag_name
-        git tag --delete v1.0.0
-        git push origin --delete v1.0.0   
-
-        {step} compare_commits_from_tag_name tag_with_different_commits
-        git checkout master
-        git tag v1.0.0
-        git push origin v1.0.0
-        git tag --delete v1.0.0
-        {commit}
-        git tag v1.0.0
-        {cmd}
-        _out:× Correct issue.
-        _fail:
-        git tag --delete v1.0.0
-        git push origin --delete v1.0.0
-        git checkout master
-        git reset --hard start_master
-
-        {step} process_tag_not_found release_tag_remote
+         {step} process_tag_not_found release_tag_remote
         {cmd}
         _out:× tag 'v1.0.0' exists on local but not on remote. tag not pushed.
         _out:× Maybe master branch needs to be pushed with the tag.
@@ -133,14 +110,6 @@ if __name__ == "__main__":
         elif sys.argv[2] == "not_reachable":
             repo.is_reachable=False
             tags_validator(repo)
-
-    elif sys.argv[1] == "compare_commits_from_tag_name":
-        from git_helpers.validator.tags import compare_commits_from_tag_name
-
-        if sys.argv[2] == "success":
-            compare_commits_from_tag_name("v1.0.0")
-        elif sys.argv[2] == "tag_with_different_commits":
-            compare_commits_from_tag_name("v1.0.0")
 
     elif sys.argv[1] == "process_tag_not_found":
         from git_helpers.validator.tags import process_tag_not_found

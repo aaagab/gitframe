@@ -55,10 +55,9 @@ def test_synchronize_branch_name(conf):
         git branch -D feature-add
         {cmd}
         _out:# False_True_True
+        _out:∆ Branch 'feature-add' is on local_remote but not on local. No need to checkout.
         _out:### synchronize_local_with 'remote' for 'feature-add'
         _out:# cmp_status: pull_not_local
-        _out:choice or 'q' to quit: 
-        _type:2
         git push origin --delete feature-add
     
         {step} remote_x_not_local_remote_and_local
@@ -129,11 +128,11 @@ def test_synchronize_branch_name(conf):
         _out:# Git Pretty 'origin/feature-add'
         _out:Do you want to delete 'feature-add' from local_remote? [y/N/q]:
         _type:n
-        _out:### get_branch_compare_status_repository local_remote' for 'feature-add'
+        _out:### get_branch_compare_status_repository 'local_remote' for 'feature-add'
         _out:# cmp_status: pull_not_local
         _out:∆ Branch 'feature-add' is on local_remote but not on local. No need to checkout.
+        _out:### get_branch_compare_status_repository 'remote' for 'feature-add'
         _out:### synchronize_local_with 'remote' for 'feature-add'
-        _out:### get_branch_compare_status_repository remote' for 'feature-add'
         _out:# cmp_status: null
         _out:∆ Branch 'feature-add' does not exist on local nor on remote.
         git checkout master
@@ -144,8 +143,8 @@ def test_synchronize_branch_name(conf):
         git checkout -b feature-add
         {cmd}
         _out:# True_False_False
+        _out:### get_branch_compare_status_repository 'remote' for 'feature-add'
         _out:### synchronize_local_with 'remote' for 'feature-add'
-        _out:### get_branch_compare_status_repository remote' for 'feature-add'
         _out:# cmp_status: push
         _out:choice or 'q' to quit:
         _type:2
@@ -170,8 +169,8 @@ def test_synchronize_branch_name(conf):
         rm -rf {direpa_task_src}_tmp        
         {cmd}
         _out:# True_True_False
+        _out:### get_branch_compare_status_repository 'local_remote' for 'feature-add'
         _out:### synchronize_local_with 'local_remote' for 'feature-add'
-        _out:### get_branch_compare_status_repository local_remote' for 'feature-add'
         _out:# cmp_status: up_to_date
         git checkout master
         git branch -rd origin/feature-add
@@ -191,8 +190,8 @@ def test_synchronize_branch_name(conf):
         {cmd}
         _out:# False_True_False
         _out:∆ Remote is not reachable thus it is not possible to compare local branch with remote branch.
+        _out:### get_branch_compare_status_repository 'local_remote' for 'feature-add'
         _out:### synchronize_local_with 'local_remote' for 'feature-add'
-        _out:### get_branch_compare_status_repository local_remote' for 'feature-add'
         _out:# cmp_status: pull_not_local
         _out:∆ Branch 'feature-add' is on local_remote but not on local. No need to checkout.
         git checkout master

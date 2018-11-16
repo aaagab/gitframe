@@ -28,68 +28,118 @@ def test_synchronize_local_with(conf):
         _out:# cmp_status: pull
         _out:choice or 'q' to quit:
         _type:2
+        git checkout master
+        git branch -D feature-add
+        git push origin --delete feature-add
+        git tag --delete start_feature
     
         {step} pull_synchronize_remote
+        git checkout -b feature-add
+        git tag start_feature
+        {commit} "1"
+        git push origin feature-add
+        git reset --hard start_feature
         {cmd}
         _out:# cmp_status: pull
         _out:choice or 'q' to quit:
         _type:2
+        git checkout master
+        git branch -D feature-add
+        git push origin --delete feature-add
+        git tag --delete start_feature
         
-        {step} pull_not_local_synchronize_local_remote_master
-        git branch -D master
-        {cmd}
-        _out:# cmp_status: pull_not_local
-        _out:choice or 'q' to quit:
-        _type:1
-    
         {step} pull_not_local_synchronize_local_remote_test
+        git checkout master
+        git checkout -b feature-add
+        git push origin feature-add
         git checkout master
         git branch -D feature-add
         {cmd}
         _out:# cmp_status: pull_not_local
         _out:√ No action needed for 'synchronize' with "feature-add" on "local_remote"
-    
+        git push origin --delete feature-add
+
         {step} pull_not_local_synchronize_remote
+        git checkout master
+        git checkout -b feature-add
+        git push origin feature-add
+        git checkout master
+        git branch -D feature-add
+        {cmd}
+        _out:# cmp_status: pull_not_local
+        _out:√ No action needed for 'synchronize' with "feature-add" on "remote"
+        git push origin --delete feature-add
+    
+        {step} pull_not_local_synchronize_remote not_branch
+        cp -r {direpa_task_src} {direpa_task_src}_tmp
+        cd {direpa_task_src}_tmp
+        git checkout -b feature-add
+        git push origin feature-add
+        cd {direpa_task_src}
         {cmd}
         _out:# cmp_status: pull_not_local
         _out:choice or 'q' to quit:
         _type:2
-       
+        git push origin --delete feature-add
+        rm -rf {direpa_task_src}_tmp
+
         {step} push_synchronize_local_remote
-        git checkout feature-add
+        git checkout -b feature-add
         {commit} "2"
         {cmd}
         _out:# cmp_status: push
         _out:∆ Push is never done to local_remote branches, local is already the newest
+        git checkout master
+        git branch -D feature-add
     
         {step} push_synchronize_remote
+        git checkout -b feature-add
+        git push origin feature-add
+        {commit} "1"
         {cmd}
         _out:# cmp_status: push
         _out:choice or 'q' to quit:
         _type:2
-       
+        git checkout master
+        git branch -D feature-add
+        git push origin --delete feature-add
+
         {step} divergent_with_common_ancestor
-        git reset --hard start_feature
-        {commit} "4"
+        git checkout -b feature-add
+        cp -r {direpa_task_src} {direpa_task_src}_tmp
+        cd {direpa_task_src}_tmp
+        {commit} "1"
+        git push origin feature-add
+        cd {direpa_task_src}
+        {commit} "2"
         {cmd}
         _out:# cmp_status: divergent_with_common_ancestor
         _out:√ divergent_with_common_ancestor
         _fail:Normal Exit for divergent_with_common_ancestor
-    
-        {step} divergent_without_common_ancestor
         git checkout master
         git branch -D feature-add
+        git push origin --delete feature-add
+        rm -rf {direpa_task_src}_tmp
+       
+        {step} divergent_without_common_ancestor
+        cp -r {direpa_task_src} {direpa_task_src}_tmp
         git checkout --orphan feature-add
-        {commit} "5"
+        {commit} "1"
+        cd {direpa_task_src}_tmp
+        git checkout -b feature-add
+        git push origin feature-add
+        cd {direpa_task_src}
         {cmd}
         _out:# cmp_status: divergent_without_common_ancestor
         _out:√ divergent_without_common_ancestor
         _fail:Normal Exit for divergent_without_common_ancestor
-    
-        {step} null_local_remote
         git checkout master
         git branch -D feature-add
         git push origin --delete feature-add
+        rm -rf {direpa_task_src}_tmp
+    
+        {step} null_local_remote
+        git checkout master
         {cmd}
         _out:# cmp_status: null
         _out:∆ Branch 'feature-add' does not exist on local nor on local_remote.
@@ -110,49 +160,121 @@ if __name__ == "__main__":
         direpa_script=os.path.dirname(direpa_script)
     sys.path.insert(0,os.path.dirname(direpa_script))
 
-    from git_helpers.synchronize_branch_name import synchronize_local_with
+    from git_helpers.synchronize_branch_name import synchronize_local_with, get_branch_compare_status_repository, get_branch_on
 
     class Remote_repository():
         def __init__(self):
             self.is_reachable=True
 
     repo=Remote_repository()
-        
+    
     if sys.argv[1] == "up_to_date":
-        synchronize_local_with("remote", "master", repo)
+        synchronize_local_with("remote", "master", 
+            get_branch_compare_status_repository(
+                "remote",
+                get_branch_on(repo, "master"),            
+                "master"
+            )
+        )
 
     elif sys.argv[1] == "pull_synchronize_remote":
-        synchronize_local_with("remote", "feature-add", repo)
+        synchronize_local_with("remote", "feature-add", 
+            get_branch_compare_status_repository(
+                "remote",
+                get_branch_on(repo, "feature-add"),            
+                "feature-add"
+            )
+        )
 
     elif sys.argv[1] == "pull_synchronize_local_remote":
-        synchronize_local_with("local_remote", "feature-add", repo)
+        synchronize_local_with("local_remote", "feature-add", 
+            get_branch_compare_status_repository(
+                "local_remote",
+                get_branch_on(repo, "feature-add"),            
+                "feature-add"
+            )
+        )
     
     elif sys.argv[1] == "pull_not_local_synchronize_local_remote_master":
-        synchronize_local_with("local_remote", "master", repo)
+        synchronize_local_with("local_remote", "master", 
+            get_branch_compare_status_repository(
+                "local_remote",
+                get_branch_on(repo, "master"),            
+                "master"
+            )
+        )
 
     elif sys.argv[1] == "pull_not_local_synchronize_local_remote_test":
-        synchronize_local_with("local_remote", "feature-add", repo)
+        synchronize_local_with("local_remote", "feature-add", 
+            get_branch_compare_status_repository(
+                "local_remote",
+                get_branch_on(repo, "feature-add"),            
+                "feature-add"
+            )
+        )
 
     elif sys.argv[1] == "pull_not_local_synchronize_remote":
-        synchronize_local_with("remote", "feature-add", repo)
+        synchronize_local_with("remote", "feature-add", 
+            get_branch_compare_status_repository(
+                "remote",
+                get_branch_on(repo, "feature-add"),            
+                "feature-add"
+            )
+        )
 
     elif sys.argv[1] == "push_synchronize_local_remote":
-        synchronize_local_with("local_remote", "feature-add", repo)
+        synchronize_local_with("local_remote", "feature-add", 
+            get_branch_compare_status_repository(
+                "local_remote",
+                get_branch_on(repo, "feature-add"),            
+                "feature-add"
+            )
+        )
 
     elif sys.argv[1] == "push_synchronize_remote":
-        synchronize_local_with("remote", "feature-add", repo) 
+        synchronize_local_with("remote", "feature-add", 
+            get_branch_compare_status_repository(
+                "remote",
+                get_branch_on(repo, "feature-add"),            
+                "feature-add"
+            )
+        ) 
     
     elif sys.argv[1] == "divergent_with_common_ancestor":
-        synchronize_local_with("remote", "feature-add", repo)
+        synchronize_local_with("remote", "feature-add", 
+            get_branch_compare_status_repository(
+                "remote",
+                get_branch_on(repo, "feature-add"),            
+                "feature-add"
+            )
+        )
 
     elif sys.argv[1] == "divergent_without_common_ancestor":
-        synchronize_local_with("remote", "feature-add", repo)
+        synchronize_local_with("remote", "feature-add", 
+            get_branch_compare_status_repository(
+                "remote",
+                get_branch_on(repo, "feature-add"),            
+                "feature-add"
+            )
+        )
 
 
     elif sys.argv[1] == "null_local_remote":
-        synchronize_local_with("local_remote", "feature-add", repo)
+        synchronize_local_with("local_remote", "feature-add", 
+            get_branch_compare_status_repository(
+                "local_remote",
+                get_branch_on(repo, "feature-add"),            
+                "feature-add"
+            )
+        )
 
     elif sys.argv[1] == "null_remote":
-        synchronize_local_with("remote", "feature-add", repo)
+        synchronize_local_with("remote", "feature-add", 
+            get_branch_compare_status_repository(
+                "remote",
+                get_branch_on(repo, "feature-add"),            
+                "feature-add"
+            )
+        )
 
 
