@@ -47,6 +47,7 @@ def clone_project_to_remote(repo):
                     shell.cmd_prompt("git push origin master")
                     shell.cmd_prompt("git push origin develop")
                 elif repo.path_type == "url":
+                    msg.dbg("info", "repo is an url")
                     user_ssh=prompt("Type ssh username")
                     scp_path=re.sub(r"^.*?(@.*)$",user_ssh+r"\1",repo.path)
                     ssh_url=user_ssh+"@"+repo.domain

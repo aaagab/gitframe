@@ -10,7 +10,7 @@ import git_helpers.regex_obj as ro
 # then the other branch have to follow regex rules
 
 def check_master_develop_exists(regex_branches):
-    msg.subtitle("master and develop branch on local")
+    msg.subtitle("master and develop branches presence on local or on local remote")
 
     master_found=False
     develop_found=False

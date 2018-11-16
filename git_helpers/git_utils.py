@@ -200,41 +200,6 @@ def push_origin(repo, branch_name):
 def commit_empty(txt):
     shell.cmd_prompt("git commit --allow-empty -m \""+txt+"\"")
     
-def get_commit_from_tag(tag, location="local"):
-    if location == "local":
-        all_tags=shell.cmd_get_value("git tag").splitlines()
-        reg_tag_line_str=r"^commit (.*)"
-        for this_tag in all_tags:
-            if tag == this_tag:
-                return shell.cmd_get_value("git rev-list -n 1 "+this_tag).strip()
-    elif location == "remote":
-        all_tags=shell.cmd_get_value("git ls-remote --tags origin").splitlines()
-        # first test annotated tags
-        for line in all_tags:
-            reg_annotated_tag_str=r"^(.*)\trefs/tags/(.*)\^{}$"
-            annotated_tag_match=re.match(reg_annotated_tag_str, line)
-            if annotated_tag_match:
-                if tag == annotated_tag_match.group(2):
-                    return annotated_tag_match.group(1)
-
-        # then all other tags
-        for line in all_tags:
-            reg_regular_tag_str=r"^(.*)\trefs/tags/(.*)$"
-            regular_tag_match=re.match(reg_regular_tag_str, line)
-            if regular_tag_match:
-                if tag == regular_tag_match.group(2):
-                    return regular_tag_match.group(1)
-
-            else:
-                msg.app_error(
-                    "'git ls-remote --tags origin' does not return a string of the forms: ",
-                    "for regular tag: '"+reg_regular_tag_str+"'",
-                    "for annotated tag: '"+reg_annotated_tag_str+"'",
-                    "instead it returns: "+line
-                )
-                sys.exit(1)
-    return ""
-
 def get_latest_release_for_each_major(all_version_tags):
     import git_helpers.regex_obj as ro
     

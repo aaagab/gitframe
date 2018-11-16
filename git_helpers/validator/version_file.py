@@ -36,6 +36,7 @@ from git_helpers.validator.hotfix import check_hotfix_is_either_on_master_or_on_
 
 
 def version_file_validator(regex_branches, all_version_tags):
+    msg.subtitle("Verify version.txt presence and content.")
     master_version_file_value=version.get_content_version_file(False, "master")
     
     local_regex_branches=filter_all_regex_branches_from_location(regex_branches, "local")

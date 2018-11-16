@@ -5,6 +5,8 @@ import utils.message as msg
 import utils.shell_helpers as shell
 import re
 import git_helpers.regex_obj as ro
+from git_helpers.tags_commits import Tags_commits
+from copy import deepcopy
 
 # all tags from remote are fetched
 # Tags to monitor closely are release and patch
@@ -15,56 +17,39 @@ import git_helpers.regex_obj as ro
 # (start_hotfix tags) all tags of form start_hotfix-\d+\.\d+\.\d+.*
 # As a rule Tags are not fetch globally from remote because if two tags with same name but different commits then the one local is updated without prompt with the one from remote. This behaviour is not desired. That is why only tag of importance are fetch automatically, the other tags have to be pushed and fetched manually
 
+def err_msg_commit(name, tags_commits):
+    msg.user_error(
+        "local tag '"+name+"' with commit '"+tags_commits["local"][name]+"' is different than: ",
+        "remote tag '"+name+"' with commit '"+tags_commits["remote"][name]+"'",
+        "Correct issue."
+    )
+    sys.exit(1)
+
 def tags_validator(repo):
-    msg.subtitle("Local To Remote Tags Validator")
+    msg.subtitle("Verify Tags on local and remote")
+    from datetime import datetime
 
     if repo.is_reachable:
-        local_tag_names=get_local_tags()
-        remote_tag_names=get_remote_tags()
+        tags_commits=Tags_commits("all")
 
-        for local_tag_name in local_tag_names:
-            tag_found_on_remote=False
-            for remote_tag_name in remote_tag_names:
-                if local_tag_name == remote_tag_name:
-                    if compare_commits_from_tag_name(local_tag_name):
-                        tag_found_on_remote=True
-                        break
+        local_tags=tags_commits.tags["local"]
+        remote_tags=tags_commits.tags["remote"]
+        not_found_remote_tags=deepcopy(remote_tags)
 
-            if not tag_found_on_remote:
-                process_tag_not_found(local_tag_name, "remote")
+        for name in local_tags:
+            if name in remote_tags:
+                del not_found_remote_tags[name]
+                if local_tags[name] != remote_tags[name]:
+                    err_msg_commit(name, tags_commits)
+            else:
+                process_tag_not_found(name, "remote")
 
-        for remote_tag_name in remote_tag_names:
-            tag_found_on_local=False
-            for local_tag_name in local_tag_names:
-                if remote_tag_name == local_tag_name:
-                   if compare_commits_from_tag_name(local_tag_name):
-                        tag_found_on_local=True
-                        break    
-            
-            if not tag_found_on_local:
-                process_tag_not_found(remote_tag_name, "local")
+        for name in not_found_remote_tags:
+            process_tag_not_found(name, "local")
 
-        msg.success("tags_validator passed")
+        msg.dbg("success", sys._getframe(  ).f_code.co_name)
     else:
         msg.warning("Remote is not reachable, Tags can't be compared from local to remote")
-
-def compare_commits_from_tag_name(tag_name):
-    msg.dbg("info","compare commits with tag name '"+tag_name+"'")
-    # compare commit
-    local_tag_commit=git.get_commit_from_tag(tag_name, "local")
-    remote_tag_commit=git.get_commit_from_tag(tag_name, "remote")
-    msg.dbg("info",local_tag_commit+", "+remote_tag_commit)
-
-    if local_tag_commit == remote_tag_commit:
-        msg.dbg("success", sys._getframe(  ).f_code.co_name)
-        return True
-    else:
-        msg.user_error(
-            "local tag '"+tag_name+"' with commit '"+local_tag_commit+"' is different than: ",
-            "remote tag '"+tag_name+"' with commit '"+remote_tag_commit+"'",
-            "Correct issue."
-        )
-        sys.exit(1)
 
 def process_tag_not_found(tag_name, not_found_location):
 
@@ -113,29 +98,3 @@ def process_tag_not_found(tag_name, not_found_location):
         return
 
     sys.exit(1)
-
-def get_local_tags():
-    tags=shell.cmd_get_value("git tag")
-    if tags:
-        return tags.splitlines()
-    else:
-        return []
-
-def get_remote_tags():
-    tags=shell.cmd_get_value("git ls-remote --tags origin")
-    tmp_tags=[]
-    for tag in tags.splitlines():
-        this_match=re.match(r"^refs/tags/(.*)$", tag.split("\t")[1])
-        if this_match:
-            # ignore git annotated tag with notation ^{}
-            if not this_match.group(1)[-3:] == "^{}":
-                tmp_tags.append(this_match.group(1))
-        else:
-            msg.app_error(
-                "'git ls-remote --tags origin' does not return a string of the form: ",
-                "['8ca335fd8c80fe3e584b5ad0981dbf906dd73a4d\trefs/tags/v1.0.0']",
-                "instead it returns: "+tag
-            )
-            sys.exit(1)
-    return tmp_tags
-        

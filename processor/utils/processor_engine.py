@@ -208,9 +208,7 @@ def start_processor(conf):
     else:
         conf['unit_num']+=1
 
-    print(conf['unit_num'])
     ph.log_to_task_status_file(conf["filenpa_task_status"],"unit", conf['unit_num'], unit_name)
-
 
     try:
         caller_filename=inspect.stack()[1][1]
