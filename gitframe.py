@@ -84,6 +84,7 @@ def get_direpa_dev_sources(conf):
 	return conf.data["direpa_dev_sources"]
 
 def update_gitframe_bin(conf, parameters=""):
+
 	from distutils.dir_util import copy_tree
 	import shutil
 	import git_helpers.git_utils as git
@@ -98,18 +99,32 @@ def update_gitframe_bin(conf, parameters=""):
 		conf.data["processor"]["task"]["diren_bin"]
 	)
 
-	if os.path.exists(direpa_source_dst):
-		shutil.rmtree(direpa_source_dst)
+	print(direpa_source_app)
+	print(direpa_source_dst)
+	# if os.path.exists(direpa_source_dst):
+	# 	shutil.rmtree(direpa_source_dst)
 	
-	os.makedirs(direpa_source_dst, exist_ok=True)
+	# os.makedirs(direpa_source_dst, exist_ok=True)
 
-	copy_tree(direpa_source_app, direpa_source_dst)
-	shutil.rmtree(os.path.join(direpa_source_dst,".git"))
-	os.remove(os.path.join(direpa_source_dst, "hotfix-history.json"))
-	os.remove(os.path.join(direpa_source_dst, "license.txt"))
+	# copy_tree(direpa_source_app, direpa_source_dst)
+	# shutil.rmtree(os.path.join(direpa_source_dst,".git"))
+	# os.remove(os.path.join(direpa_source_dst, "hotfix-history.json"))
+	# os.remove(os.path.join(direpa_source_dst, "license.txt"))
+
+	# if no parameters create a new draft
+	# if parameters
+	# 	if per update per for gitframe
+		
+	# 	else
+	# 		create a draft and then rexecute gitframe with the parameters
+	# 		# do I need per yes I can keep it
 
 	if parameters:
 		if parameters == "per":
+			print("me")
+
+			sys.exit()
+
 			direpa_previous=os.getcwd()
 			if direpa_source_app != direpa_previous:
 				os.chdir(direpa_source_app)
@@ -129,10 +144,19 @@ def update_gitframe_bin(conf, parameters=""):
 
 		else:
 			cmd_str="{} {}".format(
-				os.path.join(direpa_source_dst, conf.data["processor"]["filen_launcher"]),
+				os.path.join(direpa_source_app, conf.data["processor"]["filen_launcher"]),
 				parameters
 			)
 			os.system(cmd_str)
+	else:
+		cmd_str="{} {}".format(
+			os.path.join(
+				direpa_source_app, 
+				conf.data["processor"]["filen_launcher"]
+			),
+			"--publish-draft"
+		)
+		os.system(cmd_str)
 
 if __name__ == "__main__":
 	install_dependencies(conf.get_value("deps"))
