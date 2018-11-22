@@ -282,9 +282,9 @@ if __name__ == "__main__":
 	if args.disable_validator is True:
 		msg.subtitle("Validator mode disabled")
 		conf.data["validator"]=False
-		if not args.publish_release:
+		if not args.publish_release and not args.publish_early_release:
 			msg.user_error(
-				"Disable Validator can only be enabled with Publish Release (--pr tag).",
+				"Disable Validator can only be enabled with Publish Release (--pr tag) and Publish Early Release (--per).",
 				"It allows to work quickly with the deploy_release script."
 			)
 			sys.exit(1)
