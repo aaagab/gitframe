@@ -90,115 +90,49 @@ def update_gitframe_bin(conf, parameters=""):
 	import git_helpers.git_utils as git
 
 	msg.subtitle("Update Gitframe Bin")
-	# msg.info("Make sure you publish a release or early-release when the fix has been applied.")
 
 	direpa_source_app=get_direpa_dev_sources(conf)
 
+	other_parameters=False
 
-	if parameters:
-		if parameters == "per":
-			direpa_previous=os.getcwd()
-			if direpa_source_app != direpa_previous:
-				os.chdir(direpa_source_app)
-
-			cmd_pd="{} {}".format(
-				os.path.join(
-					direpa_source_app, 
-					conf.data["processor"]["filen_launcher"]
-				),
-				"--publish-draft"
-			)
-
-			cmd_per="{} {}".format(
-				conf.data["app_name"],
-				"--per"
-			)
-			
-			try:
-				os.system(cmd_pd)
-				os.system(cmd_per)
-			except:
-				if direpa_previous != os.getcwd():
-					os.chdir(direpa_previous)
-				
-			if direpa_previous != os.getcwd():
-				os.chdir(direpa_previous)
-
-		elif parameters[:4] == "test":
-			direpa_previous=os.getcwd()
-			if direpa_source_app != direpa_previous:
-				os.chdir(direpa_source_app)
-
-			cmd_str="{} {}".format(
-				os.path.join(
-					direpa_source_app, 
-					conf.data["processor"]["filen_launcher"]
-				),
-				"--publish-draft"
-			)
-			
-			try:
-				os.system(cmd_str)
-			except:
-				if direpa_previous != os.getcwd():
-					os.chdir(direpa_previous)
-				
-			if direpa_previous != os.getcwd():
-				os.chdir(direpa_previous)
-
-			cmd_str="{} --{}".format(
-				conf.data["app_name"],
-				parameters.strip()
-			)
-			os.system(cmd_str)
-		else:
-			direpa_previous=os.getcwd()
-			if direpa_source_app != direpa_previous:
-				os.chdir(direpa_source_app)
-
-			cmd_str="{} {}".format(
-				os.path.join(
-					direpa_source_app, 
-					conf.data["processor"]["filen_launcher"]
-				),
-				"--publish-draft"
-			)
-			
-			try:
-				os.system(cmd_str)
-			except:
-				if direpa_previous != os.getcwd():
-					os.chdir(direpa_previous)
-				
-			if direpa_previous != os.getcwd():
-				os.chdir(direpa_previous)
-
-			cmd_str="{} {}".format(
-				conf.data["app_name"],
-				parameters.strip()
-			)
-			os.system(cmd_str)	
-	else:
-		direpa_previous=os.getcwd()
-		if direpa_source_app != direpa_previous:
-			os.chdir(direpa_source_app)
-
-		cmd_str="{} {}".format(
+	direpa_previous=os.getcwd()
+	if direpa_source_app != direpa_previous:
+		os.chdir(direpa_source_app)
+	
+	try:
+		os.system="{} {}".format(
 			os.path.join(
 				direpa_source_app, 
 				conf.data["processor"]["filen_launcher"]
 			),
 			"--publish-draft"
 		)
-		
-		try:
-			os.system(cmd_str)
-		except:
-			if direpa_previous != os.getcwd():
-				os.chdir(direpa_previous)
-			
+		if parameters == "per":
+			other_parameters=True
+			os.system="{} {}".format(
+				conf.data["app_name"],
+				"--per"
+			)
+	except:
 		if direpa_previous != os.getcwd():
 			os.chdir(direpa_previous)
+		
+	if direpa_previous != os.getcwd():
+		os.chdir(direpa_previous)
+
+	if parameters[:4] == "test":
+		other_parameters=True
+		os.system="{} --{}".format(
+				conf.data["app_name"],
+				parameters.strip()
+			)
+
+	if parameters:
+		if other_parameters == True:
+			os.system="{} {}".format(
+				conf.data["app_name"],
+				parameters.strip()
+			)
 
 if __name__ == "__main__":
 	install_dependencies(conf.get_value("deps"))
