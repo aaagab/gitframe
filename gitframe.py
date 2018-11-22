@@ -149,6 +149,10 @@ def update_gitframe_bin(conf, parameters=""):
 			)
 			os.system(cmd_str)
 	else:
+		direpa_previous=os.getcwd()
+		if direpa_source_app != direpa_previous:
+			os.chdir(direpa_source_app)
+
 		cmd_str="{} {}".format(
 			os.path.join(
 				direpa_source_app, 
@@ -156,7 +160,15 @@ def update_gitframe_bin(conf, parameters=""):
 			),
 			"--publish-draft"
 		)
-		os.system(cmd_str)
+		
+		try:
+			os.system(cmd_str)
+		except:
+			if direpa_previous != os.getcwd():
+				os.chdir(direpa_previous)
+			
+		if direpa_previous != os.getcwd():
+			os.chdir(direpa_previous)
 
 if __name__ == "__main__":
 	install_dependencies(conf.get_value("deps"))
