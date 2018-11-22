@@ -332,7 +332,8 @@ if __name__ == "__main__":
 	elif args.publish_draft is True:
 		from git_helpers.get_all_branch_regexes import get_all_branch_regexes
 		from git_helpers.publish_early_release import publish_early_release
-		publish_early_release(Remote_repository(), get_all_branch_regexes(), "draft")
+		repo=Remote_repository()
+		publish_early_release(repo, get_all_branch_regexes(repo), "draft")
 		sys.exit(0)
 
 
