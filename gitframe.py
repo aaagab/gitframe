@@ -121,18 +121,39 @@ def update_gitframe_bin(conf, parameters=""):
 
 	if parameters:
 		if parameters == "per":
-			print("me")
+			# direpa_previous=os.getcwd()
+			# if direpa_source_app != direpa_previous:
+			# 	os.chdir(direpa_source_app)
 
-			sys.exit()
-
-			direpa_previous=os.getcwd()
-			if direpa_source_app != direpa_previous:
-				os.chdir(direpa_source_app)
-			
 			cmd_str="{} {}".format(
-					os.path.join(direpa_source_dst, conf.data["processor"]["filen_launcher"]),
-					"--{}".format(parameters.strip())
-				)
+				os.path.join(
+					direpa_source_app, 
+					conf.data["processor"]["filen_launcher"]
+				),
+				"--publish-draft"
+			)
+
+			print(cmd_str)
+			
+			# try:
+			# 	os.system(cmd_str)
+
+			# 	cmd_str="{} {}".format(
+			# 		os.path.join(
+			# 			direpa_source_dst, 
+			# 			conf.data["processor"]["filen_launcher"]),
+			# 			"--{}".format(parameters.strip())
+			# 	)
+			# except:
+			# 	if direpa_previous != os.getcwd():
+			# 		os.chdir(direpa_previous)
+				
+			# if direpa_previous != os.getcwd():
+			# 	os.chdir(direpa_previous)
+
+			
+
+			# print(cmd_str)
 			try:
 				os.system(cmd_str)
 			except:
