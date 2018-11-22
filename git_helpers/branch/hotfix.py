@@ -301,7 +301,7 @@ def close_hotfix(repo, regex_branch, regex_branches, all_version_tags):
 		git.delete_origin_branch(repo, regex_branch.text)
 
 	msg.success(regex_branch.text+" has been closed.")
-	publish_release(release_version, get_all_version_tags())
+	publish_release(release_version, "release", get_all_version_tags())
 
 def update_json_data_hotfix_on_close(branch_name, fname, release_version):
 	msg.dbg("subtitle", "updating "+fname)

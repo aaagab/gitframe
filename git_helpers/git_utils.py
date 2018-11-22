@@ -165,9 +165,8 @@ def set_annotated_tags(repo, tag, txt):
     shell.cmd_prompt("git tag -a "+tag+" -m '"+txt+"'")
     if repo.is_reachable:
         push_tag_origin=True
-        if txt == "early_release":
-            if not prompt_boolean("Do you want to push '{}' for '{}' to origin".format(tag, txt), 'n'):
-                push_tag_origin=False
+        if txt == "draft":
+            push_tag_origin=False
 
         if push_tag_origin:
             shell.cmd_prompt('git push origin '+tag)

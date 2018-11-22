@@ -104,7 +104,7 @@ def close_release(repo, branch_regex, regex_branches, all_version_tags):
 
     git.delete_origin_branch(repo, branch_regex.text)
 
-    publish_release(release_version, get_all_version_tags())
+    publish_release(release_version, "release", get_all_version_tags())
 
     git.checkout("develop")
     
