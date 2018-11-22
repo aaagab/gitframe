@@ -48,7 +48,7 @@ class Version_regex(Regex_obj):
 
 class Early_release_regex(Regex_obj):
     def __init__(self, txt=""):
-        Regex_obj.__init__(self, r"(^)(\d+)(\.)(\d+)(\.)(0)(-)(alpha|beta|rc)(-)(\d+)($)")
+        Regex_obj.__init__(self, r"(^)(\d+)(\.)(\d+)(\.)(0)(-)(alpha|beta|draft|rc)(-)(\d+)($)")
         self.type="version"
         self.tag_prefix="v"
         self.set_text(txt)
