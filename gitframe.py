@@ -102,19 +102,19 @@ def update_gitframe_bin(conf, parameters=""):
 	print("here")
 	
 	try:
-		os.system="{} {}".format(
+		os.system("{} {}".format(
 			os.path.join(
 				direpa_source_app, 
 				conf.data["processor"]["filen_launcher"]
 			),
 			"--publish-draft"
-		)
+		))
 		if parameters == "per":
 			other_parameters=True
-			os.system="{} {}".format(
+			os.system("{} {}".format(
 				conf.data["app_name"],
 				"--per"
-			)
+			))
 	except:
 		if direpa_previous != os.getcwd():
 			os.chdir(direpa_previous)
@@ -124,16 +124,18 @@ def update_gitframe_bin(conf, parameters=""):
 
 	if parameters[:4] == "test":
 		other_parameters=True
-		os.system="{} --{}".format(
+		os.system("{} --{}".format(
 				conf.data["app_name"],
 				parameters.strip()
 			)
+		)
 
 	if parameters:
 		if other_parameters == True:
-			os.system="{} {}".format(
+			os.system("{} {}".format(
 				conf.data["app_name"],
 				parameters.strip()
+				)
 			)
 
 if __name__ == "__main__":
