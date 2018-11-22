@@ -30,13 +30,12 @@ release_err_msg="""
          - You also have some differences depending if the release_type is release or early_release.
 """
 
-def publish_release(release_version, all_version_tags=""):
+def publish_release(release_version, release_type, all_version_tags=""):
     check_bump_release_version_script()
 
     if not all_version_tags:
         all_version_tags=get_all_version_tags()
         
-    release_type=""
     if release_version[0]=="v":
         release_version=release_version[1:]
     
@@ -51,10 +50,6 @@ def publish_release(release_version, all_version_tags=""):
                 "However your release_version is '"+release_version+"'"
             )
             sys.exit(1)
-        else:
-            release_type="early_release"
-    else:
-        release_type="release"
 
     msg.title("Publish Tag v"+release_version )
     msg.dbg("info", release_type)
@@ -84,9 +79,8 @@ def publish_release(release_version, all_version_tags=""):
         else:
             msg.dbg("info","launch script "+filer_deploy_release)
             shell.cmd(filenpa_deploy_release+" "+release_version+" "+release_type)
-            if release_type == "early_release":
-                if prompt_boolean("Do you want to delete local tag v'{}'".format(release_version)):
-                    shell.cmd("git tag --delete v{}".format(release_version))
+            if release_type == "draft":
+                shell.cmd("git tag --delete v{}".format(release_version))
     else:
         msg.warning(release_err_msg[1:])
         sys.exit(1)

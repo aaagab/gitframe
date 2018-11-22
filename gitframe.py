@@ -159,6 +159,13 @@ if __name__ == "__main__":
 		help=argparse.SUPPRESS
 	)
 	parser.add_argument(
+		"--pd",
+		"--publish-draft",
+		action="store_true",
+		dest="publish_draft",
+		help="this command works on develop, feature, and release branch. It executes the publish_early_release command but the validator is disabled and it does not keep annotated tags."
+	)
+	parser.add_argument(
 		"--dv",
 		action="store_true",
 		dest="disable_validator",
@@ -322,13 +329,21 @@ if __name__ == "__main__":
 		publish_early_release(repo, regex_branches)
 		sys.exit(0)
 
+	elif args.publish_draft is True:
+		from git_helpers.get_all_branch_regexes import get_all_branch_regexes
+		from git_helpers.publish_early_release import publish_early_release
+		publish_early_release(Remote_repository(), get_all_branch_regexes(), "draft")
+		sys.exit(0)
+
+
+
 	elif args.publish_release:
 		from git_helpers.publish_release import publish_release
 		if not conf.data["validator"]:
-			publish_release(args.publish_release[0])
+			publish_release(args.publish_release[0], "release")
 		else:
 			repo, regex_branches, all_version_tags=validator(conf.data["validator"])
-			publish_release(args.publish_release[0], all_version_tags)
+			publish_release(args.publish_release[0], "release", all_version_tags)
 		sys.exit(0)
 
 	elif args.synchronize_project is True:

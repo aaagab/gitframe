@@ -80,14 +80,14 @@ if __name__ == "__main__":
     from git_helpers.get_all_version_tags import get_all_version_tags
     
     if sys.argv[1] == "notReleaseOrEarlyRelease":
-        publish_release("myCustomTag", get_all_version_tags())
+        publish_release("myCustomTag", "release", get_all_version_tags())
     elif sys.argv[1] == "release":
         if sys.argv[2] == "noVchar":
-            publish_release("1.0.0", get_all_version_tags())
+            publish_release("1.0.0", "release", get_all_version_tags())
         elif sys.argv[2] == "withVchar":
-            publish_release("v1.0.0", get_all_version_tags())
+            publish_release("v1.0.0", "release", get_all_version_tags())
         elif sys.argv[2] == "success":
-            publish_release("1.0.1", get_all_version_tags())
+            publish_release("1.0.1", "release", get_all_version_tags())
     elif sys.argv[1] == "early_release":
-        publish_release("v1.0.0-beta-1541085957", get_all_version_tags())
+        publish_release("v1.0.0-beta-1541085957", "release", get_all_version_tags())
 

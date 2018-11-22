@@ -11,7 +11,7 @@ import git_helpers.regex_obj as ro
 from git_helpers.get_all_version_tags import get_all_version_tags
 
 
-def publish_early_release(repo, regex_branches):
+def publish_early_release(repo, regex_branches, draft=""):
     msg.subtitle("Publish Early Version")
 
     regex_branch=ro.get_element_regex()
@@ -47,9 +47,12 @@ def publish_early_release(repo, regex_branches):
         time_stamp=str(int(time.time()))
         version_value+="-"+time_stamp
         version.bump_version_for_user(version_value)
-        git.set_annotated_tags(repo, "v"+version_value, "early_release")
-
-        publish_release(version_value, get_all_version_tags())
+        if not draft:
+            git.set_annotated_tags(repo, "v"+version_value, "early_release")
+            publish_release(version_value, "early_release", get_all_version_tags())
+        else:
+            git.set_annotated_tags(repo, "v"+version_value, "draft")
+            publish_release(version_value, "draft", get_all_version_tags())
     else:
         msg.user_error(
             "Publish early version only applies to 'develop', 'feature' or 'release' branch type.",
