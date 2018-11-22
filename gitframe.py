@@ -99,8 +99,6 @@ def update_gitframe_bin(conf, parameters=""):
 		conf.data["processor"]["task"]["diren_bin"]
 	)
 
-	print(direpa_source_app)
-	print(direpa_source_dst)
 	# if os.path.exists(direpa_source_dst):
 	# 	shutil.rmtree(direpa_source_dst)
 	
@@ -118,7 +116,6 @@ def update_gitframe_bin(conf, parameters=""):
 	# 	else
 	# 		create a draft and then rexecute gitframe with the parameters
 	# 		# do I need per yes I can keep it
-	print("here")
 	if parameters:
 		if parameters == "per":
 			direpa_previous=os.getcwd()
@@ -170,9 +167,9 @@ def update_gitframe_bin(conf, parameters=""):
 			if direpa_previous != os.getcwd():
 				os.chdir(direpa_previous)
 
-			cmd_str="{} {}".format(
+			cmd_str="{} --{}".format(
 				conf.data["app_name"],
-				parameters
+				parameters.strip()
 			)
 			os.system(cmd_str)
 		else:
@@ -197,7 +194,7 @@ def update_gitframe_bin(conf, parameters=""):
 			if direpa_previous != os.getcwd():
 				os.chdir(direpa_previous)
 
-			cmd_str="{} --{}".format(
+			cmd_str="{} {}".format(
 				conf.data["app_name"],
 				parameters.strip()
 			)
