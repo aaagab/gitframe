@@ -9,6 +9,7 @@ import git_helpers.regex_obj as ro
 from git_helpers.get_all_version_tags import get_all_version_tags
 from git_helpers.validator.version_file import check_bump_release_version_script
 from git_helpers.tags_commits import Tags_commits			
+from utils.prompt import prompt_boolean
 
 release_err_msg="""
  Create a script file deploy_release.sh or deploy_release.py
@@ -83,6 +84,9 @@ def publish_release(release_version, all_version_tags=""):
         else:
             msg.dbg("info","launch script "+filer_deploy_release)
             shell.cmd(filenpa_deploy_release+" "+release_version+" "+release_type)
+            if release_type == "early_release":
+                if prompt_boolean("Do you want to delete local tag v'{}'".format(release_version)):
+                    shell.cmd("git tag --delete {}".format(release_version))
     else:
         msg.warning(release_err_msg[1:])
         sys.exit(1)
