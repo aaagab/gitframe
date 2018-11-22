@@ -94,28 +94,7 @@ def update_gitframe_bin(conf, parameters=""):
 
 	direpa_source_app=get_direpa_dev_sources(conf)
 
-	direpa_source_dst=os.path.join(
-		conf.data["processor"]["task"]["direpa"],
-		conf.data["processor"]["task"]["diren_bin"]
-	)
 
-	# if os.path.exists(direpa_source_dst):
-	# 	shutil.rmtree(direpa_source_dst)
-	
-	# os.makedirs(direpa_source_dst, exist_ok=True)
-
-	# copy_tree(direpa_source_app, direpa_source_dst)
-	# shutil.rmtree(os.path.join(direpa_source_dst,".git"))
-	# os.remove(os.path.join(direpa_source_dst, "hotfix-history.json"))
-	# os.remove(os.path.join(direpa_source_dst, "license.txt"))
-
-	# if no parameters create a new draft
-	# if parameters
-	# 	if per update per for gitframe
-		
-	# 	else
-	# 		create a draft and then rexecute gitframe with the parameters
-	# 		# do I need per yes I can keep it
 	if parameters:
 		if parameters == "per":
 			direpa_previous=os.getcwd()
