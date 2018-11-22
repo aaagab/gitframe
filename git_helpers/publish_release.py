@@ -86,7 +86,7 @@ def publish_release(release_version, all_version_tags=""):
             shell.cmd(filenpa_deploy_release+" "+release_version+" "+release_type)
             if release_type == "early_release":
                 if prompt_boolean("Do you want to delete local tag v'{}'".format(release_version)):
-                    shell.cmd("git tag --delete {}".format(release_version))
+                    shell.cmd("git tag --delete v{}".format(release_version))
     else:
         msg.warning(release_err_msg[1:])
         sys.exit(1)
