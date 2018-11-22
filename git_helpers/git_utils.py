@@ -4,6 +4,7 @@ import utils.message as msg
 import utils.shell_helpers as shell
 import sys
 import re
+from utils.prompt import prompt_boolean
 
 def has_git_directory(path=""):
     start_path=""
@@ -163,7 +164,13 @@ def fetch_tags():
 def set_annotated_tags(repo, tag, txt):
     shell.cmd_prompt("git tag -a "+tag+" -m '"+txt+"'")
     if repo.is_reachable:
-        shell.cmd_prompt('git push origin '+tag)
+        push_tag_origin=True
+        if txt == "early_release":
+            if not prompt_boolean("Do you want to push '{}' for '{}' to origin".format(tag, txt)):
+                push_tag_origin=False
+
+        if push_tag_origin:
+            shell.cmd_prompt('git push origin '+tag)
     else:
         msg.warning("Tag "+tag+" can't been pushed to Remote.")
 
