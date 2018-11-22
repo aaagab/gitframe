@@ -197,9 +197,9 @@ def update_gitframe_bin(conf, parameters=""):
 			if direpa_previous != os.getcwd():
 				os.chdir(direpa_previous)
 
-			cmd_str="{} {}".format(
+			cmd_str="{} --{}".format(
 				conf.data["app_name"],
-				parameters
+				parameters.strip()
 			)
 			os.system(cmd_str)	
 	else:
