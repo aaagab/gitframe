@@ -90,7 +90,7 @@ def update_gitframe_bin(conf, parameters=""):
 	import git_helpers.git_utils as git
 
 	msg.subtitle("Update Gitframe Bin")
-	msg.info("Make sure you publish a release or early-release when the fix has been applied.")
+	# msg.info("Make sure you publish a release or early-release when the fix has been applied.")
 
 	direpa_source_app=get_direpa_dev_sources(conf)
 
@@ -121,11 +121,11 @@ def update_gitframe_bin(conf, parameters=""):
 
 	if parameters:
 		if parameters == "per":
-			# direpa_previous=os.getcwd()
-			# if direpa_source_app != direpa_previous:
-			# 	os.chdir(direpa_source_app)
+			direpa_previous=os.getcwd()
+			if direpa_source_app != direpa_previous:
+				os.chdir(direpa_source_app)
 
-			cmd_str="{} {}".format(
+			cmd_pd="{} {}".format(
 				os.path.join(
 					direpa_source_app, 
 					conf.data["processor"]["filen_launcher"]
@@ -133,36 +133,20 @@ def update_gitframe_bin(conf, parameters=""):
 				"--publish-draft"
 			)
 
-			print(cmd_str)
+			cmd_per="{} {}".format(
+				conf.data["app_name"],
+				"--per"
+			)
 			
-			# try:
-			# 	os.system(cmd_str)
-
-			# 	cmd_str="{} {}".format(
-			# 		os.path.join(
-			# 			direpa_source_dst, 
-			# 			conf.data["processor"]["filen_launcher"]),
-			# 			"--{}".format(parameters.strip())
-			# 	)
-			# except:
-			# 	if direpa_previous != os.getcwd():
-			# 		os.chdir(direpa_previous)
-				
-			# if direpa_previous != os.getcwd():
-			# 	os.chdir(direpa_previous)
-
-			
-
-			# print(cmd_str)
 			try:
-				os.system(cmd_str)
+				os.system(cmd_pd)
+				os.system(cmd_per)
 			except:
 				if direpa_previous != os.getcwd():
 					os.chdir(direpa_previous)
 				
 			if direpa_previous != os.getcwd():
 				os.chdir(direpa_previous)
-
 		else:
 			print("here")
 			sys.exit()
