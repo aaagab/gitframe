@@ -59,7 +59,6 @@
         "read_log_window_title": "#Error_Logs#",
         "task": {
             "diren": "test",
-            "diren_bin": "bin",
             "diren_src": "src",
             "direpa": "/tmp/test-gf",
             "name": "gitframe",
@@ -75,5 +74,5 @@
         "waiting_time_between_cmds": 20
     },
     "validator": true,
-    "version": "1.0.0-draft-1542927048"
+    "version": "1.0.0-draft-1542927140"
 }
