@@ -334,8 +334,12 @@ if __name__ == "__main__":
 		from git_helpers.publish_early_release import publish_early_release
 		from pprint import pprint
 
+		class Remote_repository:
+		    def __init__(self):
+		        self.is_reachable=False
+
 		repo=Remote_repository()
-		pprint(repo)
+
 		publish_early_release(repo, get_all_branch_regexes(repo), "draft")
 		sys.exit(0)
 
