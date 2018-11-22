@@ -118,7 +118,7 @@ def update_gitframe_bin(conf, parameters=""):
 	# 	else
 	# 		create a draft and then rexecute gitframe with the parameters
 	# 		# do I need per yes I can keep it
-
+	print("here")
 	if parameters:
 		if parameters == "per":
 			direpa_previous=os.getcwd()
