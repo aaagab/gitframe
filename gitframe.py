@@ -143,6 +143,8 @@ def update_gitframe_bin(conf, parameters=""):
 				os.chdir(direpa_previous)
 
 		else:
+			print("here")
+			sys.exit()
 			cmd_str="{} {}".format(
 				os.path.join(direpa_source_app, conf.data["processor"]["filen_launcher"]),
 				parameters

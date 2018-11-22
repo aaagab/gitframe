@@ -41,7 +41,12 @@ def publish_early_release(repo, regex_branches, draft=""):
                 if regex_branch.type in ["feature"]:
                     version_value=get_increment_version(version_value)
        
-        release_type=get_early_release_type(regex_branch.type, version_value)
+        release_type=""
+        if not draft:
+            release_type=get_early_release_type(regex_branch.type, version_value)
+        else:
+            release_type="draft"
+
         version_value+="-"+release_type
  
         time_stamp=str(int(time.time()))
