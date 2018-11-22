@@ -93,7 +93,7 @@ def update_gitframe_bin(conf, parameters=""):
 
 	direpa_source_app=get_direpa_dev_sources(conf)
 
-	other_parameters=False
+	other_parameters=True
 
 	direpa_previous=os.getcwd()
 	if direpa_source_app != direpa_previous:
@@ -110,7 +110,7 @@ def update_gitframe_bin(conf, parameters=""):
 			"--publish-draft"
 		))
 		if parameters == "per":
-			other_parameters=True
+			other_parameters=False
 			os.system("{} {}".format(
 				conf.data["app_name"],
 				"--per"
@@ -123,20 +123,18 @@ def update_gitframe_bin(conf, parameters=""):
 		os.chdir(direpa_previous)
 
 	if parameters[:4] == "test":
-		other_parameters=True
+		other_parameters=False
 		os.system("{} --{}".format(
 				conf.data["app_name"],
 				parameters.strip()
-			)
-		)
+		))
 
 	if parameters:
 		if other_parameters == True:
 			os.system("{} {}".format(
 				conf.data["app_name"],
 				parameters.strip()
-				)
-			)
+			))
 
 if __name__ == "__main__":
 	install_dependencies(conf.get_value("deps"))
