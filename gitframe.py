@@ -127,9 +127,10 @@ def update_gitframe_bin(conf, parameters=""):
 			if direpa_previous != os.getcwd():
 				os.chdir(direpa_previous)
 		elif parameters[:4] == "test":
+			print("here")
 			cmd_str="{} {}".format(
-					os.path.join(direpa_source_, conf.data["processor"]["filen_launcher"]),
-					"--{}".format(parameters.strip())
+				os.path.join(direpa_source_app, conf.data["processor"]["filen_launcher"]),
+				"--{}".format(parameters.strip())
 			)
 			print(cmd_str)
 		else:
