@@ -36,21 +36,6 @@ def delete_dir(direpa):
         msg.app_error("'{}' not deleted on local.".format(direpa))
         sys.exit(1)
 
-def verify_direpa_app_git(direpa_app, direpa_app_git):
-    create_direpa_app_git=True
-
-    if os.path.exists(direpa_app_git):
-        msg.warning("'{} already exists'".format(direpa_app_git))
-        if not prompt_boolean("Do you want to upload existing folder to repo ('N' means create a new one from source)"):
-            delete_dir(direpa_app_git)
-        else:
-            create_direpa_app_git=False
-
-    if create_direpa_app_git:
-        shell.cmd_prompt("git clone --bare "+direpa_app+" "+direpa_app_git, True)
-
-    os.chdir(direpa_app)
-
 def clone_project_to_remote(repo):
     msg.title("clone project to remote repository")
 
@@ -63,7 +48,9 @@ def clone_project_to_remote(repo):
         if not repo.has_directory:
             if repo.path_type == "directory":
                 msg.dbg("info", "repo is a directory")
-                verify_direpa_app_git(direpa_app, direpa_app_git)
+                # verify_direpa_app_git(direpa_app, direpa_app_git)
+                shell.cmd_prompt("git clone --bare "+direpa_app+" "+repo.path, True)
+                os.chdir(direpa_app)
                 
                 shell.cmd_prompt("git push origin master")
                 shell.cmd_prompt("git push origin develop")
@@ -74,7 +61,20 @@ def clone_project_to_remote(repo):
                 scp_path=re.sub(r"^.*?(@.*)$",user_ssh+r"\1",repo.path)
                 ssh_url=user_ssh+"@"+repo.domain
 
-                verify_direpa_app_git(direpa_app, direpa_app_git)
+                create_direpa_app_git=True
+
+                if os.path.exists(direpa_app_git):
+                    msg.warning("'{} already exists'".format(direpa_app_git))
+                    if not prompt_boolean("Do you want to upload existing folder to repo ('N' means create a new one from source)"):
+                        delete_dir(direpa_app_git)
+                    else:
+                        create_direpa_app_git=False
+
+                if create_direpa_app_git:
+                    shell.cmd_prompt("git clone --bare "+direpa_app+" "+direpa_app_git, True)
+
+                os.chdir(direpa_app)
+
 
                 shell.cmd_prompt("ssh "+ssh_url+" \"mkdir -p "+repo.direpa_par_src+"\"", True)
                 shell.cmd_prompt("scp -r "+direpa_app+".git "+scp_path, True)

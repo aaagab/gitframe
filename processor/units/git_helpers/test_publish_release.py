@@ -89,5 +89,5 @@ if __name__ == "__main__":
         elif sys.argv[2] == "success":
             publish_release("1.0.1", "release", get_all_version_tags())
     elif sys.argv[1] == "early_release":
-        publish_release("v1.0.0-beta-1541085957", "release", get_all_version_tags())
+        publish_release("v1.0.0-beta-1541085957", "early_release", get_all_version_tags())
 
