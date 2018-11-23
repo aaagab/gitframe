@@ -98,7 +98,7 @@ def test_set_new_project(conf):
             _out:[sudo] password for {user_current}:
             _type:{sudo_pass}
             _out:√ ssh -t {user_current}@{domain} "sudo chown -R {user_git}:{user_git} {direpa_remote_src}"
-            _out:√ {direpa_task_src}.git deleted on local.
+            _out:√ '{direpa_task_src}.git' deleted on local.
             cd {direpa_task_src}
             git checkout master
             git tag start_master

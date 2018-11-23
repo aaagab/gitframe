@@ -78,7 +78,7 @@ def test_clone_project(conf):
             _out:[sudo] password for {user_ssh}:
             _type:{sudo_pass}
             _out:√ ssh -t {user_ssh}@{domain} "sudo chown -R {user_git}:{user_git} {direpa_remote_src}"
-            _out:√ {direpa_task_src}.git deleted on local.
+            _out:√ '{direpa_task_src}.git' deleted on local.
             rm -rf {direpa_task_conf}/{diren_task}
             sudo rm -rf {direpa_repository}
             _out:[sudo] password for {user_ssh}:
