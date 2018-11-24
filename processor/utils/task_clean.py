@@ -21,7 +21,9 @@ def delete_test_and_repo(conf):
         if user_group_repository != conf["user_current"]+":"+conf["user_current"]:
             shell.cmd_prompt("sudo rm -rf '{}'".format(conf["direpa_repository"]))
         else:
-            shutil.rmtree(conf["direpa_repository"])
+            # shell.cmd_prompt("sudo chown -R  '{}'".format(conf["direpa_repository"]))
+            shell.cmd_prompt("sudo rm -rf '{}'".format(conf["direpa_repository"]))
+            # shutil.rmtree(conf["direpa_repository"])
    
         msg.success("'"+conf["direpa_repository"]+"' deleted.")
         
@@ -58,8 +60,7 @@ def clean_end_cmds(conf):
 
         # delete tmp directory for dual directory test
         rm -rf {direpa_task_src}_tmp
-        rm {direpa_task}/scripts/deploy_release.sh
-        rm {direpa_task}/mock_project     
+        rm {direpa_task}/mock_project || true
     """.format(direpa_task=conf["direpa_task"], direpa_task_src=conf["direpa_task_src"] )
 
     return re.sub(r'\n\s*','\n',clean_heredoc)[1:-1]

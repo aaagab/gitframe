@@ -34,7 +34,7 @@ def filter_all_regex_branches_from_location(reg_branches, location):
 def get_all_branch_regexes(repo):
     regex_branches=[]
     if repo.is_reachable:
-        if repo.has_directory:
+        if repo.is_git_directory:
             for branch_name in git.get_heads_remote_branch_names(repo):
                 reg_obj=ro.get_element_regex(branch_name)
                 reg_obj.location="remote"

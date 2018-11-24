@@ -59,26 +59,26 @@ def publish_release(release_version, release_type, all_version_tags=""):
         sys.exit(1)
 
     conf = Json_config()
-    filer_deploy_release=conf.get_value("filer_deploy_release")
+    filer_deploy=conf.get_value("filer_deploy")
     direpa_parent = os.path.abspath('..')
 
-    filerpa_deploy_release=os.path.join(direpa_parent, conf.get_value("diren_scripts"), filer_deploy_release)
+    filerpa_deploy_release=os.path.join(direpa_parent, filer_deploy)
 
     if os.path.exists(filerpa_deploy_release+".py"):
-        filenpa_deploy_release=filerpa_deploy_release+".py"
+        filenpa_deploy=filerpa_deploy_release+".py"
     elif os.path.exists(filerpa_deploy_release+".sh"):
-        filenpa_deploy_release=filerpa_deploy_release+".sh"
+        filenpa_deploy=filerpa_deploy_release+".sh"
     else:
-        filenpa_deploy_release=""
+        filenpa_deploy=""
 
-    if filenpa_deploy_release:
-        is_cmd_executable= os.access(filenpa_deploy_release, os.X_OK)
+    if filenpa_deploy:
+        is_cmd_executable= os.access(filenpa_deploy, os.X_OK)
         if not is_cmd_executable:
-            msg.user_error("script "+filer_deploy_release+" is not executable")
+            msg.user_error("script "+filer_deploy+" is not executable")
             sys.exit(1)
         else:
-            msg.dbg("info","launch script "+filer_deploy_release)
-            shell.cmd(filenpa_deploy_release+" "+release_version+" "+release_type)
+            msg.dbg("info","launch script "+filer_deploy)
+            shell.cmd(filenpa_deploy+" "+release_version+" "+release_type)
             if release_type == "draft":
                 shell.cmd("git tag --delete v{}".format(release_version))
                 print()

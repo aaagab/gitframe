@@ -99,8 +99,6 @@ def update_gitframe_bin(conf, parameters=""):
 	if direpa_source_app != direpa_previous:
 		os.chdir(direpa_source_app)
 
-	print("here")
-	
 	try:
 		os.system("{} {}".format(
 			os.path.join(

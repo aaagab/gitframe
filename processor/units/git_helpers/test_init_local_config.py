@@ -13,11 +13,12 @@ def test_init_local_config(conf):
         "direpa_task": conf["direpa_task"],
         "direpa_task_conf": conf["direpa_task_conf"],
         "direpa_repository": conf["direpa_repository"],
+        "user_git": conf["remote"]["user_git"],
         "diren_src": conf["diren_src"],
         "block_user_input": """
-            _out:Enter user name [q to quit]:
-            _type:user_name
-            _out:Enter user email [q to quit]:
+            _out:Enter git user name [q to quit]:
+            _type:{user_git}
+            _out:Enter git user email [q to quit]:
             _type:test@test.com
             _out:Enter origin repository [q to quit]:
         """  

@@ -8,7 +8,7 @@ import git_helpers.git_utils as git
 from git_helpers.clone_project_to_remote import clone_project_to_remote
 from git_helpers.init_local_config import init_local_config
 import utils.shell_helpers as shell
-from utils.prompt import prompt_boolean
+from utils.prompt import prompt_boolean, prompt
 from git_helpers.license import get_license_content
 from git_helpers.remote_repository import Remote_repository
 from utils.create_directory_tree import create_directory_tree
@@ -45,7 +45,30 @@ def create_directory(path):
 def test_file_not_exist(file):
     if os.path.exists(file):
         msg.user_error("File '"+file+"' already exists.")
-        sys.exit(1)
+        sys.direns
+
+def init_git_folder(direpa_to_init, user_obj, files_added):
+    diren_to_init=os.path.basename(direpa_to_init)
+    msg.info("init folder '{}'".format(diren_to_init))
+    os.chdir(direpa_to_init)
+    shell.cmd("git init")
+    init_local_config(user_obj)
+    file=os.path.join(os.getcwd(), ".gitignore")
+    test_file_not_exist(file)
+    open(file, 'w').close()
+    files_added.append(file)
+
+    if diren_to_init == "src":
+        file="hotfix-history.json"
+        test_file_not_exist(file)
+        with open(file,"w") as f:
+            f.write("{}")
+        files_added.append(file)
+
+    shell.cmd("git add .")
+    git.commit_empty("Branch master created on '"+diren_to_init+"'")
+
+
 
 def new_project(path=""):
     msg.title("Create new Git Project")
@@ -89,22 +112,36 @@ def new_project(path=""):
 
     os.chdir(path)
 
-    created_directorys=create_directory_tree()
+    user_obj={}
+    user_obj.update(username=prompt("Enter git user name"))
+    user_obj.update(email=prompt("Enter git user email"))
+    print()
+    print("  Origin parent repository example: ")
+    print("  On server with name: '{user}@{server_name}:/{path}'")
+    print("  On server with ip: '{user}@{server_ip}:/{path}'")
+    print("  On local: '{path}'")
+    print("  The Origin parent repository contains the 'dirname.git' created by git clone --bare")
+    print()
+    parent_repository=os.path.normpath(prompt("Enter origin parent repository"))
 
-    os.chdir("src")
+    created_directories, created_files=create_directory_tree(user_obj["username"])
 
-    shell.cmd("git init")
-    init_local_config()
+    files_added=[]
+    if created_files:
+        files_added.extend(created_files)
 
-    file_added=[]
-    file="hotfix-history.json"
-    test_file_not_exist(file)
+    direpas_proj=[
+        os.path.join(path, "doc"),
+        os.path.join(path, "mgt"),
+        os.path.join(path, "src")
+    ]
 
-    with open(file,"w") as f:
-        f.write("{}")
-    file_added.append(file)
-    shell.cmd_prompt("git add .")
-    git.commit_empty("Branch master created")
+    for direpa_proj in direpas_proj:
+        diren_proj=os.path.basename(direpa_proj)
+        user_obj["repository"]=os.path.join(parent_repository, diren_proj+".git")
+        init_git_folder(direpa_proj, user_obj, files_added)
+        if diren_proj != "src":
+            os.chdir(path)
 
     if prompt_boolean("Do you Want To Add a License"):
         file="license.txt"
@@ -114,43 +151,53 @@ def new_project(path=""):
         with open(file,"w") as f:
             f.write(license_content+'\n')
 
-        file_added.append(file)
+        files_added.append(file)
         git.commit(file+" added")
 
     git.checkoutb("develop")
     git.commit_empty("Branch develop created")
         
-    repo=Remote_repository()
 
-    if repo.is_reachable:
-        if repo.has_directory:
-            msg.user_error("Remote Directory "+root_dir+".git Already Exists on remote repository 'Origin'",                               "Clone "+root_dir+".git from Remote or Change application name")
-            try:
-                if existing_directory:
-                    shutil.rmtree(".git")
-                    for f in file_added:
-                        msg.info("Remove file '"+f+"'")
-                        os.remove(f)
-                    
-                    os.chdir(path)
-                    for directory in created_directorys:
-                        msg.info("Remove directory '"+directory+"'")
-                        shutil.rmtree(directory)
-                else:
-                    os.chdir(os.path.dirname(path))
-                    shutil.rmtree(root_dir)
-            except:
-                msg.app_error("cannot clean directory '"+root_dir+"'")
+    for direpa_proj in direpas_proj:
+        os.chdir(direpa_proj)
+        repo=Remote_repository()
+        if repo.is_reachable:
+            if repo.is_git_directory:
+                diren_repo=os.path.basename(repo.path)
+                msg.user_error(
+                    "Remote Directory "+diren_repo+" Already Exists on remote repository 'Origin'",
+                    "Clone "+diren_repo+" from Remote or Change application name"
+                )
+
+                if os.path.basename(direpa_proj) == "src":
+                    try:
+                        if existing_directory:
+                            shutil.rmtree(".git")
+                            for f in files_added:
+                                msg.info("Remove file '"+f+"'")
+                                os.remove(f)
+                            
+                            os.chdir(path)
+                            for directory in created_directories:
+                                msg.info("Remove directory '"+directory+"'")
+                                shutil.rmtree(directory)
+                        else:
+                            os.chdir(os.path.dirname(path))
+                            shutil.rmtree(root_dir)
+                    except:
+                        msg.app_error("cannot clean directory '"+root_dir+"'")
+                        sys.exit(1)
+
+                    msg.info("directory '"+root_dir+"' cleaned.")
+                
+                os.chdir(start_directory)
                 sys.exit(1)
-
-            msg.info("directory '"+root_dir+"' cleaned.")
-            os.chdir(start_directory)
-            sys.exit(1)
+            else:
+                clone_project_to_remote(repo)
+                if os.path.basename(direpa_proj) == "src":
+                    shell.cmd_prompt("git push origin develop")
+                    shell.cmd_prompt("git push origin master")
         else:
-            clone_project_to_remote(repo)
-            shell.cmd_prompt("git push origin develop")
-            shell.cmd_prompt("git push origin master")
-    else:
-        msg.warning("Clone your project when connectivity is back.")
+            msg.warning("Clone your project when connectivity is back.")
 
     msg.success("New Project "+root_dir+" initialized.")

@@ -10,11 +10,12 @@ def test_processor(conf):
         'new_cmd':conf["filenpa_launcher"]+" "+conf["tmp"]["opt"]+" "+conf["diren_task"],
         'heredoc_var': "This is my var",
         'hello':"HeredocHelloVar",
+        "user_git": conf["remote"]["user_git"],
         "block_user_input": """
-            _out:Enter user name [q to quit]:
-            _type:user_name
+            _out:Enter git user name [q to quit]:
+            _type:{user_git}
             _out:# local name set to "marty"
-            _out:Enter user email [q to quit]:
+            _out:Enter git user email [q to quit]:
             _type:test@test.com
             _out:Enter origin repository [q to quit]:
             _type:test@thistest.com:/srv/git/
@@ -127,9 +128,9 @@ if __name__ == "__main__":
 
         # if remote and local_remote and local:
         if argument == "basic_prompt":
-            prompt("Enter user name")
+            prompt("Enter git user name")
             msg.info("local name set to \"marty\"")
-            prompt("Enter user email")
+            prompt("Enter git user email")
             msg.info("local email set to \"test@test.com\"")
             prompt("Enter origin repository")
             msg.info("Repository set to \"git@thisroot.com:/srv/git/\"")

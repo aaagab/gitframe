@@ -6,8 +6,8 @@ if __name__ != "__main__":
 def test_publish_release(conf):
     set_task_vars(conf, {
         "direpa_task_src": conf["direpa_task_src"],
-        "direpa_scripts": conf["direpa_scripts"],
-        "filenpa_deploy_release": conf["filenpa_deploy_release"]
+        "direpa_task": conf["direpa_task"],
+        "filenpa_deploy": conf["filenpa_deploy"]
     })
 
     set_task_steps(conf, """
@@ -25,11 +25,10 @@ def test_publish_release(conf):
         git commit -a -m 'version.txt'
         git tag -a v1.0.1 -m 'release'
 
-        mkdir -p {direpa_scripts}
-        echo '#!/bin/bash' > {filenpa_deploy_release}
-        echo 'echo $1' >> {filenpa_deploy_release}
-        echo 'echo $2' >> {filenpa_deploy_release}
-        chmod +x {filenpa_deploy_release}
+        echo '#!/bin/bash' > {filenpa_deploy}
+        echo 'echo $1' >> {filenpa_deploy}
+        echo 'echo $2' >> {filenpa_deploy}
+        chmod +x {filenpa_deploy}
 
         {step} notReleaseOrEarlyRelease
         {cmd}
@@ -58,13 +57,13 @@ def test_publish_release(conf):
         git tag -a v1.0.0-beta-1541085957 -m 'early-release'
         {cmd}
         _out:# early_release
-        _out:# launch script deploy_release
+        _out:# launch script deploy
         _out:1.0.0-beta-1541085957
         _out:early_release
 
         {step} release success
         {cmd}
-        _out:# launch script deploy_release
+        _out:# launch script deploy
         _out:1.0.1
     """)
             

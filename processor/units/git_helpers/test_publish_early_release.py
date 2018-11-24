@@ -7,16 +7,12 @@ def test_publish_early_release(conf):
     set_task_vars(conf, {
         "direpa_task_src": conf["direpa_task_src"],
         "direpa_task": conf["direpa_task"],
+        "filenpa_deploy": conf["filenpa_deploy"],
     })
     
     set_task_steps(conf, """
         {step} prepare for publish_release
         cd {direpa_task_src}
-        mkdir -p {direpa_task}/scripts
-        echo '#!/bin/bash' > {direpa_task}/scripts/deploy_release.sh
-        echo 'echo $1' >> {direpa_task}/scripts/deploy_release.sh
-        echo 'echo $2' >> {direpa_task}/scripts/deploy_release.sh
-        chmod +x {direpa_task}/scripts/deploy_release.sh
      
         {step} publish_early_release on_release
         git checkout -b release-2.1.0
@@ -27,7 +23,7 @@ def test_publish_early_release(conf):
         _out:# branch_type: release
         _out:Choose an early release type for tag '2.1.0' or 'q' to quit:
         _type:3
-        _out:# launch script deploy_release
+        _out:# launch script deploy
         git checkout master
         git branch -D release-2.1.0
         git reset --hard start_develop
@@ -39,7 +35,7 @@ def test_publish_early_release(conf):
         _out:# branch_type: feature                                                          
         _out:# no release branches existing
         _out:# no version_value
-        _out:# launch script deploy_release
+        _out:# launch script deploy
         git checkout master
         git branch -D feature-worker
 
@@ -55,7 +51,7 @@ def test_publish_early_release(conf):
         _out:# version_value
         _out:Choose an increment type for tag '2.3.0' or 'q' to quit:
         _type:1
-        _out:# launch script deploy_release
+        _out:# launch script deploy
         git checkout master
         git branch -D feature-worker
         git reset --hard start_develop
@@ -72,7 +68,7 @@ def test_publish_early_release(conf):
         _out:# release branches existing
         _out:Choose an increment type for tag '3.1.0' or 'q' to quit:
         _type:2
-        _out:# launch script deploy_release
+        _out:# launch script deploy
         git checkout master
         git branch -D feature-worker
         git branch -D release-3.1.0
@@ -83,7 +79,7 @@ def test_publish_early_release(conf):
         _out:# branch_type: develop
         _out:# no release branches existing
         _out:# no version_value
-        _out:# launch script deploy_release
+        _out:# launch script deploy
 
         {step} publish_early_release on_master
         git checkout master
@@ -91,7 +87,6 @@ def test_publish_early_release(conf):
         _out:× Publish early version only applies to 'develop', 'feature' or 'release' branch type.
         _fail:
 
-        rm {direpa_task}/scripts/deploy_release.sh
     """)
 
     start_processor(conf)

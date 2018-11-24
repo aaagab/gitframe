@@ -17,26 +17,84 @@ def create_directory(path):
             os.mkdir(path)
             msg.success("Path '"+path+"' created.")
         except:
-            msg.app_error("cannot create path '"+path+"'")
+            msg.app_error("Cannot create path '"+path+"'")
             sys.exit(1)
 
         return path
 
-def create_directory_tree():
+def create_file(filenpa):
+    if os.path.exists(filenpa):
+        msg.warning("'"+filenpa+"' already exists.")
+    else:
+        try:
+            open(filenpa, 'w').close()
+            msg.success("File '"+filenpa+"' created.")
+        except:
+            msg.app_error("Cannot create file '"+filenpa+"'")
+            sys.exit(1)
+
+        return filenpa
+
+def create_symlink(filenpa_src, filenpa_dst):
+    if os.path.exists(filenpa_dst):
+        os.remove(filenpa_dst)
+
+    try:
+        os.symlink(filenpa_src, filenpa_dst)
+        msg.success("Symlink '"+filenpa_dst+"' created.")
+    except:
+        msg.app_error("Cannot create symlink '"+filenpa_dst+"'")
+        sys.exit(1)
+
+def create_directory_tree(git_user_name):
+    conf=Json_config().data
     msg.title("Create directory Tree")
 
     directorys=[
-        "brainstorming",
-        "documentation",
-        "scripts",
-        "todo",
-        "src"
+        "src",
+        "doc",
+        "mgt",
+        "rel",
+        os.path.join("mgt",git_user_name)
     ]
-    created_directorys=[]
+    created_directories=[]
     current_path=os.getcwd()
     for directory in directorys:
         tmp_directory=create_directory(os.path.join(current_path, directory))
         if tmp_directory:
-            created_directorys.append(tmp_directory)
+            if os.path.basename(os.path.dirname(tmp_directory)) != "mgt":
+                created_directories.append(tmp_directory)
+
+    direpa_mgt_user=os.path.join(current_path,"mgt", git_user_name)
+    
+    filenpa_bump=os.path.join(direpa_mgt_user, conf["filer_bump_version"]+".py")
+    filenpa_publish=os.path.join(direpa_mgt_user, conf["filer_deploy"]+".py")
+
+    files=[
+        filenpa_publish,
+        filenpa_bump,
+        os.path.join(direpa_mgt_user, "todo.txt")
+    ]
+    created_files=[]
+
+    for file in files:
+        tmp_file=create_file(file)
+        if tmp_file:
+            created_files.append(tmp_file)
+
+
+    if filenpa_publish in created_files:
+        os.chmod(filenpa_publish, 0o755)
+
+    filenpa_publish_link=os.path.join(current_path, os.path.basename(filenpa_publish))
+    create_symlink(filenpa_publish, filenpa_publish_link)
+    created_files.append(filenpa_publish_link)
+
+    if filenpa_bump in created_files:
+        os.chmod(filenpa_bump, 0o755)
+
+    filenpa_bump_link=os.path.join(current_path, os.path.basename(filenpa_bump))
+    create_symlink(filenpa_bump, filenpa_bump_link)
+    created_files.append(filenpa_bump_link)
             
-    return created_directorys
+    return created_directories, created_files
