@@ -28,13 +28,12 @@
             "cmd": "ssh"
         }
     ],
-    "diren_scripts": "scripts",
     "diren_update_gitframe": "bin",
     "direpa_dev_sources": "/data/projs/apps/dt/gitframe/src",
     "filen_hotfix_history": "hotfix-history.json",
     "filen_version": "version.txt",
-    "filer_bump_release_version": "bump_release_version",
-    "filer_deploy_release": "deploy_release",
+    "filer_bump_version": "bump_version",
+    "filer_deploy": "deploy",
     "license": "MIT",
     "processor": {
         "clean_after": false,
@@ -74,5 +73,5 @@
         "waiting_time_between_cmds": 20
     },
     "validator": true,
-    "version": "1.0.0-draft-1542931625"
+    "version": "1.0.0-draft-1543074701"
 }

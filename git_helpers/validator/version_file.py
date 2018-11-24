@@ -179,23 +179,23 @@ def check_bump_release_version_script():
               early_release.
     """
     conf = Json_config()
-    filer_bump_release_version=conf.get_value("filer_bump_release_version")
+    filer_bump_version=conf.get_value("filer_bump_version")
     direpa_parent = os.path.abspath('..')
 
-    filerpa_bump_release_version=os.path.join(direpa_parent, conf.get_value("diren_scripts"), filer_bump_release_version)
+    filerpa_bump_release_version=os.path.join(direpa_parent, filer_bump_version)
 
-    filenpa_bump_release_version=""
+    filenpa_bump_version=""
     if os.path.exists(filerpa_bump_release_version+".py"):
-        filenpa_bump_release_version=filerpa_bump_release_version+".py"
+        filenpa_bump_version=filerpa_bump_release_version+".py"
     elif os.path.exists(filerpa_bump_release_version+".sh"):
-        filenpa_bump_release_version=filerpa_bump_release_version+".sh"
+        filenpa_bump_version=filerpa_bump_release_version+".sh"
     else:
-        filenpa_bump_release_version=""
+        filenpa_bump_version=""
 
-    if filenpa_bump_release_version:
-        is_cmd_executable= os.access(filenpa_bump_release_version, os.X_OK)
+    if filenpa_bump_version:
+        is_cmd_executable= os.access(filenpa_bump_version, os.X_OK)
         if not is_cmd_executable:
-            msg.user_error("script "+filer_bump_release_version+" is not executable")
+            msg.user_error("script "+filer_bump_version+" is not executable")
             sys.exit(1)
 
         msg.dbg("success", sys._getframe().f_code.co_name)

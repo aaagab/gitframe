@@ -29,14 +29,14 @@ def test_clone_project(conf):
             git init .
             touch myfile.txt
             git add .
-            git -c user.name='user_name' -c user.email='test@test.com' commit -am "myfile"
+            git -c user.name='{user_git}' -c user.email='test@test.com' commit -am "myfile"
             git checkout -b develop
             mkdir -p {direpa_par_remote_src}
         """,
         "block_user_input": """
-            _out:Enter user name [q to quit]:
-            _type:user_name
-            _out:Enter user email [q to quit]:
+            _out:Enter git user name [q to quit]:
+            _type:{user_git}
+            _out:Enter git user email [q to quit]:
             _type:test@test.com
             _out:Enter origin repository [q to quit]:
         """    

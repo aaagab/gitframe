@@ -53,6 +53,7 @@ def publish_early_release(repo, regex_branches, draft=""):
         version_value+="-"+time_stamp
         version.bump_version_for_user(version_value)
         if not draft:
+            git.commit("User version bumped with '"+version_value+"'")
             git.set_annotated_tags(repo, "v"+version_value, "early_release")
             publish_release(version_value, "early_release", get_all_version_tags())
         else:

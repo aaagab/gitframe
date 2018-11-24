@@ -59,8 +59,7 @@ def test_main_program_entry(conf):
 
         {step} publish_early_release
         {publish_early_release}
-        _out:∆  Create a script file deploy_release.sh or deploy_release.py
-        _fail:
+        _out:### Check bump release version script.
         git tag -l | grep -Ev "start_develop|start_master" | xargs -n 1 git push --delete origin
         git tag | grep -Ev "start_develop|start_master" | xargs git tag -d
 

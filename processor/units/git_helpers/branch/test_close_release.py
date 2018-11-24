@@ -40,7 +40,6 @@ def test_close_release(conf):
         _out:release-2.1.0 has to be deleted on local and remote.
         _out:Continue? [Y/n/q]:
         _type:Y
-        _fail:
         git checkout master
         git reset --hard start_master
         git push origin -f master

@@ -24,22 +24,21 @@ def bump_version_in_version_txt(version):
 def bump_version_for_user(version):
     msg.info("Execute ")
     conf = Json_config()
-    filer_bump_release_version=conf.get_value("filer_bump_release_version")
+    filer_bump_version=conf.get_value("filer_bump_version")
     direpa_parent = os.path.dirname(git.get_root_dir_path())
-    filerpa_bump_release_version=os.path.join(direpa_parent, conf.get_value("diren_scripts"), filer_bump_release_version)
+    filerpa_bump_release_version=os.path.join(direpa_parent, filer_bump_version)
 
-    filenpa_bump_release_version=""
+    filenpa_bump_version=""
     if os.path.exists(filerpa_bump_release_version+".py"):
-        filenpa_bump_release_version=filerpa_bump_release_version+".py"
+        filenpa_bump_version=filerpa_bump_release_version+".py"
     elif os.path.exists(filerpa_bump_release_version+".sh"):
-        filenpa_bump_release_version=filerpa_bump_release_version+".sh"
+        filenpa_bump_version=filerpa_bump_release_version+".sh"
     else:
         msg.user_error("'{}' not found with either extension .py or .sh".format(filerpa_bump_release_version))
         sys.exit(1)
 
-    msg.dbg("info","Execute script "+filer_bump_release_version)
-    shell.cmd(filenpa_bump_release_version+" "+version)
-    git.commit("User version bumped with '"+version+"'")
+    msg.dbg("info","Execute script "+filer_bump_version)
+    shell.cmd(filenpa_bump_version+" "+version)
 
 def get_content_version_file(debug=False, branch_name=""):
     filenpa_version=get_file_path()

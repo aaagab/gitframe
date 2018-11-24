@@ -301,12 +301,12 @@ def main(*args):
 
         clone_project(conf)
 
+        delete_test_and_repo(conf)
+        set_new_project(conf)
+        
         tags_commits(conf)
 
         new_project(conf)
-
-        delete_test_and_repo(conf)
-        set_new_project(conf)
 
         git_utils(conf)
 
@@ -330,9 +330,9 @@ def main(*args):
 
         _license(conf)
 
-        publish_early_release(conf)
-
         publish_release(conf)
+
+        publish_early_release(conf)
 
         main_program_entry(conf)
         

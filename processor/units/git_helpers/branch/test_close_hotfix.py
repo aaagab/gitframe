@@ -29,16 +29,19 @@ def test_close_hotfix(conf):
         _out:### close hotfix-1.0.X-my_repair on release-1.0.0
         _out:### close hotfix-1.0.X-my_repair on develop
         _out:√ hotfix-1.0.X-my_repair has been closed.
-        _out:∆  Create a script file deploy_release.sh or deploy_release.py
-        _fail:
+        _out:# launch script deploy
+        _out:1.0.1
+
         git checkout master
         git tag --delete v1.0.0
+        git tag --delete v1.0.1
+        git push origin --delete v1.0.1
         git tag --delete start-hotfix-1.0.X-my_repair
         git reset --hard start_master
 
         {step} close_hotfix hotfix_not_on_latest_release with_support_branch
         git checkout master
-        echo 2.0.0 > version.txt
+        echo 1.0.0 > version.txt
         git add .; git commit -a -m "version"
         git tag v1.0.0
         git tag v2.0.0
@@ -49,8 +52,8 @@ def test_close_hotfix(conf):
         {cmd}
         _out:### close hotfix-1.0.X-my_repair on support-1.0.X
         _out:√ hotfix-1.0.X-my_repair has been closed.
-        _out:∆  Create a script file deploy_release.sh or deploy_release.py
-        _fail:
+        _out:# launch script deploy
+        _out:1.0.1
         git checkout master
         git tag --delete v1.0.0
         git tag --delete v2.0.0

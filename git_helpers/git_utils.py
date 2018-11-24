@@ -133,7 +133,7 @@ def get_heads_remote_branch_names(repo):
     # remove all unneeded string
 
     if repo.is_reachable:
-        if repo.has_directory:
+        if repo.is_git_directory:
             for branch in raw_branches:
                 if re.match("^.*?refs/heads/.*$", branch):
                     branches.append(re.sub("^.*?refs/heads/","",branch).strip())
