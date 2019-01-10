@@ -287,54 +287,54 @@ def main(*args):
 
     
     try:
-        test_processor(conf)
+        # test_processor(conf)
         
-        message(conf)
+        # message(conf)
 
-        regex_obj(conf)
+        # regex_obj(conf)
 
-        init_local_config(conf)
+        # init_local_config(conf)
 
-        create_directory_tree(conf)
+        # create_directory_tree(conf)
 
-        remote_repository(conf)
+        # remote_repository(conf)
 
-        clone_project(conf)
+        # clone_project(conf)
 
-        delete_test_and_repo(conf)
-        set_new_project(conf)
+        # delete_test_and_repo(conf)
+        # set_new_project(conf)
         
-        tags_commits(conf)
+        # tags_commits(conf)
 
-        new_project(conf)
+        # new_project(conf)
 
-        git_utils(conf)
+        # git_utils(conf)
 
-        test_validator(conf)
+        # test_validator(conf)
 
-        get_all_branch_regexes(conf)
+        # get_all_branch_regexes(conf)
 
-        synchronize_branch_name(conf)
+        # synchronize_branch_name(conf)
 
-        synchronize_branch_type(conf)
+        # synchronize_branch_type(conf)
 
-        update_branch(conf)
+        # update_branch(conf)
 
-        version(conf)
+        # version(conf)
         
-        open_branch(conf)
+        # open_branch(conf)
         
-        close_branch(conf)
+        # close_branch(conf)
 
-        get_all_version_tags(conf)
+        # get_all_version_tags(conf)
 
-        _license(conf)
+        # _license(conf)
 
-        publish_release(conf)
+        # publish_release(conf)
 
-        publish_early_release(conf)
+        # publish_early_release(conf)
 
-        main_program_entry(conf)
+        # main_program_entry(conf)
         
         if conf["num_unit_failures"] > 0:
             msg.subtitle("Task Result")

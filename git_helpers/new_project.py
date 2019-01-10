@@ -68,8 +68,6 @@ def init_git_folder(direpa_to_init, user_obj, files_added):
     shell.cmd("git add .")
     git.commit_empty("Branch master created on '"+diren_to_init+"'")
 
-
-
 def new_project(path=""):
     msg.title("Create new Git Project")
     existing_directory=False
@@ -154,9 +152,8 @@ def new_project(path=""):
         files_added.append(file)
         git.commit(file+" added")
 
-    git.checkoutb("develop")
+    # git.checkoutb("develop")
     git.commit_empty("Branch develop created")
-        
 
     for direpa_proj in direpas_proj:
         os.chdir(direpa_proj)
@@ -195,7 +192,7 @@ def new_project(path=""):
             else:
                 clone_project_to_remote(repo)
                 if os.path.basename(direpa_proj) == "src":
-                    shell.cmd_prompt("git push origin develop")
+                    # shell.cmd_prompt("git push origin develop")
                     shell.cmd_prompt("git push origin master")
         else:
             msg.warning("Clone your project when connectivity is back.")
