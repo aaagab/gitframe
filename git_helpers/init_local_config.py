@@ -4,6 +4,18 @@ import utils.shell_helpers as shell
 from utils.prompt import prompt
 import sys, os
 
+def set_username(username):
+    shell.cmd("git config --local user.name "+username)
+    msg.info("local name set to '"+username+"'")
+
+def set_email(email):
+    shell.cmd("git config --local user.email "+email)
+    msg.info("local email set to '"+email+"'")
+
+def set_repository(repository):
+    shell.cmd("git remote add origin "+repository)
+    msg.info("Repository set to '"+repository+"'")
+
 def init_local_config(user_obj=""):
     import git_helpers.git_utils as git
     
@@ -14,9 +26,12 @@ def init_local_config(user_obj=""):
     repository=""
 
     if user_obj:
-       username=user_obj["username"]
-       email=user_obj["email"]
-       repository=user_obj["repository"]
+        username=user_obj["username"]
+        email=user_obj["email"]
+        repository=user_obj["repository"]
+        set_username(username)
+        set_email(email)
+        set_repository(repository)
     else:
         username=shell.cmd_get_value("git config --local user.name")
         email=shell.cmd_get_value("git config --local user.email")
@@ -24,9 +39,11 @@ def init_local_config(user_obj=""):
     
     if not username:
         username=prompt("Enter git user name")
+        set_username(username)
  
     if not email:
         email=prompt("Enter git user email")
+        set_email(email)
 
     if not repository:
         print()
@@ -36,12 +53,4 @@ def init_local_config(user_obj=""):
         print("  On local: '{path}.git'")
         print()
         repository=os.path.normpath(prompt("Enter origin repository"))
-
-    shell.cmd("git config --local user.name "+username)
-    msg.info("local name set to '"+username+"'")
-
-    shell.cmd("git config --local user.email "+email)
-    msg.info("local email set to '"+email+"'")
-
-    shell.cmd("git remote add origin "+repository)
-    msg.info("Repository set to '"+repository+"'")
+        set_repository(repository)

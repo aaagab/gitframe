@@ -15,31 +15,36 @@ def publish_early_release(repo, regex_branches, draft=""):
     msg.subtitle("Publish Early Version")
 
     regex_branch=ro.get_element_regex()
-
     if regex_branch.type in ["release","develop","feature"]:
         version_value=""
         regex_release_branches=get_branch_type_from_location("release", "local", regex_branches)
 
         msg.dbg("info", "branch_type: "+regex_branch.type)
     
-        if regex_branch.type in ["release"]:
-            version_value=regex_branch.version
-        elif regex_branch.type in ["feature","develop"]:
-            if len(regex_release_branches) == 0:
-                msg.dbg("info", "no release branches existing")
-                version_value=version.get_content_version_file(False, "master")
-                if not version_value:
+        if draft:
+            version_value=version.get_content_version_file(False)
+            if not version_value:
                     msg.dbg("info", "no version_value")
                     version_value="1.0.0"
-                else:
-                    msg.dbg("info", "version_value")
-                    version_value=get_increment_version(version_value)
-            elif len(regex_release_branches) == 1:
-                msg.dbg("info", "release branches existing")
-                version_value=version.get_content_version_file(False, regex_release_branches[0].text)
+        else:
+            if regex_branch.type in ["release"]:
+                version_value=regex_branch.version
+            elif regex_branch.type in ["feature","develop"]:
+                if len(regex_release_branches) == 0:
+                    msg.dbg("info", "no release branches existing")
+                    version_value=version.get_content_version_file(False, "master")
+                    if not version_value:
+                        msg.dbg("info", "no version_value")
+                        version_value="1.0.0"
+                    else:
+                        msg.dbg("info", "version_value")
+                        version_value=get_increment_version(version_value)
+                elif len(regex_release_branches) == 1:
+                    msg.dbg("info", "release branches existing")
+                    version_value=version.get_content_version_file(False, regex_release_branches[0].text)
 
-                if regex_branch.type in ["feature"]:
-                    version_value=get_increment_version(version_value)
+                    if regex_branch.type in ["feature"]:
+                        version_value=get_increment_version(version_value)
        
         release_type=""
         if not draft:
