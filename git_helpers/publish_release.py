@@ -12,9 +12,9 @@ from git_helpers.tags_commits import Tags_commits
 from utils.prompt import prompt_boolean
 
 release_err_msg="""
- Create a script file deploy_release.sh or deploy_release.py
+ Create a script file deploy.sh or deploy.py
      This file needs to be located at:
-        - scripts directory,in parent directory of src directory.
+        - in parent directory of src directory.
      This file generally does the following:
          - It receives two arguments "release_version" and "release_type" 
          - cd on src
@@ -60,7 +60,7 @@ def publish_release(release_version, release_type, all_version_tags=""):
 
     conf = Json_config()
     filer_deploy=conf.get_value("filer_deploy")
-    direpa_parent = os.path.abspath('..')
+    direpa_parent = os.path.dirname(os.getcwd())
 
     filerpa_deploy_release=os.path.join(direpa_parent, filer_deploy)
 
