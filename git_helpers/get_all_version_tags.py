@@ -19,7 +19,7 @@ def get_all_version_tags():
                     regex_version=ro.Version_regex(result[1:])
 
                     if regex_version.match:
-                        versions.append(result[1:])
+                        versions.append(regex_version.major_minor_patch)
     
         if versions:
             return tag_sort(versions)
@@ -218,5 +218,3 @@ def tag_sort_index(array, arr_of_dict=[], group_num=0):
         for obj in arr_of_dict:
             array.append(next(iter(obj)))
         return(array) 
-
-

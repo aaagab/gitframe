@@ -15,6 +15,11 @@ import utils.shell_helpers as shell
 
 def execute_task_cmds(conf, unit_name):
     
+    # tmux list-panes
+    # 
+    # tmux swap-pane -s gitframe:1.0
+
+
     num_panes=len(shell.cmd_get_value("tmux list-panes").splitlines())
     if num_panes == 3:
         cmd=re.sub(r"\n\s*", "\n","""
@@ -25,16 +30,20 @@ def execute_task_cmds(conf, unit_name):
         os.system(cmd)
 
     elif num_panes == 2:
-        cmd=re.sub(r"\n\s*", "\n","""
-            tmux select-pane -t 0
-            tmux join-pane -hs {task_name}:1.0
-            tmux break-pane -d -s 2
-            tmux select-layout even-horizontal
-            tmux select-pane -t 0
-        """.format(
-            task_name=conf["task_name"]
-        ))[1:-1]
-        os.system(cmd)  
+        tmux_panes=shell.cmd_get_value("tmux list-panes -s -F '#{window_id}|#{pane_title}'")
+        window_id, pane_name = tmux_panes.splitlines()[1].split("|")
+        window_id=window_id.replace("@", "")
+        
+        if pane_name == "logs":
+            cmd=re.sub(r"\n\s*", "\n","""
+                tmux select-pane -t 1
+                tmux swap-pane -s gitframe:1.0
+                tmux select-pane -t 0
+                tmux set -g status-bg green
+            """.format(
+                task_name=conf["task_name"]
+            ))[1:-1]
+            os.system(cmd)
 
     command="screen -c '{}' -S '{}' -d -m -L".format(conf["filenpa_screenrc"], unit_name)
     if subprocess.call(shlex.split(command)) != 0:
@@ -52,8 +61,6 @@ def execute_task_cmds(conf, unit_name):
     
     cmds.append(r"#!/bin/bash")
     cmds.append(r'echo -ne "\ec\e[3J"')
-    # send-keys "echo -en '\e]2;processor\e[0m'" \\; \\
-    # cmds.append(r'echo -ne "\e]2;'+unit_name+r'\e[0m"')
     cmds.append(r'echo -e "\t\e[1;33mUNIT: '+conf["filen_launcher"]+' '+unit_name+'\e[0m"')
     cmds.append('echo')
 

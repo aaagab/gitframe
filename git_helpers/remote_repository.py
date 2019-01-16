@@ -17,10 +17,8 @@ class Remote_repository():
         self.user_git=""
         self.path_type=self.get_path_type()
         self.direpa_par_src = self.get_direpa_par_src()
-
         self.is_reachable = self.get_is_reachable()
-        
-        self.has_directory = self.set_has_directory()
+        self.is_git_directory = self.set_is_git_directory()
 
     def get_path_type(self):
         path=self.path
@@ -55,7 +53,7 @@ class Remote_repository():
         
         return found
 
-    def set_has_directory(self):
+    def set_is_git_directory(self):
         exists=False
         if shell.cmd_devnull("git ls-remote "+self.path) == 0:
             exists=True

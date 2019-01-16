@@ -16,7 +16,7 @@ import git_helpers.regex_obj as ro
 # if release branch name is different than 1.0.0 or different than 0.1.0 then tags must already exists
 
 def force_unique_release_branch_name(reg_branches):
-    msg.subtitle("Validate number of Release Branches.")
+    msg.subtitle("One Release Branche max at a time.")
     local_branches=get_branch_type_from_location("release", "local", reg_branches)
     if len(local_branches) > 1:
         msg.user_error("There are more than one release branch on local ['{}'], please delete one.".format("', '".join(br.text for br in local_branches)))

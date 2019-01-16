@@ -17,7 +17,7 @@ def test_clone_project(conf):
         "diren_task": conf["diren_task"],
         "diren_src": conf["diren_src"],
         "ssh_url_domain_direpa_src": conf["remote"]["ssh_url_domain_direpa_src"],
-        "scp_url_domain_direpa_par_src": conf["remote"]["scp_url_domain_direpa_par_src"],
+        "scp_url_domain_direpa_src": conf["remote"]["scp_url_domain_direpa_src"],
         "direpa_task_conf": conf["direpa_task_conf"],
         "user_ssh": conf["user_current"],
         "user_git": conf["remote"]["user_git"],
@@ -29,13 +29,14 @@ def test_clone_project(conf):
             git init .
             touch myfile.txt
             git add .
-            git -c user.name='user_name' -c user.email='test@test.com' commit -am "myfile"
+            git -c user.name='{user_git}' -c user.email='test@test.com' commit -am "myfile"
+            git checkout -b develop
             mkdir -p {direpa_par_remote_src}
         """,
         "block_user_input": """
-            _out:Enter user name [q to quit]:
-            _type:user_name
-            _out:Enter user email [q to quit]:
+            _out:Enter git user name [q to quit]:
+            _type:{user_git}
+            _out:Enter git user email [q to quit]:
             _type:test@test.com
             _out:Enter origin repository [q to quit]:
         """    
@@ -68,19 +69,21 @@ def test_clone_project(conf):
             _out:√ git clone --bare {direpa_task_src} {direpa_task_src}.git
             _out:{user_ssh}@{domain}'s password:
             _type:{sudo_pass}
-            _out:√ scp -r {direpa_task_src}.git {scp_url_domain_direpa_par_src}
+            _out:√ ssh {user_ssh}@{domain} "mkdir -p {direpa_par_remote_src}"
+            _out:{user_ssh}@{domain}'s password:
+            _type:{sudo_pass}
+            _out:√ scp -r {direpa_task_src}.git {scp_url_domain_direpa_src}
             _out:{user_ssh}@{domain}'s password:
             _type:{sudo_pass}
             _out:[sudo] password for {user_ssh}:
             _type:{sudo_pass}
             _out:√ ssh -t {user_ssh}@{domain} "sudo chown -R {user_git}:{user_git} {direpa_remote_src}"
-            _out:√ {direpa_task_src}.git deleted on local.
+            _out:√ '{direpa_task_src}.git' deleted on local.
             rm -rf {direpa_task_conf}/{diren_task}
             sudo rm -rf {direpa_repository}
             _out:[sudo] password for {user_ssh}:
             _type:{sudo_pass}
         """)
-    
 
     start_processor(conf)
 

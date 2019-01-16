@@ -145,11 +145,9 @@ def set_task_conf(launcher_conf, conf):
         direpa_task_src=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["task"]["diren"],launcher_conf["processor"]["task"]["diren_src"]),
         direpa_repository=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["task"]["remote"]["diren_root"]),
         direpa_remote_src=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["task"]["remote"]["diren_root"], launcher_conf["processor"]["task"]["diren"], launcher_conf["processor"]["task"]["diren_src"]+".git"),
-        direpa_scripts=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["task"]["diren"], launcher_conf["diren_scripts"]),
-
-        filenpa_bump_release_version=os.path.join(launcher_conf["processor"]["task"]["direpa"],launcher_conf["processor"]["task"]["diren"], launcher_conf["diren_scripts"], launcher_conf["filer_bump_release_version"]+".sh"),
+        filenpa_deploy=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["task"]["diren"], launcher_conf["filer_deploy"]+".py"),
+        filenpa_bump_version=os.path.join(launcher_conf["processor"]["task"]["direpa"],launcher_conf["processor"]["task"]["diren"], launcher_conf["filer_bump_version"]+".py"),
         filenpa_cmds=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["filen_cmds"]),
-        filenpa_deploy_release=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["task"]["diren"], launcher_conf["diren_scripts"], launcher_conf["filer_deploy_release"]+".sh"),
         filenpa_read_log_bashrc=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["filen_read_log_bashrc"]),
 
         filenpa_task_status=os.path.join(launcher_conf["processor"]["task"]["direpa"], launcher_conf["processor"]["filen_task_status"]),
@@ -175,7 +173,9 @@ def set_task_conf(launcher_conf, conf):
         ssh_url_ip_direpa_par_src=user_ip+":"+os.path.join(direpa_par_src),
         ssh_url_domain_direpa_src=user_domain+":"+direpa_src,
         ssh_url_ip_direpa_src=user_ip+":"+direpa_src,
+        scp_url_domain_direpa_src=conf["user_current"]+"@"+domain+":"+direpa_src,
         scp_url_domain_direpa_par_src=conf["user_current"]+"@"+domain+":"+direpa_par_src,
+        scp_url_ip_direpa_src=conf["user_current"]+"@"+ip+":"+direpa_src,
         scp_url_ip_direpa_par_src=conf["user_current"]+"@"+ip+":"+direpa_par_src,
         direpa_src=direpa_src,
         direpa_par_src=direpa_par_src
@@ -208,9 +208,7 @@ def start_processor(conf):
     else:
         conf['unit_num']+=1
 
-    print(conf['unit_num'])
     ph.log_to_task_status_file(conf["filenpa_task_status"],"unit", conf['unit_num'], unit_name)
-
 
     try:
         caller_filename=inspect.stack()[1][1]

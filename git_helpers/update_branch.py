@@ -12,22 +12,23 @@ def update_branch(all_version_tags, regex_branch=""):
 
     msg.title("Update Branch '"+regex_branch.text+"'")
 
-    if regex_branch.type in ["master", "develop", "release", "support"]:
+    # if regex_branch.type in ["master", "develop", "release", "support"]:
+    if regex_branch.type in ["master", "develop", "support"]:
         # branch is just synchronized with the validator
         pass
-    elif regex_branch.type in ["feature", "hotfix"]:
+    elif regex_branch.type in ["features", "hotfix"]:
         linked_branch=""
-        if regex_branch.type == "feature":
+        if regex_branch.type == "features":
             linked_branch="develop"
         elif regex_branch.type == "hotfix":
             latest_release_tags=git.get_latest_release_for_each_major(all_version_tags)
             regex_latest_release=ro.Version_regex(latest_release_tags[-1])
 
             # check if hotfix comes from master
-            if regex_latest_release.major_minor == regex_branch.major_minor:
+            if regex_latest_release.major == regex_branch.major:
                     linked_branch="master"
             else: # hotfix comes from support
-                linked_branch=ro.Support_regex().get_new_branch_name(regex_branch.major_minor)
+                linked_branch=ro.Support_regex().get_new_branch_name(regex_branch.major)
         
         msg.info("Linked branch: "+linked_branch)
 

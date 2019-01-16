@@ -19,63 +19,63 @@ def test_update_branch(conf):
 
         {step} update_branch feature up_to_date
         git checkout develop
-        git checkout -b feature-my_function
+        git checkout -b fts-my_function
         {cmd}
         _out:# up_to_date
-        _out:√ Branch 'feature-my_function' updated.
+        _out:√ Branch 'fts-my_function' updated.
         git checkout develop
-        git branch -D feature-my_function
+        git branch -D fts-my_function
 
         {step} update_branch feature up_to_date
         git checkout develop
-        git checkout -b feature-my_function
+        git checkout -b fts-my_function
         git checkout develop
         {commit} "empty"
-        git checkout feature-my_function
+        git checkout fts-my_function
         {cmd}
         _out:# pull
         _out:√ git merge --no-edit --no-ff develop
-        _out:√ Branch 'feature-my_function' updated.
+        _out:√ Branch 'fts-my_function' updated.
         git checkout develop
         git reset --hard start_develop
-        git branch -D feature-my_function
+        git branch -D fts-my_function
 
         {step} update_branch feature divergent_no_ancestor
         git checkout develop
-        git checkout --orphan feature-my_function
+        git checkout --orphan fts-my_function
         {commit} "empty"
         {cmd}
         _out:# divergent_without_common_ancestor
-        _out× Compare Status for 'feature-my_function' and 'develop' is 'divergent_without_common_ancestor'
+        _out× Compare Status for 'fts-my_function' and 'develop' is 'divergent_without_common_ancestor'
         _fail:
         git checkout develop
-        git branch -D feature-my_function
+        git branch -D fts-my_function
 
         {step} update_branch hotfix from_master up_to_date
         git checkout master
         git tag v2.0.0
-        git checkout -b hotfix-2.0.X-my_repair
+        git checkout -b hfx-2.X.X-my_repair
         {cmd}
         _out:# Linked branch: master
         _out:# up_to_date
-        _out:√ Branch 'hotfix-2.0.X-my_repair' updated.        
+        _out:√ Branch 'hfx-2.X.X-my_repair' updated.        
         git checkout develop
-        git branch -D hotfix-2.0.X-my_repair
+        git branch -D hfx-2.X.X-my_repair
         git tag --delete v2.0.0
 
         {step} update_branch hotfix from_support up_to_date
         git checkout master
         git tag v1.0.0
         git tag v2.0.0
-        git checkout -b support-1.0.X
-        git checkout -b hotfix-1.0.X-my_repair
+        git checkout -b spt-1.X.X
+        git checkout -b hfx-1.X.X-my_repair
         {cmd}
-        _out:# Linked branch: support-1.0.X
+        _out:# Linked branch: spt-1.X.X
         _out:# up_to_date
-        _out:√ Branch 'hotfix-1.0.X-my_repair' updated.        
+        _out:√ Branch 'hfx-1.X.X-my_repair' updated.        
         git checkout develop
-        git branch -D hotfix-1.0.X-my_repair
-        git branch -D support-1.0.X
+        git branch -D hfx-1.X.X-my_repair
+        git branch -D spt-1.X.X
         git tag --delete v1.0.0
         git tag --delete v2.0.0
     """)

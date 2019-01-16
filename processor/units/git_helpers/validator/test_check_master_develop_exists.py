@@ -19,6 +19,7 @@ def test_check_master_develop_exists(conf):
         cd {direpa_task_src}_tmp        
         git checkout master
         git branch -D develop
+        git branch -rD origin/develop
         {cmd}
         _out:× Branch "develop" does not exist as a local branch.
         _fail:

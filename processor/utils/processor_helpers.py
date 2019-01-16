@@ -47,14 +47,16 @@ def open_logs(conf):
         read_logs(conf, log_files)
 
 def clean_logs(conf):
-    directory = conf["direpa_logs"]
-    files=os.listdir(directory)
-    if files:
-        msg.info("Clean Log Files")
-        for this_file in files:
-            file_path = os.path.join(directory, this_file)
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
+    if not os.path.exists(conf["direpa_logs"]):
+        os.mkdir(conf["direpa_logs"])
+    else:
+        files=os.listdir(conf["direpa_logs"])
+        if files:
+            msg.info("Clean Log Files")
+            for this_file in files:
+                file_path = os.path.join(conf["direpa_logs"], this_file)
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
 
 def log(conf):
     src_file=conf["filenpa_screen_log"]
@@ -64,6 +66,7 @@ def log(conf):
     prefix="{:%Y%m%d-%H%M%S%f}".format(datetime.now())[:-4]
     dst_file=os.path.join(dst_path,prefix+"-"+unit_name+".txt")
     copyfile(src_file, dst_file)
+    os.system("tmux set -g status-bg red")
 
 def get_file_user_obj(passwd_file):
     file_user_obj={}
@@ -203,6 +206,24 @@ def setup_mock_repository(conf):
         user_and_group_root_dir=shell.cmd_get_value("sudo stat --format '%U:%G' '{}'".format(conf["remote"]["direpa_src"]).strip())
         if user_and_group_root_dir != current_user_and_group:
             shell.cmd_prompt("sudo chown -R {} '{}'".format(current_user_and_group, conf["remote"]["direpa_src"]))
+
+def get_pass_from_private_conf():
+    filenpa_private_config=os.path.join(
+        git.get_root_dir_path(),
+        "config",
+        "private_config.json"
+    )
+    if os.path.exists(filenpa_private_config):
+        data=Json_config(filenpa_private_config).data
+        if data:
+            if data.get("pswd"):
+                return data["pswd"]
+            else:
+                return ""
+        else:
+            return ""
+    else:
+        return ""
 
 class Sudo():
     def __init__(self):

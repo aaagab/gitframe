@@ -4,12 +4,13 @@ if __name__ != "__main__":
     from processor.utils.processor_engine import start_processor, set_task_steps, set_task_vars
 
 def test_create_directory_tree(conf): 
-    # from pprint import pprint
+    from pprint import pprint
     # pprint(conf)
     set_task_vars(conf, {
         "direpa_task_src": conf["direpa_task_src"],
         "direpa_task_conf": conf["direpa_task_conf"],
-        "direpa_task": conf["direpa_task"]
+        "direpa_task": conf["direpa_task"],
+        "user_git": conf["remote"]["user_git"]
     })
 
     set_task_steps(conf,"""
@@ -17,11 +18,17 @@ def test_create_directory_tree(conf):
         cd {direpa_task_src}
         {step} draft
         {cmd}
-        _out:√ Path '{direpa_task_src}/brainstorming' created.
-        _out:√ Path '{direpa_task_src}/documentation' created.
-        _out:√ Path '{direpa_task_src}/scripts' created.
-        _out:√ Path '{direpa_task_src}/todo' created.
         _out:√ Path '{direpa_task_src}/src' created.
+        _out:√ Path '{direpa_task_src}/doc' created.
+        _out:√ Path '{direpa_task_src}/mgt' created.
+        _out:√ Path '{direpa_task_src}/mgt/{user_git}' created.
+        _out:√ File '{direpa_task_src}/mgt/{user_git}/deploy.py' created.
+        _out:√ File '{direpa_task_src}/mgt/{user_git}/bump_version.py' created.
+        _out:√ File '{direpa_task_src}/mgt/{user_git}/scriptjob_save.json' created.
+        _out:√ File '{direpa_task_src}/mgt/{user_git}/todo.txt' created.
+        _out:√ Symlink '{direpa_task_src}/deploy.py' created.
+        _out:√ Symlink '{direpa_task_src}/bump_version.py' created.
+        _out:√ Symlink '{direpa_task_src}/scriptjob_save.json' created.
 
         cd {direpa_task_conf}
         rm -rf {direpa_task}        
@@ -36,5 +43,8 @@ if __name__ == "__main__":
     sys.path.insert(0,os.path.dirname(direpa_script))
 
     from utils.create_directory_tree import create_directory_tree
+    from utils.json_config import Json_config
 
-    create_directory_tree()
+    from pprint import pprint
+    user_git=Json_config().data["processor"]["task"]["remote"]["user_git"]
+    create_directory_tree(user_git)
