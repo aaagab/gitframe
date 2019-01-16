@@ -17,8 +17,8 @@ def test_main_program_entry(conf):
         'new_project_directory':conf["filenpa_launcher"]+" --np "+conf["diren_src"],
         'clone_project_to_remote':conf["filenpa_launcher"]+" --cp",
         'open_branch':conf["filenpa_launcher"]+" --ob",
-        'publish_early_release':conf["filenpa_launcher"]+" --per",
-        'publish_release':conf["filenpa_launcher"]+" --pr 1.0.0",
+        'pick_up_release':conf["filenpa_launcher"]+" --pr 1.0.0",
+        'pick_up_release_create':conf["filenpa_launcher"]+" --pr --da='marc=place'",
         'synchronize_project':conf["filenpa_launcher"]+" -d --sp",
         'update_branch':conf["filenpa_launcher"]+" -u",
         'version':conf["filenpa_launcher"]+" -v",
@@ -57,23 +57,15 @@ def test_main_program_entry(conf):
         _type:q
         _fail:
 
-        {step} publish_early_release
-        {publish_early_release}
-        _out:### Check bump release version script.
-        git tag -l | grep -Ev "start_develop|start_master" | xargs -n 1 git push --delete origin
-        git tag | grep -Ev "start_develop|start_master" | xargs git tag -d
-
-        {step} publish_release
+        {step} pick_up_release
         git checkout master
-        echo 0.5.0 > version.txt
-        git add .; git commit -am "new version"
         git tag v0.5.0
         git push origin v0.5.0
         git push origin master
         git checkout develop
         git merge --no-edit master
         git push origin develop
-        {publish_release}
+        {pick_up_release}
         _out:× There is no tag in the project that matches v1.0.0
         _fail:
         git checkout master
@@ -84,6 +76,25 @@ def test_main_program_entry(conf):
         git reset --hard start_develop
         git push origin -f master
         git push origin -f develop
+
+        {step} pick_up_release create_new_release
+        git checkout master
+        git tag v0.5.0
+        git push origin v0.5.0
+        git push origin master
+        git checkout -b fts-work_in_progress
+        git merge --no-edit master
+        git push origin fts-work_in_progress
+        {pick_up_release_create}
+        _out:Choose an increment type for tag '0.5.0' or 'q' to quit:
+        _type:q
+        _fail:
+        git checkout master
+        git reset --hard start_master
+        git tag --delete v0.5.0
+        git push origin --delete v0.5.0
+        git push origin -f master
+        git push origin -f fts-work_in_progress
  
         {step} synchronize_project
         {synchronize_project}

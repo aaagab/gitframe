@@ -58,12 +58,12 @@ def init_git_folder(direpa_to_init, user_obj, files_added):
     open(file, 'w').close()
     files_added.append(file)
 
-    if diren_to_init == "src":
-        file="hotfix-history.json"
-        test_file_not_exist(file)
-        with open(file,"w") as f:
-            f.write("{}")
-        files_added.append(file)
+    # if diren_to_init == "src":
+    #     file="hotfix-history.json"
+    #     test_file_not_exist(file)
+    #     with open(file,"w") as f:
+    #         f.write("{}")
+    #     files_added.append(file)
 
     shell.cmd("git add .")
     git.commit_empty("Branch master created on '"+diren_to_init+"'")
@@ -152,7 +152,10 @@ def new_project(path=""):
         files_added.append(file)
         git.commit(file+" added")
 
-    # git.checkoutb("develop")
+    # direpa_models
+    
+
+    git.checkoutb("develop")
     git.commit_empty("Branch develop created")
 
     for direpa_proj in direpas_proj:
@@ -192,7 +195,7 @@ def new_project(path=""):
             else:
                 clone_project_to_remote(repo)
                 if os.path.basename(direpa_proj) == "src":
-                    # shell.cmd_prompt("git push origin develop")
+                    shell.cmd_prompt("git push origin develop")
                     shell.cmd_prompt("git push origin master")
         else:
             msg.warning("Clone your project when connectivity is back.")

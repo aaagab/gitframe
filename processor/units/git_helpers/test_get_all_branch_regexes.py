@@ -13,17 +13,17 @@ def test_get_all_branch_regexes(conf):
 
         {step} get_all_branch_regexes
         git checkout master
-        git checkout -b support-1.0.X
+        git checkout -b spt-1.X.X
         {cmd}
         _out:remote develop ^develop$
         _out:remote master ^master$
         _out:local develop ^develop$
         _out:local master ^master$
-        _out:local support-1.0.X ^support-\d+?\.\d+?\.X$
+        _out:local spt-1.X.X ^spt-\d+\.X\.X$
         _out:local_remote develop ^develop$
         _out:local_remote master ^master$
         git checkout master
-        git branch -D support-1.0.X
+        git branch -D spt-1.X.X
     """)
 
     start_processor(conf)

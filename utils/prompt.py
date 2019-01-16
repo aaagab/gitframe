@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 import sys
 import utils.message as msg
+import readline
+# readline allows to use arrow keys and backspace when input text however there is a bug with tmux
+# when text is wrapped some characters are eaten so I have to display first the text with print
 
 def prompt(txt):
     tmp_var=""
     while not tmp_var:
-        tmp_var = input("  "+txt +" [q to quit]: ")
+        print("  "+txt +" [q to quit]: ", end="")
+        tmp_var = input()
         if tmp_var.lower() == "q":
             sys.exit(1)
     return tmp_var.strip()
@@ -14,11 +18,13 @@ def prompt_boolean(txt, Y_N="y"):
     tmp_var=""
     while not tmp_var:
         if Y_N.lower() == "y":
-            tmp_var = input(txt +" [Y/n/q]: ")
+            print(txt +" [Y/n/q]: ", end="")
+            tmp_var = input()
             if tmp_var.lower() == "":
                 return True
         elif Y_N.lower() == "n":
-            tmp_var = input(txt +" [y/N/q]: ")
+            print(txt +" [y/N/q]: ", end="")
+            tmp_var = input()
             if tmp_var.lower() == "":
                 return False
         else:
