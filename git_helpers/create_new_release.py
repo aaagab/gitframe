@@ -24,6 +24,7 @@ def get_increment_type(regex_curr_tag):
     menu="""
         1 - Major
         2 - Minor
+        3 - Patch
 
         Choose an increment type for tag '{tag}' or 'q' to quit: """.format(tag=regex_curr_tag.text)
 
@@ -34,6 +35,8 @@ def get_increment_type(regex_curr_tag):
             return version.increment_version_value("major", regex_curr_tag)
         elif user_choice == "2":
             return version.increment_version_value("minor", regex_curr_tag)
+        elif user_choice == "3":
+            return version.increment_version_value("patch", regex_curr_tag)
         elif user_choice.lower() == "q":
             sys.exit(1)
         else:
@@ -108,6 +111,7 @@ def create_new_release(repo="", regex_branches="", all_version_tags="", deploy_a
         regex_release_version.set_text(regex_release_version.text+"-r")
 
     version.bump_version_for_user(regex_release_version.text)
+    git.commit("Bump Release Version "+regex_release_version.text)
     
     git.checkout("develop")
     git.merge_noff(branch_regex.text)
