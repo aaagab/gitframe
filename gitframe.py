@@ -230,7 +230,7 @@ if __name__ == "__main__":
 
 		if args.pick_up_release is True:
 			repo, regex_branches, all_version_tags=validator(conf.data["validator"])
-			create_new_release(*args.deploy_args, repo, regex_branches, all_version_tags)
+			create_new_release(repo, regex_branches, all_version_tags, *args.deploy_args)
 		else:
 			if conf.data["validator"]:
 				repo, regex_branches, all_version_tags=validator(conf.data["validator"])

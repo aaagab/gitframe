@@ -97,5 +97,5 @@ if __name__ == "__main__":
     if sys.argv[1] == "non_deploy_args":
         create_new_release()
     elif sys.argv[1] == "deploy_args":
-        create_new_release("publish=now test=here")
+        create_new_release("","","","publish=now test=here")
 
