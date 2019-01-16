@@ -1,0 +1,163 @@
+#!/usr/bin/env python3
+import os, sys
+if __name__ != "__main__":
+    from processor.utils.processor_engine import start_processor, set_task_steps, set_task_vars
+
+def test_regex_obj(conf):
+    set_task_steps(conf,"""
+        {step} Regex_obj
+        {cmd}
+        _out:(^)(\d+)(\.)(\d+)(\.)(\d+)(\.)($)
+        _out:['^', '\\\\d+', '\\\\.', '\\\\d+', '\\\\.', '\\\\d+', '\\\\.', '$']
+        _out:^\d+\.\d+\.\d+\.$
+
+        {step} Features_regex empty_txt
+        {cmd}
+        _out:features
+        _out:(^)(fts)(-)(.+)($)
+        _out:['^', 'fts', '-', '.+', '$']
+        _out:^fts-.+$
+
+        {step} Features_regex with_txt
+        {cmd}
+        _out:features
+        _out:new_function
+
+        {step} Master_regex
+        {cmd}
+        _out:master
+        _out:^master$
+
+        {step} Develop_regex
+        {cmd}
+        _out:develop
+        _out:^develop$
+        
+        {step} Version_regex
+        {cmd}
+        _out:version
+        _out:^\d+\.\d+\.\d+(-r)?$
+        _out:1
+        _out:2
+        _out:3
+        _out:1.2
+        _out:False
+        _out:True
+        
+        {step} Support_regex
+        {cmd}
+        _out:support
+        _out:^spt-\d+\.X\.X$
+        _out:1
+        
+        {step} Hotfix_regex
+        {cmd}
+        _out:hotfix
+        _out:^hfx-\d+\.X\.X-.+$
+        _out:1
+        _out:my_repair
+
+        {step} validate_branch_name
+        {cmd}
+        _out:master
+        _out:develop
+        _out:fts-new_function
+        _out:spt-1.X.X
+        _out:hfx-1.X.X-repair
+        _out:× Branch 'test' type unknown.
+        _fail:
+
+        {step} get_branch_type
+        {cmd}
+        _out:master
+        _out:develop
+        _out:features
+        _out:support
+        _out:hotfix
+    """)
+
+    start_processor(conf)
+
+if __name__ == "__main__":
+    direpa_script=os.path.realpath(__file__)
+    while os.path.basename(direpa_script) != "processor":
+        direpa_script=os.path.dirname(direpa_script)
+    sys.path.insert(0,os.path.dirname(direpa_script))
+
+    if sys.argv[1] == "Regex_obj":
+        from git_helpers.regex_obj import Regex_obj
+        reg_obj=Regex_obj(r"(^)(\d+)(\.)(\d+)(\.)(\d+)(\.)($)")
+
+        print(reg_obj.group_string)
+        print(reg_obj.reg_arr)
+        print(reg_obj.string)
+
+    elif sys.argv[1] == "Features_regex":
+        from git_helpers.regex_obj import Features_regex
+        if sys.argv[2] == "empty_txt":
+            obj_regex=Features_regex()
+
+            print(obj_regex.type)
+            print(obj_regex.group_string)
+            print(obj_regex.reg_arr)
+            print(obj_regex.string)
+        elif sys.argv[2] == "with_txt":
+            obj_regex=Features_regex("fts-new_function")
+            print(obj_regex.type)
+            print(obj_regex.keywords)
+    elif sys.argv[1] == "Master_regex":
+        from git_helpers.regex_obj import Master_regex
+        obj_regex=Master_regex()
+        print(obj_regex.type)
+        print(obj_regex.string)
+    elif sys.argv[1] == "Develop_regex":
+        from git_helpers.regex_obj import Develop_regex
+        obj_regex=Develop_regex()
+        print(obj_regex.type)
+        print(obj_regex.string)
+    elif sys.argv[1] == "Version_regex":
+        from git_helpers.regex_obj import Version_regex
+        obj_regex=Version_regex("1.2.3")
+        print(obj_regex.type)
+        print(obj_regex.string)
+        print(obj_regex.major)
+        print(obj_regex.minor)
+        print(obj_regex.patch)
+        print(obj_regex.major_minor)
+        print(obj_regex.recommended)
+
+        obj_regex=Version_regex("1.2.3-r")
+        print(obj_regex.recommended)
+
+    elif sys.argv[1] == "Support_regex":
+        from git_helpers.regex_obj import Support_regex
+        obj_regex=Support_regex("spt-1.X.X")
+        print(obj_regex.type)
+        print(obj_regex.string)
+        print(obj_regex.major)
+    elif sys.argv[1] == "Hotfix_regex":
+        from git_helpers.regex_obj import Hotfix_regex
+        obj_regex=Hotfix_regex("hfx-1.X.X-my_repair")
+        print(obj_regex.type)
+        print(obj_regex.string)
+        print(obj_regex.major)
+        print(obj_regex.keywords)
+
+    elif sys.argv[1] == "validate_branch_name":
+        from git_helpers.regex_obj import get_element_regex
+        print(get_element_regex('master').text)
+        print(get_element_regex('develop').text)
+        print(get_element_regex('fts-new_function').text)
+        print(get_element_regex('spt-1.X.X').text)
+        print(get_element_regex('hfx-1.X.X-repair').text)
+        print(get_element_regex('test').text)
+
+    elif sys.argv[1] == "get_branch_type":
+        from git_helpers.regex_obj import get_element_regex
+        print(get_element_regex('master').type)
+        print(get_element_regex('develop').type)
+        print(get_element_regex('fts-new_function').type)
+        print(get_element_regex('spt-1.X.X').type)
+        print(get_element_regex('hfx-1.X.X-repair').type)
+        
+    
