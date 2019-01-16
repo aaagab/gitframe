@@ -13,13 +13,14 @@ def test_remote_repository(conf):
         "direpa_remote_src": conf["remote"]["direpa_src"],
         "direpa_task": conf["direpa_task"],
         "direpa_repository": conf["direpa_repository"],
+        "user_git": conf["remote"]["user_git"],
         "direpa_task_src": conf["direpa_task_src"],
         'direpa_task_conf': conf["direpa_task_conf"],        
         "diren_src": conf["diren_src"],
         "block_user_input": """
-            _out:Enter user name [q to quit]:
-            _type:user_name
-            _out:Enter user email [q to quit]:
+            _out:Enter git user name [q to quit]:
+            _type:{user_git}
+            _out:Enter git user email [q to quit]:
             _type:test@test.com
             _out:Enter origin repository [q to quit]:
         """,
@@ -59,7 +60,7 @@ def test_remote_repository(conf):
             touch myfile.txt
             git add .
             # git commit -am "myfile"
-            git -c user.name='user_name' -c user.email='test@test.com' commit -am "myfile"
+            git -c user.name='{user_git}' -c user.email='test@test.com' commit -am "myfile"
             mkdir -p {direpa_remote_src}
             cd {direpa_task}
             git clone --bare {diren_src} {direpa_remote_src}
@@ -90,7 +91,7 @@ def test_remote_repository(conf):
             touch myfile.txt
             git add .
             # git commit -am "myfile"
-            git -c user.name='user_name' -c user.email='test@test.com' commit -am "myfile"
+            git -c user.name='{user_git}' -c user.email='test@test.com' commit -am "myfile"
             mkdir -p {direpa_remote_src}
             cd {direpa_task}
             git clone --bare {diren_src} {direpa_remote_src}

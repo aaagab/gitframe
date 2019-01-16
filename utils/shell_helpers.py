@@ -41,9 +41,9 @@ def cmd_get_value(command):
         msg.app_error("Command: '"+command)
         sys.exit(1)
 
-def cmd_prompt(cmd_txt, prompt_msg=""):
+def cmd_prompt(cmd_txt, prompt_msg=False):
     if prompt_msg:
-        msg.info(prompt_msg)
+        msg.info(cmd_txt)
 
     if cmd(cmd_txt) == 0:
         msg.dbg("success",cmd_txt)

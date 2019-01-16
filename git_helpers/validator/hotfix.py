@@ -15,7 +15,7 @@ def check_hotfix_is_either_on_master_or_on_support(regex_hotfix_branch, all_vers
     regex_latest_release=ro.Version_regex(latest_release_tags[-1])
 
     # check if hotfix comes from master
-    if regex_latest_release.major_minor != regex_hotfix_branch.major_minor:
+    if regex_latest_release.major != regex_hotfix_branch.major:
         # if no check if hotfix comes from one of the support branch
         if not regex_support_branches:
             msg.user_error(
@@ -27,7 +27,7 @@ def check_hotfix_is_either_on_master_or_on_support(regex_hotfix_branch, all_vers
             found=False
             regex_selected_support_branch=""
             for regex_support_branch in regex_support_branches:
-                if regex_support_branch.major_minor == regex_hotfix_branch.major_minor:
+                if regex_support_branch.major == regex_hotfix_branch.major:
                     regex_selected_support_branch=ro.Support_regex(regex_support_branch.text)
                     found=True
                     break

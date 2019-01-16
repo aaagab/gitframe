@@ -13,26 +13,10 @@ def test_new_project(conf):
         "direpa_par_remote_src": conf["remote"]["direpa_par_src"],
         "direpa_task_conf": conf["direpa_task_conf"],
         "direpa_task": conf["direpa_task"],
+        "user_git": conf["remote"]["user_git"],
         "direpa_task_src": conf["direpa_task_src"],
         "direpa_repository": conf["direpa_repository"],
-        "diren_src": conf["diren_src"],
-        "block_user_input": """
-            _out:Do you want to create directory? [Y/n/q]:
-            _type:y 
-            _out:√ Path '{direpa_task_conf}/test' created.
-            _out:Enter user name [q to quit]:
-            _type:user_name
-            _out:Enter user email [q to quit]:
-            _type:test@test.com
-            _out:Enter origin repository [q to quit]:
-            _type:{direpa_remote_src}
-            _out:Do you Want To Add a License [Y/n/q]:
-            _type:Y
-            _out:choice or 'q' to quit:
-            _type:1
-            _out:Copyright Holders:  [q to quit]:
-            _type:Thomas Edison
-        """    
+        "diren_src": conf["diren_src"]
     })
 
     set_task_steps(conf,"""
@@ -119,23 +103,25 @@ def test_new_project(conf):
         {cmd}
         _out:Path '{direpa_task_conf}/mock_project' already exists, Do you want to add git to directory anyway? [Y/n/q]:
         _type:Y
-        _out:Enter user name [q to quit]:
-        _type:user_name
-        _out:Enter user email [q to quit]:
+        _out:Enter git user name [q to quit]:
+        _type:{user_git}
+        _out:Enter git user email [q to quit]:
         _type:test@test.com
-        _out:Enter origin repository [q to quit]:
-        _type:{direpa_remote_src}
+        _out:Enter origin parent repository [q to quit]:
+        _type:{direpa_par_remote_src}
         _out:Do you Want To Add a License [Y/n/q]:
         _type:Y
         _out:choice or 'q' to quit:
         _type:1
         _out:Copyright Holders:  [q to quit]:
         _type:Thomas Edison
-        _out:× Remote Directory mock_project.git Already Exists on remote repository 'Origin'
+        _out:× Remote Directory src.git Already Exists on remote repository 'Origin'
         _out:# directory 'mock_project' cleaned.
         _fail:
         cd {direpa_task_conf}
         rm -rf mock_project
+        rm -rf {direpa_par_remote_src}
+
 
         {step} new_project abs_path_not_exist no_parent_directory
         {cmd}
@@ -143,27 +129,45 @@ def test_new_project(conf):
         _out:× Path parent directory '{direpa_task_conf}/marty' does not exist.        
         _fail:
 
+
         {step} new_project relative_path_not_exist reachable_with_directory
-        mkdir -p {direpa_remote_src}
+        mkdir -p {direpa_par_remote_src}/src.git
+        cd {direpa_par_remote_src}/src.git
+        git init
+        cd -
         {cmd}
-        {block_user_input}
-        _out:× Remote Directory test.git Already Exists on remote repository 'Origin'
-        _out:× Clone test.git from Remote or Change application name
+        _out:Do you want to create directory? [Y/n/q]:
+        _type:y 
+        _out:√ Path '{direpa_task_conf}/test' created.
+        _out:Enter git user name [q to quit]:
+        _type:{user_git}
+        _out:Enter git user email [q to quit]:
+        _type:test@test.com
+        _out:Enter origin parent repository [q to quit]:
+        _type:{direpa_par_remote_src}
+        _out:Do you Want To Add a License [Y/n/q]:
+        _type:Y
+        _out:choice or 'q' to quit:
+        _type:1
+        _out:Copyright Holders:  [q to quit]:
+        _type:Thomas Edison
+        _out:× Remote Directory src.git Already Exists on remote repository 'Origin'
+        _out:× Clone src.git from Remote or Change application name
         _out:# directory 'test' cleaned.
         _fail:
-        rm -rf {direpa_remote_src}
+        rm -rf {direpa_par_remote_src}
 
         {step} new_project relative_path_not_exist not_reachable
         {cmd}
         _out:Do you want to create directory? [Y/n/q]:
         _type:y 
         _out:√ Path '{direpa_task_conf}/test' created.
-        _out:Enter user name [q to quit]:
-        _type:user_name
-        _out:Enter user email [q to quit]:
+        _out:Enter git user name [q to quit]:
+        _type:{user_git}
+        _out:Enter git user email [q to quit]:
         _type:test@test.com
-        _out:Enter origin repository [q to quit]:
-        _type:/tmp/unknown/test/src.git
+        _out:Enter origin parent repository [q to quit]:
+        _type:/tmp/unknown/test/
         _out:Do you Want To Add a License [Y/n/q]:
         _type:Y
         _out:choice or 'q' to quit:
@@ -183,12 +187,12 @@ def test_new_project(conf):
         _out:Do you want to create directory? [Y/n/q]:
         _type:y 
         _out:√ Path '{direpa_task_conf}/test' created.
-        _out:Enter user name [q to quit]:
-        _type:user_name
-        _out:Enter user email [q to quit]:
+        _out:Enter git user name [q to quit]:
+        _type:{user_git}
+        _out:Enter git user email [q to quit]:
         _type:test@test.com
-        _out:Enter origin repository [q to quit]:
-        _type:{direpa_remote_src}
+        _out:Enter origin parent repository [q to quit]:
+        _type:{direpa_par_remote_src}
         _out:Do you Want To Add a License [Y/n/q]:
         _type:Y
         _out:choice or 'q' to quit:
@@ -196,8 +200,11 @@ def test_new_project(conf):
         _out:Copyright Holders:  [q to quit]:
         _type:Thomas Edison
         _out:√ Remote Path '{direpa_par_remote_src}' is reachable.
-        _out:∆ Remote Repository '{direpa_remote_src}' does not exist.
-        _out:√ git clone --bare {direpa_task_src} {direpa_remote_src}
+        _out:√ git clone --bare {direpa_task}/doc {direpa_par_remote_src}/doc.git
+        _out:√ Remote Path '{direpa_par_remote_src}' is reachable.
+        _out:√ git clone --bare {direpa_task}/mgt {direpa_par_remote_src}/mgt.git
+        _out:√ Remote Path '{direpa_par_remote_src}' is reachable.
+        _out:√ git clone --bare {direpa_task}/src {direpa_par_remote_src}/src.git
         _out:√ New Project test initialized.
         rm -rf {direpa_repository}
         rm -rf {direpa_task}

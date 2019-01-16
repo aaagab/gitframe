@@ -27,6 +27,7 @@ import git_helpers.regex_obj as ro
 # you cannot have hotfix id duplicate in json
 
 def hotfix_history_json_validator(regex_branches):
+    msg.subtitle("Verify hotfix-history.json file presence and content.")
     conf = Json_config()
     filen_hotfix_history=conf.get_value("filen_hotfix_history")
 

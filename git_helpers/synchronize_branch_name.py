@@ -18,46 +18,59 @@ def synchronize_branch_name(repo, regex_branches, branch_name=""):
 
     msg.title("Synchronize Branch "+branch_name)
 
-    local=False
-    local_remote=False
-    remote=False
-
+    branch_on={
+        "local": False,
+        "local_remote": False,
+        "remote": False,
+    }
     if regex_branches:
         for regex_branch in regex_branches:
             if regex_branch.text == branch_name:
                 if regex_branch.location == "local":
-                    local=True
+                    branch_on["local"]=True
                 elif regex_branch.location == "local_remote":
-                    local_remote=True
+                    branch_on["local_remote"]=True
                 elif regex_branch.location == "remote":
-                    remote=True
+                    branch_on["remote"]=True
     else:
         branch_on=get_branch_on(repo, branch_name)
-        local=branch_on["local"]
-        local_remote=branch_on["local_remote"]
-        remote=branch_on["remote"]
 
     msg.dbg("info", "Local | Local_Remote | Remote Branch")
-    msg.dbg("info","{}_{}_{}".format(local,local_remote,remote))
+    msg.dbg("info","{}_{}_{}".format(branch_on["local"],branch_on["local_remote"],branch_on["remote"]))
 
-    if remote:
-        if local_remote and local:
-            synchronize_local_with("local_remote", branch_name, repo)
-            synchronize_local_with("remote", branch_name, repo)
-        elif local_remote and not local:
-            synchronize_local_with("local_remote", branch_name, repo)
-            synchronize_local_with("remote", branch_name, repo)
-        elif not local_remote and local:
+    if branch_on["remote"]:
+        if branch_on["local_remote"] and branch_on["local"]:
+            synchronize_local_with(
+                "local_remote", 
+                branch_name,
+                get_branch_compare_status_repository("local_remote", branch_on, branch_name))
+            synchronize_local_with(
+                "remote", 
+                branch_name,
+                get_branch_compare_status_repository("remote", branch_on, branch_name))
+        elif branch_on["local_remote"] and not branch_on["local"]:
+            synchronize_local_with(
+                "local_remote", 
+                branch_name,
+                get_branch_compare_status_repository("local_remote", branch_on, branch_name))
+            synchronize_local_with(
+                "remote", 
+                branch_name,
+                get_branch_compare_status_repository("remote", branch_on, branch_name))
+        elif not branch_on["local_remote"] and branch_on["local"]:
             msg.warning(
                 "Branch exists on local and on remote but not on local_remote.",
                 "Branches are probably different, check manually the authors and commits and decide if you rename one branch or if you want to merge them."
             )
             sys.exit(1)
-        elif not local_remote and not local:
-            synchronize_local_with("remote", branch_name, repo)
+        elif not branch_on["local_remote"] and not branch_on["local"]:
+            synchronize_local_with(
+                "remote", 
+                branch_name,
+                get_branch_compare_status_repository("remote", branch_on, branch_name))
     else: # no remote
         if repo.is_reachable:
-            if local_remote and local:
+            if branch_on["local_remote"] and branch_on["local"]:
                 branch_type=ro.get_element_regex(branch_name).type
                 if not branch_type in ["master", "develop"]:
                     msg.info("Branch '"+branch_name+"' has probably been deleted on Remote. If it is case you should delete it on local and local_remote.")
@@ -68,7 +81,7 @@ def synchronize_branch_name(repo, regex_branches, branch_name=""):
                         shell.cmd_prompt("git branch -D "+branch_name)
                         if git.is_branch_on_local(start_branch):
                             git.checkout(start_branch)
-                        local=False
+                        branch_on["local"]=False
                 
                     git_pretty_log("origin/"+branch_name)
                     if prompt_boolean("Do you want to delete '"+branch_name+"' from local_remote?", "n"):
@@ -76,11 +89,17 @@ def synchronize_branch_name(repo, regex_branches, branch_name=""):
                         shell.cmd_prompt("git branch -rD origin/"+branch_name)
                         if git.is_branch_on_local(start_branch):
                             git.checkout(start_branch)
-                        local_remote=False
+                        branch_on["local_remote"]=False
 
-                synchronize_local_with("local_remote", branch_name, repo)
-                synchronize_local_with("remote", branch_name, repo)
-            elif local_remote and not local:
+                synchronize_local_with(
+                    "local_remote", 
+                    branch_name,
+                    get_branch_compare_status_repository("local_remote", branch_on, branch_name))
+                synchronize_local_with(
+                    "remote", 
+                    branch_name,
+                    get_branch_compare_status_repository("remote", branch_on, branch_name))
+            elif branch_on["local_remote"] and not branch_on["local"]:
                 branch_type=ro.get_element_regex(branch_name).type
                 if not branch_type in ["master", "develop"]:
                     msg.info("Branch '"+branch_name+"' has probably been deleted on Remote. If it is case you should delete it on local_remote.")
@@ -91,26 +110,40 @@ def synchronize_branch_name(repo, regex_branches, branch_name=""):
                     shell.cmd_prompt("git branch -rD origin/"+branch_name)
                     if git.is_branch_on_local(start_branch):
                         git.checkout(start_branch)
-                    local_remote=False
+                    branch_on["local_remote"]=False
 
-                synchronize_local_with("local_remote", branch_name, repo)
-                synchronize_local_with("remote", branch_name, repo)
-                    
-            elif not local_remote and local:
-                synchronize_local_with("remote", branch_name, repo)
-            elif not local_remote and not local:
+                synchronize_local_with(
+                    "local_remote", 
+                    branch_name,
+                    get_branch_compare_status_repository("local_remote", branch_on, branch_name))
+                synchronize_local_with(
+                    "remote", 
+                    branch_name,
+                    get_branch_compare_status_repository("remote", branch_on, branch_name))
+            elif not branch_on["local_remote"] and branch_on["local"]:
+                synchronize_local_with(
+                    "remote", 
+                    branch_name,
+                    get_branch_compare_status_repository("remote", branch_on, branch_name))
+            elif not branch_on["local_remote"] and not branch_on["local"]:
                 msg.warning("Branch does not exists on local, local_remote and remote.")
                 msg.warning("No action needed for 'synchronize' on '"+branch_name+"'")
         else: # remote is not reachable
             msg.warning("Remote is not reachable thus it is not possible to compare local branch with remote branch.")
-            if local_remote and local:
-                synchronize_local_with("local_remote", branch_name, repo)
-            elif local_remote and not local:
-                synchronize_local_with("local_remote", branch_name, repo)
-            elif not local_remote and local:
+            if branch_on["local_remote"] and branch_on["local"]:
+                synchronize_local_with(
+                    "local_remote", 
+                    branch_name,
+                    get_branch_compare_status_repository("local_remote", branch_on, branch_name))
+            elif branch_on["local_remote"] and not branch_on["local"]:
+                synchronize_local_with(
+                    "local_remote", 
+                    branch_name,
+                    get_branch_compare_status_repository("local_remote", branch_on, branch_name))
+            elif not branch_on["local_remote"] and branch_on["local"]:
                 msg.warning("Branch only exists on local and remote is not reachable.")
                 msg.warning("No action needed for 'synchronize' on '"+branch_name+"'")
-            elif not local_remote and not local:
+            elif not branch_on["local_remote"] and not branch_on["local"]:
                 msg.warning("Branch does not exists on local, local_remote and remote can't be verified due to offline mode.")
                 msg.warning("No action needed for 'synchronize' on '"+branch_name+"'")
 
@@ -172,12 +205,9 @@ def get_branch_on(repo, branch_name):
         
     return branch_on
 
-def synchronize_local_with(location, branch_name, repo):
+def synchronize_local_with(location, branch_name, cmp_status):
     msg.dbg("subtitle", "synchronize_local_with '"+location+"' for '"+branch_name+"'")
-    
-    branch_on=get_branch_on(repo, branch_name)
-    cmp_status=get_branch_compare_status_repository(location, branch_on, branch_name)
-    
+       
     msg.info("cmp_status: "+cmp_status)
     if cmp_status == "up_to_date":
         msg.success("No action needed for 'synchronize' with \""+branch_name+"\" on \""+location+"\"")
@@ -191,15 +221,19 @@ def synchronize_local_with(location, branch_name, repo):
     elif cmp_status == "pull_not_local":
         branch_type=ro.get_element_regex(branch_name).type
         if location == "local_remote":
-            if branch_type in ["master", "develop"]:
-                action=get_value_from_menu(["merge", "ignore", "exit"], branch_name)
-                execute_action(action, branch_name)
-            else:
+            # if branch_type in ["master", "develop"]:
+                # action=get_value_from_menu(["merge", "ignore", "exit"], branch_name)
+                # execute_action(action, branch_name)
+            # else:
                 msg.warning("Branch '"+branch_name+"' is on local_remote but not on local. No need to checkout.")
                 msg.success("No action needed for 'synchronize' with \""+branch_name+"\" on \""+location+"\"")
         elif location == "remote":
-            action=get_value_from_menu(["fetch", "ignore", "exit"], branch_name)
-            execute_action(action, branch_name)
+            if git.is_branch_on_local_remote(branch_name):
+                msg.success("No action needed for 'synchronize' with \""+branch_name+"\" on \""+location+"\"")
+            else:
+                action=get_value_from_menu(["fetch", "ignore", "exit"], branch_name)
+                execute_action(action, branch_name)
+
     elif cmp_status == "push":
         if location == "local_remote":
             msg.warning("Push is never done to local_remote branches, local is already the newest")
@@ -270,8 +304,7 @@ def get_branch_compare_status_repository(location, branch_on, branch_name="" ):
     if not branch_name:
         branch_name=git.get_active_branch_name()
 
-    msg.dbg("subtitle", "get_branch_compare_status_repository "+location+"' for '"+branch_name+"'")
-
+    msg.dbg("subtitle", "get_branch_compare_status_repository '"+location+"' for '"+branch_name+"'")
 
     if location == "local_remote":
         msg.info("Compare branch: \""+ branch_name + "\" local to \"origin/"+branch_name+"\"")

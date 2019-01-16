@@ -41,18 +41,17 @@ def read_logs(conf, log_files):
             f.write("cat \""+file+"\"\n")
         f.write("echo\n")
 
-    os.chmod(conf["filenpa_read_log_bashrc"], 0o755)    
-    
+    os.chmod(conf["filenpa_read_log_bashrc"], 0o755)
+
     cmd=re.sub(r"\n\s*", "\n","""
         tmux select-pane -t 1
-        tmux join-pane -hs {task_name}:1.0
+        tmux swap-pane -s gitframe:1.0
+        tmux send-keys -t 1 'echo -en "\ec\e[3J"'
+        tmux send-keys -t 1 KPEnter
+        tmux send-keys -t 1 "{cmd}"
+        tmux send-keys -t 1 KPEnter
         tmux select-pane -t 0
-        tmux send-keys -t 2 'echo -en "\ec\e[3J"'
-        tmux send-keys -t 2 KPEnter
-        tmux send-keys -t 2 "{cmd}"
-        tmux send-keys -t 2 KPEnter
-        tmux break-pane -d -s 1
-        tmux select-layout even-horizontal
+        tmux set -g status-bg red
     """.format(
         task_name=conf["task_name"],
         cmd=conf["filenpa_read_log_bashrc"]

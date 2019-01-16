@@ -4,6 +4,7 @@ import utils.message as msg
 import utils.shell_helpers as shell
 import sys
 import re
+from utils.prompt import prompt_boolean
 
 def has_git_directory(path=""):
     start_path=""
@@ -29,8 +30,21 @@ def get_root_dir_name():
     root_dir=shell.cmd_get_value("git rev-parse --show-toplevel")
     return os.path.basename(root_dir)
 
-def get_root_dir_path():
+def get_root_dir_path(path=""):
+    previous_path=""
+    if path:
+        if not os.path.exists(path):
+            msg.user_error("Path '{}' not found.".format(path))
+        
+        if path != os.getcwd():
+            previous_path=os.getcwd()
+            os.chdir(path)
+
     root_dir=shell.cmd_get_value("git rev-parse --show-toplevel")
+
+    if previous_path:
+        os.chdir(previous_path)
+
     return root_dir
 
 def get_active_branch_name():
@@ -119,7 +133,7 @@ def get_heads_remote_branch_names(repo):
     # remove all unneeded string
 
     if repo.is_reachable:
-        if repo.has_directory:
+        if repo.is_git_directory:
             for branch in raw_branches:
                 if re.match("^.*?refs/heads/.*$", branch):
                     branches.append(re.sub("^.*?refs/heads/","",branch).strip())
@@ -139,7 +153,8 @@ def get_local_remote_branch_names(remote_name="origin"):
     branches=[]
     # remove all unneeded string
     for branch in raw_branches:
-        branches.append(re.sub("^.*?"+remote_name+"/","",branch).strip())
+        if not "HEAD ->" in branch:
+            branches.append(re.sub("^.*?"+remote_name+"/","",branch).strip())
 
     return branches
 
@@ -149,7 +164,12 @@ def fetch_tags():
 def set_annotated_tags(repo, tag, txt):
     shell.cmd_prompt("git tag -a "+tag+" -m '"+txt+"'")
     if repo.is_reachable:
-        shell.cmd_prompt('git push origin '+tag)
+        push_tag_origin=True
+        if txt == "draft":
+            push_tag_origin=False
+
+        if push_tag_origin:
+            shell.cmd_prompt('git push origin '+tag)
     else:
         msg.warning("Tag "+tag+" can't been pushed to Remote.")
 
@@ -186,41 +206,6 @@ def push_origin(repo, branch_name):
 def commit_empty(txt):
     shell.cmd_prompt("git commit --allow-empty -m \""+txt+"\"")
     
-def get_commit_from_tag(tag, location="local"):
-    if location == "local":
-        all_tags=shell.cmd_get_value("git tag").splitlines()
-        reg_tag_line_str=r"^commit (.*)"
-        for this_tag in all_tags:
-            if tag == this_tag:
-                return shell.cmd_get_value("git rev-list -n 1 "+this_tag).strip()
-    elif location == "remote":
-        all_tags=shell.cmd_get_value("git ls-remote --tags origin").splitlines()
-        # first test annotated tags
-        for line in all_tags:
-            reg_annotated_tag_str=r"^(.*)\trefs/tags/(.*)\^{}$"
-            annotated_tag_match=re.match(reg_annotated_tag_str, line)
-            if annotated_tag_match:
-                if tag == annotated_tag_match.group(2):
-                    return annotated_tag_match.group(1)
-
-        # then all other tags
-        for line in all_tags:
-            reg_regular_tag_str=r"^(.*)\trefs/tags/(.*)$"
-            regular_tag_match=re.match(reg_regular_tag_str, line)
-            if regular_tag_match:
-                if tag == regular_tag_match.group(2):
-                    return regular_tag_match.group(1)
-
-            else:
-                msg.app_error(
-                    "'git ls-remote --tags origin' does not return a string of the forms: ",
-                    "for regular tag: '"+reg_regular_tag_str+"'",
-                    "for annotated tag: '"+reg_annotated_tag_str+"'",
-                    "instead it returns: "+line
-                )
-                sys.exit(1)
-    return ""
-
 def get_latest_release_for_each_major(all_version_tags):
     import git_helpers.regex_obj as ro
     
