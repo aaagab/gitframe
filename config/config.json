@@ -1,0 +1,77 @@
+{
+    "app_name": "gitframe",
+    "author": "Gabriel Auger",
+    "debug": false,
+    "deps": [
+        {
+            "app": "git",
+            "cmd": "git"
+        },
+        {
+            "app": "scp",
+            "cmd": "scp"
+        },
+        {
+            "app": "ssh",
+            "cmd": "ssh"
+        },
+        {
+            "app": "ping",
+            "cmd": "ping"
+        },
+        {
+            "app": "openssh-server",
+            "cmd": "ssh-keygen"
+        },
+        {
+            "app": "openssh-client",
+            "cmd": "ssh"
+        }
+    ],
+    "diren_update_gitframe": "bin",
+    "direpa_dev_sources": "/data/projs/apps/dt/gitframe/src",
+    "filen_hotfix_history": "hotfix-history.json",
+    "filen_scriptjob_save_json": "scriptjob_save.json",
+    "filer_bump_version": "bump_version",
+    "filer_deploy": "deploy",
+    "license": "MIT",
+    "processor": {
+        "clean_after": false,
+        "deps": [
+            {
+                "app": "bash",
+                "cmd": "bash"
+            },
+            {
+                "app": "screen",
+                "cmd": "screen"
+            }
+        ],
+        "diren_logs": "logs",
+        "filen_cmds": "cmds.sh",
+        "filen_conf": "processor_config.json",
+        "filen_launcher": "gitframe.py",
+        "filen_read_log_bashrc": "read_log_bashrc",
+        "filen_screen_log": "processor_screen_log.0",
+        "filen_screenrc": "screenrc",
+        "filen_task_status": "task_status.log",
+        "read_log_window_title": "#Error_Logs#",
+        "task": {
+            "diren": "test",
+            "diren_src": "src",
+            "direpa": "/tmp/test-gf",
+            "name": "gitframe",
+            "remote": {
+                "diren_root": "repository",
+                "domain": "localhost",
+                "ip": "127.0.0.1",
+                "user_git": "noa"
+            }
+        },
+        "txt_screen_cmd_error": "++ cmd error ++",
+        "txt_screen_log_eof": "++ end unit ++",
+        "waiting_time_between_cmds": 20
+    },
+    "validator": true,
+    "version": "1.0.0-alpha-1547142773"
+}

@@ -1,0 +1,7 @@
+__pycache__/
+.env/
+.pytest_cache/
+.vscode
+*.pyc
+testing/logs
+config/private_config.json
