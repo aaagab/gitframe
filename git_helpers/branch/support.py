@@ -26,7 +26,7 @@ def open_support(repo, regex_branches, all_version_tags):
 		sys.exit(1)
 	else:
 		tag_regex=ro.Version_regex(tag_to_branch_from)
-		new_support_branch=ro.Support_regex().get_new_branch_name(tag_regex.major_minor)
+		new_support_branch=ro.Support_regex().get_new_branch_name(tag_regex.major)
 		git.checkoutb(new_support_branch+" v"+tag_regex.text)
 		git.commit_empty("Creating Branch "+new_support_branch)
 		git.push_origin(repo, new_support_branch)
@@ -37,7 +37,7 @@ def has_tag_a_support_branch(tag_to_branch, regex_support_branches):
 	regex_tag_to_branch=ro.Version_regex(tag_to_branch)
 	if regex_support_branches:
 		for regex_branch in regex_support_branches:
-			if regex_branch.major_minor == regex_tag_to_branch.major_minor:
+			if regex_branch.major == regex_tag_to_branch.major:
 				return True
 		return False
 	else:

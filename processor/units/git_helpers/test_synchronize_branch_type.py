@@ -11,55 +11,50 @@ def test_synchronize_branch_type(conf):
     set_task_steps(conf, """
         cd {direpa_task_src}
 
-        {step} synchronize_branch_type release_no_branches
+        {step} synchronize_branch_type support_no_branches
         {cmd}
         _out:√ synchronize_branch_type
 
-        {step} synchronize_branch_type release_branche_local
+        {step} synchronize_branch_type support_branch_local
         git checkout master
-        git checkout -b release-2.0.0
+        git checkout -b spt-2.X.X
         {cmd}
-        _out:Choose an action for branch 'release-2.0.0'.
+        _out:Choose an action for branch 'spt-2.X.X'.
         _out:choice or 'q' to quit:
         _type:2
-        _out:∆ Operation ignored 'synchronize' branch 'release-2.0.0'        
+        _out:∆ Operation ignored 'synchronize' branch 'spt-2.X.X'        
         _out:√ synchronize_branch_type
         git checkout master
-        git branch -D release-2.0.0
+        git branch -D spt-2.X.X
 
         {step} get_unique_regex_branch_names
         git checkout master
-        git checkout -b release-2.0.0
-        git push origin release-2.0.0
-        git checkout -b hotfix-1.0.X-a_quick_repair
-        git push origin hotfix-1.0.X-a_quick_repair
-        git branch -rD origin/hotfix-1.0.X-a_quick_repair
-        git checkout -b feature-super_function
-        git push origin feature-super_function
-        git checkout -b support-1.0.X
-        git push origin support-1.0.X
+        git checkout -b hfx-1.X.X-a_quick_repair
+        git push origin hfx-1.X.X-a_quick_repair
+        git branch -rD origin/hfx-1.X.X-a_quick_repair
+        git checkout -b fts-super_function
+        git push origin fts-super_function
+        git checkout -b spt-1.X.X
+        git push origin spt-1.X.X
         git checkout master
-        git branch -D feature-super_function
-        git branch -D support-1.0.X
+        git branch -D fts-super_function
+        git branch -D spt-1.X.X
         cp -r {direpa_task_src} {direpa_task_src}_tmp
         cd {direpa_task_src}_tmp
-        git push origin --delete support-1.0.X
+        git push origin --delete spt-1.X.X
         cd {direpa_task_src}
         {cmd}
         _out:develop
-        _out:feature-super_function
-        _out:hotfix-1.0.X-a_quick_repair
+        _out:fts-super_function
+        _out:hfx-1.X.X-a_quick_repair
         _out:master
-        _out:release-2.0.0
-        _out:support-1.0.X
+        _out:spt-1.X.X
         git checkout master
         rm -rf {direpa_task_src}_tmp
-        git branch -D release-2.0.0
-        git push origin --delete release-2.0.0
-        git branch -D hotfix-1.0.X-a_quick_repair
-        git push origin --delete hotfix-1.0.X-a_quick_repair
-        git push origin --delete feature-super_function
-        git branch -rD origin/support-1.0.X
+        git branch -D hfx-1.X.X-a_quick_repair
+        git push origin --delete hfx-1.X.X-a_quick_repair
+        git push origin --delete fts-super_function
+        git branch -rD origin/spt-1.X.X
     """)
 
     start_processor(conf)
@@ -78,7 +73,7 @@ if __name__ == "__main__":
         
     if sys.argv[1] == "synchronize_branch_type":
         from git_helpers.synchronize_branch_type import synchronize_branch_type
-        synchronize_branch_type(repo, regex_branches, "release")
+        synchronize_branch_type(repo, regex_branches, "support")
     
     elif sys.argv[1] == "get_unique_regex_branch_names":
         from git_helpers.synchronize_branch_type import get_unique_regex_branch_names

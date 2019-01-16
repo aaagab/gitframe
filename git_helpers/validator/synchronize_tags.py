@@ -8,13 +8,11 @@ import git_helpers.regex_obj as ro
 from git_helpers.tags_commits import Tags_commits
 from copy import deepcopy
 
+
 # all tags from remote are fetched
 # Tags to monitor closely are release and patch
 # (release) all tags of form v\d+\.\d+\.\d+ with last d == 0
-# (early release) all tags of re.match(r"v\d+\.\d+\.(\d+)-(alpha|beta|rc)(-o|-c)?-\d+" with last d == 0
-# (patch) all tags of form v\d+\.\d+\.\d+ with last d > 0
 
-# (start_hotfix tags) all tags of form start_hotfix-\d+\.\d+\.\d+.*
 # As a rule Tags are not fetch globally from remote because if two tags with same name but different commits then the one local is updated without prompt with the one from remote. This behaviour is not desired. That is why only tag of importance are fetch automatically, the other tags have to be pushed and fetched manually
 
 def err_msg_commit(name, tags_commits):
@@ -25,7 +23,7 @@ def err_msg_commit(name, tags_commits):
     )
     sys.exit(1)
 
-def tags_validator(repo):
+def synchronize_tags(repo):
     msg.subtitle("Verify Tags on local and remote")
     from datetime import datetime
 
@@ -54,10 +52,8 @@ def tags_validator(repo):
 def process_tag_not_found(tag_name, not_found_location):
 
     regex_version=ro.Version_regex().set_text_if_tag_match(tag_name)
-    regex_hotfix=ro.Hotfix_regex().set_text_if_tag_match(tag_name)
-    regex_early_release=ro.Early_release_regex().set_text_if_tag_match(tag_name)
 
-    if regex_version.match or regex_early_release.match or regex_hotfix.match:
+    if regex_version.match:
         if not_found_location=="remote":
             msg.user_error("tag '"+tag_name+"' exists on local but not on remote. tag not pushed.")
         elif not_found_location == "local":
@@ -78,17 +74,6 @@ def process_tag_not_found(tag_name, not_found_location):
                 elif not_found_location == "local":
                     msg.user_error("Maybe a support branch or master needs to be pulled with the tag.")
 
-        elif regex_early_release.match:
-            if not_found_location=="remote":
-                msg.user_error("Define from which branch this tag has been generated and push the branch with the tag.")
-            elif not_found_location == "local":
-                msg.user_error("Define from which branch this tag has been generated and pull the branch with the tag.")
-
-        elif regex_hotfix.match:
-            if not_found_location=="remote":
-                msg.user_error("Maybe a hotfix branch needs to be pushed with the tag.")
-            elif not_found_location == "local":
-                msg.user_error("Maybe a hotfix branch needs to be pulled with the tag.")
     else: # less important tag
         if not_found_location=="remote":
             msg.warning("tag '"+tag_name+"' exists on local but not on remote. tag not pushed.")

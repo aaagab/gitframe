@@ -1,7 +1,7 @@
 {
     "app_name": "gitframe",
     "author": "Gabriel Auger",
-    "debug": true,
+    "debug": false,
     "deps": [
         {
             "app": "git",
@@ -31,7 +31,7 @@
     "diren_update_gitframe": "bin",
     "direpa_dev_sources": "/data/projs/apps/dt/gitframe/src",
     "filen_hotfix_history": "hotfix-history.json",
-    "filen_version": "version.txt",
+    "filen_scriptjob_save_json": "scriptjob_save.json",
     "filer_bump_version": "bump_version",
     "filer_deploy": "deploy",
     "license": "MIT",

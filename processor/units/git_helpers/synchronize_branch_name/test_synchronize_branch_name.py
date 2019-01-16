@@ -13,198 +13,198 @@ def test_synchronize_branch_name(conf):
 
         {step} regex_branches local
         git checkout master
-        git checkout -b feature-add
+        git checkout -b fts-add
         {cmd}
         _out:# True_False_False
         _out:# cmp_status: push
         _out:choice or 'q' to quit:
         _type: 2
         git checkout master
-        git branch -D feature-add
+        git branch -D fts-add
 
         {step} regex_branches all_location
         git checkout master
-        git checkout -b feature-add
-        git push origin feature-add
+        git checkout -b fts-add
+        git push origin fts-add
         {cmd}
         _out:# True_True_True
         _out:# cmp_status: up_to_date
-        _out:√ No action needed for 'synchronize' with "feature-add" on "remote"
+        _out:√ No action needed for 'synchronize' with "fts-add" on "remote"
         git checkout master
-        git branch -D feature-add
-        git push origin --delete feature-add
+        git branch -D fts-add
+        git push origin --delete fts-add
 
         {step} remote_x_local_remote_and_local
-        git checkout -b feature-add
+        git checkout -b fts-add
         git tag start_test
-        git push origin feature-add
+        git push origin fts-add
         {cmd}
         _out:# True_True_True
-        _out:### synchronize_local_with 'remote' for 'feature-add'
+        _out:### synchronize_local_with 'remote' for 'fts-add'
         _out:# cmp_status: up_to_date
-        _out:√ No action needed for 'synchronize' with "feature-add" on "remote"
+        _out:√ No action needed for 'synchronize' with "fts-add" on "remote"
         git checkout master
-        git branch -D feature-add
+        git branch -D fts-add
 
 
         {step} remote_x_local_remote_and_not_local
         git checkout master
-        git checkout -b feature-add
-        git push origin feature-add
+        git checkout -b fts-add
+        git push origin fts-add
         git checkout master
-        git branch -D feature-add
+        git branch -D fts-add
         {cmd}
         _out:# False_True_True
-        _out:∆ Branch 'feature-add' is on local_remote but not on local. No need to checkout.
-        _out:### synchronize_local_with 'remote' for 'feature-add'
+        _out:∆ Branch 'fts-add' is on local_remote but not on local. No need to checkout.
+        _out:### synchronize_local_with 'remote' for 'fts-add'
         _out:# cmp_status: pull_not_local
-        git push origin --delete feature-add
+        git push origin --delete fts-add
     
         {step} remote_x_not_local_remote_and_local
         git checkout master
-        git checkout -b feature-add
-        git push origin feature-add
-        git branch -rd origin/feature-add
+        git checkout -b fts-add
+        git push origin fts-add
+        git branch -rd origin/fts-add
         {cmd}
         _out:# True_False_True
         _out:∆ Branch exists on local and on remote but not on local_remote.
         _fail:
         git checkout master
-        git push origin --delete feature-add
-        git branch -D feature-add
+        git push origin --delete fts-add
+        git branch -D fts-add
     
         {step} remote_x_not_local_remote_and_not_local
         git checkout master
-        git checkout -b feature-add
-        git push origin feature-add
+        git checkout -b fts-add
+        git push origin fts-add
         git checkout master
-        git branch -rd origin/feature-add
-        git branch -D feature-add
+        git branch -rd origin/fts-add
+        git branch -D fts-add
         {cmd}
         _out:# False_False_True
-        _out:### synchronize_local_with 'remote' for 'feature-add'
+        _out:### synchronize_local_with 'remote' for 'fts-add'
         _out:# cmp_status: pull_not_local
         _out:choice or 'q' to quit:
         _type:2
-        git push origin --delete feature-add
+        git push origin --delete fts-add
     
         {step} no_remote_x_online_local_remote_and_local_not_master_x_delete_local_and_local_remote
         git checkout master
-        git checkout -b feature-add
-        git push origin feature-add
+        git checkout -b fts-add
+        git push origin fts-add
         cp -r {direpa_task_src} {direpa_task_src}_tmp
         cd {direpa_task_src}_tmp
-        git push origin --delete feature-add
+        git push origin --delete fts-add
         cd {direpa_task_src}
         {cmd}
         _out:# True_True_False 
-        _out:# Git Pretty 'feature-add'
-        _out:Do you want to delete 'feature-add' from local? [y/N/q]:
+        _out:# Git Pretty 'fts-add'
+        _out:Do you want to delete 'fts-add' from local? [y/N/q]:
         _type:n
-        _out:# Git Pretty 'origin/feature-add'
-        _out:Do you want to delete 'feature-add' from local_remote? [y/N/q]:
+        _out:# Git Pretty 'origin/fts-add'
+        _out:Do you want to delete 'fts-add' from local_remote? [y/N/q]:
         _type:n
-        _out:### synchronize_local_with 'remote' for 'feature-add'
+        _out:### synchronize_local_with 'remote' for 'fts-add'
         _out:choice or 'q' to quit:
         _type:2
         rm -rf {direpa_task_src}_tmp
         git checkout master
-        git branch -rd origin/feature-add
-        git branch -D feature-add
+        git branch -rd origin/fts-add
+        git branch -D fts-add
     
         {step} no_remote_x_online_local_remote_and_not_local_not_master_x_delete_local_remote
         git checkout master
-        git checkout -b feature-add
-        git push origin feature-add
+        git checkout -b fts-add
+        git push origin fts-add
         cp -r {direpa_task_src} {direpa_task_src}_tmp
         cd {direpa_task_src}_tmp
-        git push origin --delete feature-add
+        git push origin --delete fts-add
         cd {direpa_task_src}
         rm -rf {direpa_task_src}_tmp
         git checkout master
-        git branch -D feature-add
+        git branch -D fts-add
         {cmd}
         _out:# False_True_False 
-        _out:# Git Pretty 'origin/feature-add'
-        _out:Do you want to delete 'feature-add' from local_remote? [y/N/q]:
+        _out:# Git Pretty 'origin/fts-add'
+        _out:Do you want to delete 'fts-add' from local_remote? [y/N/q]:
         _type:n
-        _out:### get_branch_compare_status_repository 'local_remote' for 'feature-add'
+        _out:### get_branch_compare_status_repository 'local_remote' for 'fts-add'
         _out:# cmp_status: pull_not_local
-        _out:∆ Branch 'feature-add' is on local_remote but not on local. No need to checkout.
-        _out:### get_branch_compare_status_repository 'remote' for 'feature-add'
-        _out:### synchronize_local_with 'remote' for 'feature-add'
+        _out:∆ Branch 'fts-add' is on local_remote but not on local. No need to checkout.
+        _out:### get_branch_compare_status_repository 'remote' for 'fts-add'
+        _out:### synchronize_local_with 'remote' for 'fts-add'
         _out:# cmp_status: null
-        _out:∆ Branch 'feature-add' does not exist on local nor on remote.
+        _out:∆ Branch 'fts-add' does not exist on local nor on remote.
         git checkout master
-        git branch -rd origin/feature-add
+        git branch -rd origin/fts-add
         
         {step} no_remote_x_online_not_local_remote_and_local
         git checkout master
-        git checkout -b feature-add
+        git checkout -b fts-add
         {cmd}
         _out:# True_False_False
-        _out:### get_branch_compare_status_repository 'remote' for 'feature-add'
-        _out:### synchronize_local_with 'remote' for 'feature-add'
+        _out:### get_branch_compare_status_repository 'remote' for 'fts-add'
+        _out:### synchronize_local_with 'remote' for 'fts-add'
         _out:# cmp_status: push
         _out:choice or 'q' to quit:
         _type:2
         git checkout master
-        git branch -D feature-add
+        git branch -D fts-add
     
         {step} no_remote_x_online_not_local_remote_and_not_local
         git checkout develop
         {cmd}
         _out:# False_False_False
         _out:∆ Branch does not exists on local, local_remote and remote.
-        _out:∆ No action needed for 'synchronize' on 'feature-add'
+        _out:∆ No action needed for 'synchronize' on 'fts-add'
     
         {step} no_remote_x_offline_local_remote_and_local
         git checkout master
-        git checkout -b feature-add
-        git push origin feature-add
+        git checkout -b fts-add
+        git push origin fts-add
         cp -r {direpa_task_src} {direpa_task_src}_tmp
         cd {direpa_task_src}_tmp
-        git push origin --delete feature-add
+        git push origin --delete fts-add
         cd {direpa_task_src}
         rm -rf {direpa_task_src}_tmp        
         {cmd}
         _out:# True_True_False
-        _out:### get_branch_compare_status_repository 'local_remote' for 'feature-add'
-        _out:### synchronize_local_with 'local_remote' for 'feature-add'
+        _out:### get_branch_compare_status_repository 'local_remote' for 'fts-add'
+        _out:### synchronize_local_with 'local_remote' for 'fts-add'
         _out:# cmp_status: up_to_date
         git checkout master
-        git branch -rd origin/feature-add
-        git branch -D feature-add
+        git branch -rd origin/fts-add
+        git branch -D fts-add
     
         {step} no_remote_x_offline_local_remote_and_not_local
         git checkout master
-        git checkout -b feature-add
-        git push origin feature-add
+        git checkout -b fts-add
+        git push origin fts-add
         cp -r {direpa_task_src} {direpa_task_src}_tmp
         cd {direpa_task_src}_tmp
-        git push origin --delete feature-add
+        git push origin --delete fts-add
         cd {direpa_task_src}
         rm -rf {direpa_task_src}_tmp        
         git checkout master
-        git branch -D feature-add
+        git branch -D fts-add
         {cmd}
         _out:# False_True_False
         _out:∆ Remote is not reachable thus it is not possible to compare local branch with remote branch.
-        _out:### get_branch_compare_status_repository 'local_remote' for 'feature-add'
-        _out:### synchronize_local_with 'local_remote' for 'feature-add'
+        _out:### get_branch_compare_status_repository 'local_remote' for 'fts-add'
+        _out:### synchronize_local_with 'local_remote' for 'fts-add'
         _out:# cmp_status: pull_not_local
-        _out:∆ Branch 'feature-add' is on local_remote but not on local. No need to checkout.
+        _out:∆ Branch 'fts-add' is on local_remote but not on local. No need to checkout.
         git checkout master
-        git branch -rd origin/feature-add
+        git branch -rd origin/fts-add
         
         {step} no_remote_x_offline_not_local_remote_and_local
         git checkout master
-        git checkout -b feature-add
+        git checkout -b fts-add
         {cmd}
         _out:# True_False_False
         _out:∆ Branch only exists on local and remote is not reachable.
         git checkout master
-        git branch -D feature-add
+        git branch -D fts-add
     
         {step} no_remote_x_offline_not_local_remote_and_not_local
         {cmd}
@@ -230,45 +230,45 @@ if __name__ == "__main__":
     regex_branches=get_all_branch_regexes(repo)
 
     if sys.argv[1] == "regex_branches":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
     elif sys.argv[1] == "remote_x_local_remote_and_local":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
     elif sys.argv[1] == "remote_x_local_remote_and_not_local":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
     elif sys.argv[1] == "remote_x_not_local_remote_and_local":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
     elif sys.argv[1] == "remote_x_not_local_remote_and_not_local":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
     elif sys.argv[1] == "no_remote_x_online_local_remote_and_local_not_master_x_delete_local_and_local_remote":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
     elif sys.argv[1] == "no_remote_x_online_local_remote_and_not_local_not_master_x_delete_local_remote":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
     elif sys.argv[1] == "no_remote_x_online_not_local_remote_and_local":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
     elif sys.argv[1] == "no_remote_x_online_not_local_remote_and_not_local":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
     repo.is_reachable=False
 
     if sys.argv[1] == "no_remote_x_offline_local_remote_and_local":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
     elif sys.argv[1] == "no_remote_x_offline_local_remote_and_not_local":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
     elif sys.argv[1] == "no_remote_x_offline_not_local_remote_and_local":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
     elif sys.argv[1] == "no_remote_x_offline_not_local_remote_and_not_local":
-        synchronize_branch_name(repo, regex_branches, "feature-add")
+        synchronize_branch_name(repo, regex_branches, "fts-add")
 
 
 

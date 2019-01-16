@@ -30,13 +30,13 @@ def test_open_support(conf):
         _out:Choose a release From Where To branch The Support Branch.
         _out:choice or 'q' to quit:
         _type:1
-        _out:√ git checkout -b support-1.0.X v1.0.3
-        _out:√ git push origin support-1.0.X
+        _out:√ git checkout -b spt-1.X.X v1.0.3
+        _out:√ git push origin spt-1.X.X
         git tag --delete v1.0.3
         git tag --delete v2.0.0
         git checkout develop
-        git branch -D support-1.0.X
-        git push origin --delete support-1.0.X
+        git branch -D spt-1.X.X
+        git push origin --delete spt-1.X.X
 
         {step} get_tag_for_support
         {cmd}
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         print(get_tag_for_support(
             ['1.0.0', '1.0.1', '2.0.0', '2.0.3', '3.0.0', '3.1.0'],
             [
-                ro.Support_regex("support-2.0.X")
+                ro.Support_regex("spt-2.X.X")
             ]
         ))
     elif sys.argv[1] == "has_tag_a_support_branch":
@@ -94,15 +94,15 @@ if __name__ == "__main__":
             print(has_tag_a_support_branch(
                 "1.2.1",
                 [
-                    ro.Support_regex("support-1.2.X"),
-                    ro.Support_regex("support-2.1.X")
+                    ro.Support_regex("spt-1.X.X"),
+                    ro.Support_regex("spt-2.X.X")
                 ]
             ))
         elif sys.argv[2] == "False":
             print(has_tag_a_support_branch(
                 "1.2.1",
                 [
-                    ro.Support_regex("support-2.1.X")
+                    ro.Support_regex("spt-2.X.X")
                 ]
             ))
         

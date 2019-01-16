@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os, sys
 from utils.format_text import Format_text as ft
+from utils.prompt import prompt, prompt_boolean
 
 if os.name != 'posix':
 	print("This program has been created for debian Linux.")
@@ -24,115 +25,6 @@ from git_helpers.main_validator import validator
 import argparse
 from pprint import pprint
 
-def is_direpa_dev_sources(conf, path=""):
-	import git_helpers.git_utils as git
-	is_direpa_dev_sources=True
-	if path:
-		if git.has_git_directory(path):
-
-			if os.path.exists(
-				os.path.join(
-					git.get_root_dir_path(path),
-					conf.data["processor"]["filen_launcher"]
-					)
-				):
-				return True
-			else:
-				return False
-		else:
-			return False
-	else:
-		if git.has_git_directory():
-			if os.path.exists(
-				os.path.join(
-					git.get_root_dir_path(),
-					conf.data["processor"]["filen_launcher"]
-					)
-				):
-				return True
-			else:
-				return False
-		else:
-			return False
-
-def get_direpa_dev_sources(conf):
-	if is_direpa_dev_sources(conf):
-		if conf.data["direpa_dev_sources"] != os.getcwd():
-			conf.set_value("direpa_dev_sources", os.getcwd())
-	else:
-		if conf.data["direpa_dev_sources"]:
-			if not os.path.exists(conf.data["direpa_dev_sources"]):
-				msg.user_error(
-					"Current 'direpa_dev_sources' '{}' does not exists".format(conf.data["direpa_dev_sources"]),
-					"Go to real path development sources and run './gitframe.py --update-gitframe' to set direpa_dev_sources."
-				)
-				sys.exit(1)
-			else:
-				if not is_direpa_dev_sources(conf, conf.data["direpa_dev_sources"]):
-					msg.user_error(
-						"Current 'direpa_dev_sources' '{}' exists but it is not the real path development sources for gitframe.".format(conf.data["direpa_dev_sources"]),
-						"Go to real path development sources and run './gitframe.py --update-gitframe' to set direpa_dev_sources."
-					)
-					sys.exit(1)
-		else:
-			msg.user_error(
-				"'direpa_dev_sources' has not been defined",
-				"Go to real path development sources and run './gitframe.py --update-gitframe' to set direpa_dev_sources."
-			)
-			sys.exit(1)
-
-	return conf.data["direpa_dev_sources"]
-
-def update_gitframe_bin(conf, parameters=""):
-
-	from distutils.dir_util import copy_tree
-	import shutil
-	import git_helpers.git_utils as git
-
-	msg.subtitle("Update Gitframe Bin")
-
-	direpa_source_app=get_direpa_dev_sources(conf)
-
-	other_parameters=True
-
-	direpa_previous=os.getcwd()
-	if direpa_source_app != direpa_previous:
-		os.chdir(direpa_source_app)
-
-	try:
-		os.system("{} {}".format(
-			os.path.join(
-				direpa_source_app, 
-				conf.data["processor"]["filen_launcher"]
-			),
-			"--publish-draft"
-		))
-		if parameters == "per":
-			other_parameters=False
-			os.system("{} {}".format(
-				conf.data["app_name"],
-				"--per"
-			))
-	except:
-		if direpa_previous != os.getcwd():
-			os.chdir(direpa_previous)
-		
-	if direpa_previous != os.getcwd():
-		os.chdir(direpa_previous)
-
-	if parameters[:4] == "test":
-		other_parameters=False
-		os.system("{} --{}".format(
-				conf.data["app_name"],
-				parameters.strip()
-		))
-
-	if parameters:
-		if other_parameters == True:
-			os.system("{} {}".format(
-				conf.data["app_name"],
-				parameters.strip()
-			))
 
 if __name__ == "__main__":
 	install_dependencies(conf.get_value("deps"))
@@ -152,13 +44,6 @@ if __name__ == "__main__":
 		dest="debug",
 		# help="debug mode in order to display all processing steps. Mainly use for testing",
 		help=argparse.SUPPRESS
-	)
-	parser.add_argument(
-		"--pd",
-		"--publish-draft",
-		action="store_true",
-		dest="publish_draft",
-		help="this command works on develop, feature, and release branch. It executes the publish_early_release command but the validator is disabled and it does not keep annotated tags."
 	)
 	parser.add_argument(
 		"--dv",
@@ -183,6 +68,13 @@ if __name__ == "__main__":
 		help="clone Project directory to Remote Repository"
 	)
 	parser.add_argument(
+		"--anp",  
+		"--automated-new-project",
+		action="store_true",
+		dest="automated_new_project",
+		help="Create a  new project using the processor engine. It avoids having to type multiple times the same entry."
+	)
+	parser.add_argument(
 		"-n",
 		"--np",
 		"--new-project",
@@ -201,19 +93,22 @@ if __name__ == "__main__":
 		help="open branch Feature"
 	)
 	parser.add_argument(
-		"--per",
-		"--publish-early-release",
-		action="store_true",
-		dest="publish_early_release",
-		help="this command works on develop, feature, and release branch. It pops up some options to get the right tags and then it publish the version with publish-version"
+		"--da",
+		"--deploy-args",
+		dest="deploy_args",
+		help="This parameter can be added to --close-branch for hotfix branch type only. It can also be added to --pick-up-release. The arguments are going to be send to the script deploy",
+		metavar="RELEASE_NUMBER",
+		nargs='*'
 	)
 	parser.add_argument(
 		"--pr",
-		"--publish-release",
-		dest="publish_release",
-		help="select a tag to publish a version from. ex: 1.0.0",
+		"--pur",
+		"--pick-up-release",
+		const=True,
+		dest="pick_up_release",
+		help="select a tag to pick up a release version from. ex: 1.0.0",
 		metavar="RELEASE_NUMBER",
-		nargs=1
+		nargs='?'
 	)
 	parser.add_argument(
 		"-s",
@@ -246,7 +141,7 @@ if __name__ == "__main__":
 		const=True,
 		# action="store",
 		dest="update_gitframe",
-		help="this is for gitframe developers only. This command is needed in order to allow development on gitframe with gitframe. It copies the src code to a temporary folder and execute gitframe from this folder with the remaining parameters. ex: ./gitframe.py --ug=\"--per\" will execute /tmp/test-gf/bin/gitframe.py --per. NOTE: --test command does not need --update_gitframe and it must be executed from the main source code.",
+		help="this is for gitframe developers only. This command is needed in order to allow development on gitframe with gitframe. It copies the src code to a temporary folder and execute gitframe from this folder with the remaining parameters. ex: ./gitframe.py --ug=\"--pr\" will execute /tmp/test-gf/bin/gitframe.py --pr. NOTE: --test command does not need --update_gitframe and it must be executed from the main source code.",
 		metavar="PARAMETERS",
 		nargs='?',
 	)
@@ -268,12 +163,12 @@ if __name__ == "__main__":
 		print(e)
 		sys.exit(1)
 
-	if args.update_gitframe is True:
-		update_gitframe_bin(conf)
-		sys.exit(0)
-
 	if args.update_gitframe:
-		update_gitframe_bin(conf, args.update_gitframe)
+		from git_helpers.update_gitframe_bin import update_gitframe_bin
+		if args.update_gitframe is True:
+			update_gitframe_bin(conf)
+		else:
+			update_gitframe_bin(conf, args.update_gitframe)
 		sys.exit(0)
 
 	if args.debug is True:
@@ -284,16 +179,19 @@ if __name__ == "__main__":
 	if args.disable_validator is True:
 		msg.subtitle("Validator mode disabled")
 		conf.data["validator"]=False
-		if not args.publish_release and not args.publish_early_release:
+		# if not args.pick_up_release and not args.publish_early_release:
+		if not args.pick_up_release:
 			msg.user_error(
-				"Disable Validator can only be enabled with Publish Release (--pr tag) and Publish Early Release (--per).",
+				"Disable Validator can only be enabled with Pick up Release (--pr tag).",
 				"It allows to work quickly with the deploy_release script."
 			)
 			sys.exit(1)
 
 	if args.close_branch is True:
 		from git_helpers.close_branch import close_branch
-		close_branch(*validator(conf.data["validator"]))
+		if args.deploy_args is None:
+			args.deploy_args=[]
+		close_branch(*validator(conf.data["validator"]), args.deploy_args)
 		sys.exit(0)
 		
 	elif args.new_project is True:
@@ -304,6 +202,11 @@ if __name__ == "__main__":
 	elif args.new_project:
 		from git_helpers.new_project import new_project
 		new_project(args.new_project)
+		sys.exit(0)
+
+	elif args.automated_new_project:
+		import processor.utils.processor_engine as pe		
+		pe.terminal_setup(conf.data, ["new_project"])
 		sys.exit(0)
 
 	elif args.clone_project_to_remote is True:
@@ -318,43 +221,30 @@ if __name__ == "__main__":
 		open_branch(*validator(conf.data["validator"]))
 		sys.exit(0)
 
-	elif args.publish_early_release is True:
-		from git_helpers.publish_early_release import publish_early_release
-		repo, regex_branches, all_version_tags=validator(conf.data["validator"])
-		publish_early_release(repo, regex_branches)
-		sys.exit(0)
+	elif args.pick_up_release:
+		from git_helpers.pick_up_release import pick_up_release
+		from git_helpers.create_new_release import create_new_release
 
-	elif args.publish_draft is True:
-		from git_helpers.get_all_branch_regexes import get_all_branch_regexes
-		from git_helpers.publish_early_release import publish_early_release
-		from pprint import pprint
+		if args.deploy_args is None:
+			args.deploy_args=[]
 
-		class Remote_repository:
-		    def __init__(self):
-		        self.is_reachable=False
-
-		repo=Remote_repository()
-
-		publish_early_release(repo, get_all_branch_regexes(repo), "draft")
-		sys.exit(0)
-
-
-
-	elif args.publish_release:
-		from git_helpers.publish_release import publish_release
-		if not conf.data["validator"]:
-			publish_release(args.publish_release[0], "release")
-		else:
+		if args.pick_up_release is True:
 			repo, regex_branches, all_version_tags=validator(conf.data["validator"])
-			publish_release(args.publish_release[0], "release", all_version_tags)
-		sys.exit(0)
+			create_new_release(*args.deploy_args, repo, regex_branches, all_version_tags)
+		else:
+			if conf.data["validator"]:
+				repo, regex_branches, all_version_tags=validator(conf.data["validator"])
+
+			pick_up_release(args.pick_up_release, *args.deploy_args)
 
 	elif args.synchronize_project is True:
 		validator(conf.data["validator"])
 		sys.exit(0)
 
 	elif args.test:
-		import processor.utils.processor_engine as pe		
+		import processor.utils.processor_engine as pe
+		print(args.test)
+		sys.exit()		
 		pe.terminal_setup(conf.data, args.test)
 		
 		sys.exit(0)

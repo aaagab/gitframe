@@ -3,6 +3,7 @@ import sys, os
 import utils.message as msg
 from utils.json_config import Json_config
 import git_helpers.git_utils as git
+from pprint import pprint
 
 def create_directory(path):
     if os.path.exists(path):
@@ -54,7 +55,6 @@ def create_directory_tree(git_user_name):
         "src",
         "doc",
         "mgt",
-        "rel",
         os.path.join("mgt",git_user_name)
     ]
     created_directories=[]
@@ -69,10 +69,12 @@ def create_directory_tree(git_user_name):
     
     filenpa_bump=os.path.join(direpa_mgt_user, conf["filer_bump_version"]+".py")
     filenpa_publish=os.path.join(direpa_mgt_user, conf["filer_deploy"]+".py")
+    filenpa_scriptjob_json=os.path.join(direpa_mgt_user, conf["filen_scriptjob_save_json"])
 
     files=[
         filenpa_publish,
         filenpa_bump,
+        filenpa_scriptjob_json,
         os.path.join(direpa_mgt_user, "todo.txt")
     ]
     created_files=[]
@@ -81,7 +83,6 @@ def create_directory_tree(git_user_name):
         tmp_file=create_file(file)
         if tmp_file:
             created_files.append(tmp_file)
-
 
     if filenpa_publish in created_files:
         os.chmod(filenpa_publish, 0o755)
@@ -96,5 +97,9 @@ def create_directory_tree(git_user_name):
     filenpa_bump_link=os.path.join(current_path, os.path.basename(filenpa_bump))
     create_symlink(filenpa_bump, filenpa_bump_link)
     created_files.append(filenpa_bump_link)
+
+    filenpa_scriptjob_json_link=os.path.join(current_path, os.path.basename(filenpa_scriptjob_json))
+    create_symlink(filenpa_scriptjob_json, filenpa_scriptjob_json_link)
+    created_files.append(filenpa_scriptjob_json_link)
             
     return created_directories, created_files

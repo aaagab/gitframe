@@ -85,20 +85,15 @@ def test_validator(conf):
     conf["tmp"]={"unit_name":"test_check_master_develop_exists"}
     test_check_master_develop_exists(conf)
     
-    from processor.units.git_helpers.validator.test_release_validator import test_release_validator
+    from processor.units.git_helpers.validator.test_synchronize_tags import test_synchronize_tags
     set_new_project(conf)
-    conf["tmp"]={"unit_name":"test_release_validator"}
-    test_release_validator(conf)
-    
-    from processor.units.git_helpers.validator.test_tags_validator import test_tags_validator
-    set_new_project(conf)
-    conf["tmp"]={"unit_name":"test_tags_validator"}
-    test_tags_validator(conf)
+    conf["tmp"]={"unit_name":"test_synchronize_tags"}
+    test_synchronize_tags(conf)
    
-    from processor.units.git_helpers.validator.test_version_file_validator import test_version_file_validator
+    from processor.units.git_helpers.validator.test_version_tags_validator import test_version_tags_validator
     set_new_project(conf)
-    conf["tmp"]={"unit_name":"test_version_file_validator"}
-    test_version_file_validator(conf)
+    conf["tmp"]={"unit_name":"test_version_tags_validator"}
+    test_version_tags_validator(conf)
     
     from processor.units.git_helpers.validator.test_support_validator import test_support_validator
     set_new_project(conf)
@@ -110,11 +105,6 @@ def test_validator(conf):
     conf["tmp"]={"unit_name":"test_hotfix_validator"}
     test_hotfix_validator(conf)
     
-    from processor.units.git_helpers.validator.test_hotfix_history_json_validator import test_hotfix_history_json_validator
-    set_new_project(conf)
-    conf["tmp"]={"unit_name":"test_hotfix_history_json_validator"}
-    test_hotfix_history_json_validator(conf)
-
     from processor.units.git_helpers.test_validator import test_validator
     set_new_project(conf)
     conf["tmp"]={"unit_name":"test_validator"}
@@ -164,20 +154,20 @@ def synchronize_branch_type(conf):
     test_synchronize_branch_type(conf)
 
 def open_branch(conf):
-    from processor.units.git_helpers.branch.test_open_feature import test_open_feature
+    from processor.units.git_helpers.branch.test_open_draft import test_open_draft
     set_new_project(conf)
-    conf["tmp"]={"unit_name":"test_open_feature"}    
-    test_open_feature(conf)
+    conf["tmp"]={"unit_name":"test_open_draft"}    
+    test_open_draft(conf)
+
+    from processor.units.git_helpers.branch.test_open_features import test_open_features
+    set_new_project(conf)
+    conf["tmp"]={"unit_name":"test_open_features"}    
+    test_open_features(conf)
 
     from processor.units.git_helpers.branch.test_open_support import test_open_support
     set_new_project(conf)
     conf["tmp"]={"unit_name":"test_open_support"}    
     test_open_support(conf)
-
-    from processor.units.git_helpers.branch.test_open_release import test_open_release
-    set_new_project(conf)
-    conf["tmp"]={"unit_name":"test_open_release"}    
-    test_open_release(conf)
     
     from processor.units.git_helpers.branch.test_open_hotfix import test_open_hotfix
     set_new_project(conf)
@@ -185,15 +175,15 @@ def open_branch(conf):
     test_open_hotfix(conf)
 
 def close_branch(conf):
-    from processor.units.git_helpers.branch.test_close_feature import test_close_feature
+    from processor.units.git_helpers.branch.test_close_draft import test_close_draft
     set_new_project(conf)
-    conf["tmp"]={"unit_name":"test_close_feature"}
-    test_close_feature(conf)
+    conf["tmp"]={"unit_name":"test_close_draft"}
+    test_close_draft(conf)
 
-    from processor.units.git_helpers.branch.test_close_release import test_close_release
+    from processor.units.git_helpers.branch.test_close_features import test_close_features
     set_new_project(conf)
-    conf["tmp"]={"unit_name":"test_close_release"}
-    test_close_release(conf)
+    conf["tmp"]={"unit_name":"test_close_features"}
+    test_close_features(conf)
 
     from processor.units.git_helpers.branch.test_close_hotfix import test_close_hotfix
     set_new_project(conf)
@@ -211,17 +201,17 @@ def _license(conf):
     conf["tmp"]={"unit_name":"test_license"}
     test_license(conf)
 
-def publish_release(conf):
-    from processor.units.git_helpers.test_publish_release import test_publish_release
+def pick_up_release(conf):
+    from processor.units.git_helpers.test_pick_up_release import test_pick_up_release
     set_new_project(conf)
-    conf["tmp"]={"unit_name":"test_publish_release"}
-    test_publish_release(conf)
+    conf["tmp"]={"unit_name":"test_pick_up_release"}
+    test_pick_up_release(conf)
 
-def publish_early_release(conf):
-    from processor.units.git_helpers.test_publish_early_release import test_publish_early_release
+def create_new_release(conf):
+    from processor.units.git_helpers.test_create_new_release import test_create_new_release
     set_new_project(conf)
-    conf["tmp"]={"unit_name":"test_publish_early_release"}
-    test_publish_early_release(conf)
+    conf["tmp"]={"unit_name":"test_create_new_release"}
+    test_create_new_release(conf)
 
 def update_branch(conf):
     from processor.units.git_helpers.test_update_branch import test_update_branch
@@ -253,6 +243,11 @@ def tags_commits(conf):
     conf["tmp"]={"unit_name":"test_tags_commits"}
     test_tags_commits(conf)
 
+def automated_new_project(conf):
+    from processor.units.auto.new_project import new_project
+    conf["tmp"]={"unit_name":"new_project"}
+    new_project(conf)
+
 def main(*args):
     Json_config().set_value("debug", True)
 
@@ -260,11 +255,11 @@ def main(*args):
     task_mode=""
     if len(args) == 2:
         task_mode=args[1]
-        if not task_mode in ["ssh_url", "local_path"]:
+        if not task_mode in ["ssh_url", "local_path", "new_project"]:
             msg.user_error("test_gitframe task_mode must be 'ssh_url' or 'local_path'.")
             sys.exit(1)
     else:
-        msg.user_error("argument for mode is needed (ssh_url, local_path)")
+        msg.user_error("argument for mode is needed (ssh_url, local_path, new_project)")
         sys.exit(1)
 
     conf=dict(task_mode=task_mode)
@@ -285,56 +280,58 @@ def main(*args):
     ft.clear_scrolling_history()
     ph.clean_logs(conf)
 
-    
     try:
-        # test_processor(conf)
-        
-        # message(conf)
+        if task_mode == "new_project":
+            automated_new_project(conf)
+        else:
+            test_processor(conf)
+            
+            message(conf)
 
-        # regex_obj(conf)
+            regex_obj(conf)
 
-        # init_local_config(conf)
+            init_local_config(conf)
 
-        # create_directory_tree(conf)
+            create_directory_tree(conf)
 
-        # remote_repository(conf)
+            remote_repository(conf)
 
-        # clone_project(conf)
+            clone_project(conf)
 
-        # delete_test_and_repo(conf)
-        # set_new_project(conf)
-        
-        # tags_commits(conf)
+            delete_test_and_repo(conf)
+            set_new_project(conf)
+            
+            tags_commits(conf)
 
-        # new_project(conf)
+            new_project(conf)
 
-        # git_utils(conf)
+            git_utils(conf)
 
-        # test_validator(conf)
+            test_validator(conf)
 
-        # get_all_branch_regexes(conf)
+            get_all_branch_regexes(conf)
 
-        # synchronize_branch_name(conf)
+            synchronize_branch_name(conf)
 
-        # synchronize_branch_type(conf)
+            synchronize_branch_type(conf)
 
-        # update_branch(conf)
+            update_branch(conf)
 
-        # version(conf)
-        
-        # open_branch(conf)
-        
-        # close_branch(conf)
+            version(conf)
+            
+            open_branch(conf)
+            
+            close_branch(conf)
 
-        # get_all_version_tags(conf)
+            get_all_version_tags(conf)
 
-        # _license(conf)
+            _license(conf)
 
-        # publish_release(conf)
+            pick_up_release(conf)
 
-        # publish_early_release(conf)
+            create_new_release(conf)
 
-        # main_program_entry(conf)
+            main_program_entry(conf)
         
         if conf["num_unit_failures"] > 0:
             msg.subtitle("Task Result")

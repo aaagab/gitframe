@@ -21,13 +21,14 @@ def test_create_directory_tree(conf):
         _out:√ Path '{direpa_task_src}/src' created.
         _out:√ Path '{direpa_task_src}/doc' created.
         _out:√ Path '{direpa_task_src}/mgt' created.
-        _out:√ Path '{direpa_task_src}/rel' created.
         _out:√ Path '{direpa_task_src}/mgt/{user_git}' created.
         _out:√ File '{direpa_task_src}/mgt/{user_git}/deploy.py' created.
         _out:√ File '{direpa_task_src}/mgt/{user_git}/bump_version.py' created.
+        _out:√ File '{direpa_task_src}/mgt/{user_git}/scriptjob_save.json' created.
         _out:√ File '{direpa_task_src}/mgt/{user_git}/todo.txt' created.
         _out:√ Symlink '{direpa_task_src}/deploy.py' created.
         _out:√ Symlink '{direpa_task_src}/bump_version.py' created.
+        _out:√ Symlink '{direpa_task_src}/scriptjob_save.json' created.
 
         cd {direpa_task_conf}
         rm -rf {direpa_task}        
@@ -45,6 +46,5 @@ if __name__ == "__main__":
     from utils.json_config import Json_config
 
     from pprint import pprint
-    # pprint(Json_config().data)
     user_git=Json_config().data["processor"]["task"]["remote"]["user_git"]
     create_directory_tree(user_git)
