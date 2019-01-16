@@ -44,7 +44,7 @@ def get_increment_type(regex_curr_tag):
             ft.clear_screen()
 
 # can other materials be added to develop when a release branch is under construction?
-def create_new_release(deploy_args=[], repo="", regex_branches="", all_version_tags=""):
+def create_new_release(repo="", regex_branches="", all_version_tags="", deploy_args=[]):
 
     branch_name=git.get_active_branch_name()
     branch_regex=ro.get_element_regex(branch_name)
