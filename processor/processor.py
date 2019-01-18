@@ -308,10 +308,9 @@ def main(*args):
     conf.update(init_config(direpa_processor_script))
 
     sudo=ph.Sudo()
-    sudo.pswd=ph.get_pass_from_private_conf()
-    sudo.enable()
-
     if task_mode in ["ssh_url", "local_path"]:
+        sudo.pswd=ph.get_pass_from_private_conf()
+        sudo.enable()
         os.chdir(conf["direpa_task_conf"])
 
     if task_mode == "ssh_url":
