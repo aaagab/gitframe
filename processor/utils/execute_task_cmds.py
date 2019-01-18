@@ -94,7 +94,7 @@ def execute_task_cmds(conf, unit_name):
             cmds.append(cmd+' || ( echo -e "\e[1;31m'+conf["txt_screen_cmd_error"]+'\e[0m" && sleep .4 )')
 
     cmds.append(r'echo -e "\n'+conf["txt_screen_log_eof"]+'"')
-    cmds.append(r'rm '+conf["filenpa_cmds"])
+    # cmds.append(r'rm '+conf["filenpa_cmds"])
 
     # copy cmds to file
     with open(conf["filenpa_cmds"], 'w') as f:
