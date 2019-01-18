@@ -91,10 +91,11 @@ def new_project(path=""):
         msg.dbg("info","path exists")
         root_dir=os.path.basename(os.path.normpath(path))
 
-        if git.has_git_directory(path):
-            msg.user_error("Current Path '"+path+"' has a .git directory",
-                "cd into another directory or remove this .git directory and restart the operation.")
-            sys.exit(1)
+        if git.is_git_project(path):
+            if git.get_root_dir_path(path) == path:
+                msg.user_error("Current Path '"+path+"' is at a git project toplevel",
+                    "cd into another directory or remove its .git directory and restart the operation.")
+                sys.exit(1)
 
         if not prompt_boolean("Path '"+path+"' already exists, Do you want to add git to directory anyway?"):
             sys.exit(1)
@@ -154,7 +155,6 @@ def new_project(path=""):
 
     # direpa_models
     
-
     git.checkoutb("develop")
     git.commit_empty("Branch develop created")
 

@@ -208,11 +208,13 @@ def setup_mock_repository(conf):
             shell.cmd_prompt("sudo chown -R {} '{}'".format(current_user_and_group, conf["remote"]["direpa_src"]))
 
 def get_pass_from_private_conf():
-    filenpa_private_config=os.path.join(
-        git.get_root_dir_path(),
-        "config",
-        "private_config.json"
-    )
+    filenpa_private_config=""
+    if git.is_git_project():
+        filenpa_private_config=os.path.join(
+            git.get_root_dir_path(),
+            "config",
+            "private_config.json"
+        )
     if os.path.exists(filenpa_private_config):
         data=Json_config(filenpa_private_config).data
         if data:

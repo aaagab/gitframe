@@ -8,7 +8,7 @@ from distutils.dir_util import copy_tree
 def is_direpa_dev_sources(conf, path=""):
 	is_direpa_dev_sources=True
 	if path:
-		if git.has_git_directory(path):
+		if git.is_git_project(path):
 
 			if os.path.exists(
 				os.path.join(
@@ -22,7 +22,7 @@ def is_direpa_dev_sources(conf, path=""):
 		else:
 			return False
 	else:
-		if git.has_git_directory():
+		if git.is_git_project():
 			if os.path.exists(
 				os.path.join(
 					git.get_root_dir_path(),

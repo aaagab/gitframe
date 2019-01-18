@@ -3,6 +3,8 @@ import os, sys
 from utils.format_text import Format_text as ft
 from utils.prompt import prompt, prompt_boolean
 
+import git_helpers.git_utils as git
+
 if os.name != 'posix':
 	print("This program has been created for debian Linux.")
 	sys.exit(1)	
@@ -24,7 +26,6 @@ from git_helpers.main_validator import validator
 
 import argparse
 from pprint import pprint
-
 
 if __name__ == "__main__":
 	install_dependencies(conf.get_value("deps"))
@@ -205,7 +206,7 @@ if __name__ == "__main__":
 		sys.exit(0)
 
 	elif args.automated_new_project:
-		import processor.utils.processor_engine as pe		
+		import processor.utils.processor_engine as pe
 		pe.terminal_setup(conf.data, ["new_project"])
 		sys.exit(0)
 
@@ -243,10 +244,7 @@ if __name__ == "__main__":
 
 	elif args.test:
 		import processor.utils.processor_engine as pe
-		print(args.test)
-		sys.exit()		
 		pe.terminal_setup(conf.data, args.test)
-		
 		sys.exit(0)
 
 	elif args.update_branch is True:

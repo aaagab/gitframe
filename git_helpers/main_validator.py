@@ -26,9 +26,9 @@ from pprint import pprint
 
 # this file tries to guarantee that the git flow structure is preserved so it runs once at start of each command to detect issues early.
 def validator(enabled):
-	if not git.has_git_directory():
+	if not git.is_git_project():
 		msg.user_error(
-			"Current Path '"+os.getcwd()+"' has no .git directory",
+			"Current Path '{}' is not in a git project directory".format(os.getcwd()),
 			"cd into another directory or create a new project"
 		)
 		sys.exit(1)
