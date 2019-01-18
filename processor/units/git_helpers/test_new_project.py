@@ -74,7 +74,7 @@ def test_new_project(conf):
         git init
         {cmd}
         _out:# path exists
-        _out:× Current Path '{direpa_task_conf}/mock_project' has a .git directory
+        _out:× Current Path '{direpa_task_conf}/mock_project' is at a git project toplevel
         _fail:
         cd {direpa_task_conf}
         rm -rf mock_project

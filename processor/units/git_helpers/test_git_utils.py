@@ -61,11 +61,11 @@ def test_git_utils(conf):
         _out:divergent_without_common_ancestor
         {clean_compare}
 
-        {step} has_git_directory no_directory
+        {step} is_git_project not_git_project
         {cmd}
         _out:False
 
-        {step} has_git_directory directory
+        {step} is_git_project git_project
         cd {direpa_task_conf}
         git init
         {cmd}
@@ -92,12 +92,12 @@ if __name__ == "__main__":
     elif sys.argv[1] == "get_branch_compare_status":
         print(git.get_branch_compare_status("develop", "test"))
 
-    elif sys.argv[1] == "has_git_directory":
+    elif sys.argv[1] == "is_git_project":
         from utils.json_config import Json_config
         conf=Json_config().data
         
-        if sys.argv[2] == "no_directory":
-            print(git.has_git_directory(conf["processor"]["task"]["direpa"]))
-        elif sys.argv[2] == "directory":
-            print(git.has_git_directory())
+        if sys.argv[2] == "not_git_project":
+            print(git.is_git_project(conf["processor"]["task"]["direpa"]))
+        elif sys.argv[2] == "git_project":
+            print(git.is_git_project())
     

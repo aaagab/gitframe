@@ -281,6 +281,7 @@ def main(*args):
     ph.clean_logs(conf)
 
     try:
+
         if task_mode == "new_project":
             automated_new_project(conf)
         else:
