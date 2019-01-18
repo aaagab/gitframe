@@ -3,6 +3,7 @@ import os, sys
 direpa_script=os.path.realpath(__file__)
 direpa_launcher=os.path.dirname(os.path.dirname(direpa_script))
 sys.path.insert(0,direpa_launcher)
+import getpass
 
 import utils.message as msg
 import processor.utils.processor_helpers as ph
@@ -10,6 +11,7 @@ from processor.utils.processor_engine import init_config
 from utils.json_config import Json_config
 from processor.utils.task_clean import delete_test_and_repo
 from utils.format_text import Format_text as ft
+from utils.prompt import prompt
 import utils.shell_helpers as shell
 
 def test_processor(conf):
@@ -244,8 +246,46 @@ def tags_commits(conf):
     test_tags_commits(conf)
 
 def automated_new_project(conf):
+    import re
     from processor.units.auto.new_project import new_project
-    conf["tmp"]={"unit_name":"new_project"}
+    
+    conf["waiting_time_between_cmds"]=1000
+
+    repository=""
+    server_pass=""
+    git_user_email=""
+    ssh_user=""
+
+    if not repository:
+        repository=prompt("Enter repository")
+    if not server_pass:
+        server_pass=getpass.getpass("Server Password: ")
+    if not git_user_email:
+        git_user_email=prompt("Enter git user email")
+
+    direpa_ssh=""
+    domain=""
+    
+    url=re.match(r"^(.+)@(.+?):(.+)$", repository)
+    if url:
+        git_user_name=url.group(1)
+        domain=url.group(2)
+        direpa_ssh=url.group(3)
+        if not ssh_user:
+            ssh_user=prompt("Enter ssh user")
+    else:
+        git_user_name=prompt("Enter git user email")
+
+    conf["tmp"]={
+        "unit_name":"new_project",
+        "server_pass": server_pass,
+        "git_user_name": git_user_name,
+        "git_user_email": git_user_email,
+        "ssh_user": ssh_user,
+        "repository": repository,
+        "domain": domain,
+        "direpa_ssh": direpa_ssh
+        }
     new_project(conf)
 
 def main(*args):
@@ -256,10 +296,10 @@ def main(*args):
     if len(args) == 2:
         task_mode=args[1]
         if not task_mode in ["ssh_url", "local_path", "new_project"]:
-            msg.user_error("test_gitframe task_mode must be 'ssh_url' or 'local_path'.")
+            msg.user_error("test_gitframe task_mode must be 'ssh_url', 'local_path' or 'new_project'.")
             sys.exit(1)
     else:
-        msg.user_error("argument for mode is needed (ssh_url, local_path, new_project)")
+        msg.user_error("argument for mode is needed (ssh_url, local_path, or new_project)")
         sys.exit(1)
 
     conf=dict(task_mode=task_mode)
@@ -271,7 +311,8 @@ def main(*args):
     sudo.pswd=ph.get_pass_from_private_conf()
     sudo.enable()
 
-    os.chdir(conf["direpa_task_conf"])
+    if task_mode in ["ssh_url", "local_path"]:
+        os.chdir(conf["direpa_task_conf"])
 
     if task_mode == "ssh_url":
         conf["sudo_pass"]=sudo.get_pswd()
