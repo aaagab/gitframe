@@ -6,7 +6,7 @@ import sys
 import re
 from utils.prompt import prompt_boolean
 
-def has_git_directory(path=""):
+def is_git_project(path=""):
     start_path=""
     git_directory_found=False
 
@@ -14,9 +14,8 @@ def has_git_directory(path=""):
         start_path=os.getcwd()
         os.chdir(path)
 
-    if os.path.exists(".git"):
-        if shell.cmd_devnull("git rev-parse --git-dir") == 0:
-            git_directory_found=True
+    if shell.cmd_devnull("git rev-parse --git-dir") == 0:
+        git_directory_found=True
 
     if path:
         os.chdir(start_path)

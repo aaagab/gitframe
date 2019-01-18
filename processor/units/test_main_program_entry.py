@@ -36,13 +36,13 @@ def test_main_program_entry(conf):
 
         {step} new_project
         {new_project}
-        _out:× Current Path '{direpa_task_src}' has a .git directory
+        _out:× Current Path '{direpa_task_src}' is at a git project toplevel
         _fail:
 
         {step} new_project_directory
         cd {direpa_task}
         {new_project_directory}
-        _out:× Current Path '{direpa_task_src}' has a .git directory
+        _out:× Current Path '{direpa_task_src}' is at a git project toplevel
         _fail:
         cd {direpa_task_src}
 
