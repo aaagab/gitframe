@@ -21,7 +21,7 @@ def test_close_hotfix(conf):
         git checkout -b hfx-1.X.X-my_repair
         {cmd}
         _out:# hfx-1.X.X-my_repair is on latest release
-        _out:Is this a recommended release version [Y/n/q]:
+        _out:Is this a recommended release version [y/N/q]:
         _type:Y
         _out:### close hfx-1.X.X-my_repair on master
         _out:### close hfx-1.X.X-my_repair on develop

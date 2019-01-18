@@ -132,7 +132,7 @@ def close_hotfix(repo, regex_branch, regex_branches, all_version_tags, deploy_ar
 		)
 
 		print()
-		if prompt_boolean("Is this a recommended release version"):
+		if prompt_boolean("Is this a recommended release version", "N"):
 			release_version=release_version+"-r"
 
 		version.bump_version_for_user(release_version)
