@@ -33,7 +33,7 @@ def test_create_new_release(conf):
         _out:∆ Version release must be of the form '\d+\.\d+\.\d+'
         _out:Type release version to start with(ex:0.1.0) [q to quit]:
         _type:0.1.0
-        _out:Is this a recommended release version [Y/n/q]:
+        _out:Is this a recommended release version [y/N/q]:
         _type:n
         git checkout master
         git branch -d fts-work_in_progress
@@ -69,7 +69,7 @@ def test_create_new_release(conf):
         _out:Do you want to continue anyway [Y/n/q]:
         _type:Y
         _out:√ git checkout -b spt-2.X.X v2.5.1
-        _out:Is this a recommended release version [Y/n/q]:
+        _out:Is this a recommended release version [y/N/q]:
         _type:Y
         _out:√ git tag -a v3.0.0-r -m 'release'
         _out:3.0.0-r
