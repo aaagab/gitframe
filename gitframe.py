@@ -5,6 +5,12 @@ from utils.prompt import prompt, prompt_boolean
 
 import git_helpers.git_utils as git
 
+# os.system("ls /etc")
+# os.system("ls /etc")
+# prompt("I am here")
+# prompt_boolean("hello")
+# sys.exit()
+
 if os.name != 'posix':
 	print("This program has been created for debian Linux.")
 	sys.exit(1)	
