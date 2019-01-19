@@ -153,8 +153,6 @@ def new_project(path=""):
         files_added.append(file)
         git.commit(file+" added")
 
-    # direpa_models
-    
     git.checkoutb("develop")
     git.commit_empty("Branch develop created")
 
