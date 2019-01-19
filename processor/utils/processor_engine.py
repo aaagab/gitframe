@@ -277,6 +277,9 @@ def start_processor(conf):
                 continue
             elif key == "out":
                 tail_obj["searched_value"]=obj_value
+                # print(obj_value)
+                # if obj_value == '\x1b[K':
+                    # print("here unicode")
                 tmp_tail_obj=tail_screen_file(conf, tail_obj)
                 tail_obj["file_start_position"]=tmp_tail_obj["file_start_position"]
                 tail_obj["interrupted"]=tmp_tail_obj["interrupted"]
@@ -315,10 +318,10 @@ def start_processor(conf):
         # when a unit is stopped by ctrl+c on the unit windows
         msg.user_error("Unit "+unit_name+" canceled.")
         sys.exit(1)
-    except SystemExit:
-        conf["num_unit_failures"]+=1
-        # msg.title(unit_name)
-        msg.user_error("Predictable Error for Unit "+unit_name)
+    except SystemExit as e:
+        if int(str(e)) != 3:
+            conf["num_unit_failures"]+=1
+            msg.user_error("Predictable Error for Unit "+unit_name)
 
         time.sleep(1)
         ph.kill_screen_session(unit_name)
@@ -382,6 +385,10 @@ def tail_screen_file(conf, tail_obj):
                     elif line == conf["txt_screen_log_eof"]:
                         tail_return_obj["file_start_position"]=p
                         return tail_return_obj
+                    elif line == "\033[K":
+                        # this is for init_readline_screen in utils
+                        msg.success("done")
+                        sys.exit(3)
                     else:
                         msg.success("Found >> "+tail_obj["searched_value"])
                         tail_return_obj["file_start_position"]=p
