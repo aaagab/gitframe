@@ -11,7 +11,7 @@ from processor.utils.processor_engine import init_config
 from utils.json_config import Json_config
 from processor.utils.task_clean import delete_test_and_repo
 from utils.format_text import Format_text as ft
-from utils.prompt import prompt
+from utils.prompt import prompt, prompt_boolean
 import utils.shell_helpers as shell
 
 def test_processor(conf):
@@ -245,6 +245,16 @@ def tags_commits(conf):
     conf["tmp"]={"unit_name":"test_tags_commits"}
     test_tags_commits(conf)
 
+def init_readline_screen(conf):
+    # when the text disappear there is the symbol \033[K that appears on processor_screen_log.0
+    # so when I get this text I can move on with the rest
+    # This text disappears due to a bug with screen and python readline
+    # This bugs appears only when I launch the processor outside a tmux session. Once this bug has been init then it does not appear anymore even if I relaunch processor from inside tmux session.
+
+    from processor.utils.init_readline_screen import init_readline_screen
+    conf["tmp"]={"unit_name":"init_readline_screen"}
+    init_readline_screen(conf)
+
 def automated_new_project(conf):
     import re
     from processor.units.auto.new_project import new_project
@@ -259,7 +269,7 @@ def automated_new_project(conf):
     if not repository:
         repository=prompt("Enter repository")
     if not server_pass:
-        server_pass=getpass.getpass("Server Password: ")
+        server_pass=getpass.getpass("  Server Password: ")
     if not git_user_email:
         git_user_email=prompt("Enter git user email")
 
@@ -274,7 +284,7 @@ def automated_new_project(conf):
         if not ssh_user:
             ssh_user=prompt("Enter ssh user")
     else:
-        git_user_name=prompt("Enter git user email")
+        git_user_name=prompt("Enter git user name")
 
     conf["tmp"]={
         "unit_name":"new_project",
@@ -321,6 +331,7 @@ def main(*args):
     ph.clean_logs(conf)
 
     try:
+        init_readline_screen(conf)
 
         if task_mode == "new_project":
             automated_new_project(conf)
