@@ -97,7 +97,7 @@ def new_project(path=""):
                     "cd into another directory or remove its .git directory and restart the operation.")
                 sys.exit(1)
 
-        if not prompt_boolean("Path '"+path+"' already exists, Do you want to add git to directory anyway?"):
+        if not prompt_boolean("Path '"+path+"' already exists.\nDo you want to add git to directory anyway?"):
             sys.exit(1)
 
     else: # path does not exist
