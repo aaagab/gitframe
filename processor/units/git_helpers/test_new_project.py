@@ -85,7 +85,7 @@ def test_new_project(conf):
         touch file1.txt
         touch file2.txt
         {cmd}
-        _out:Path '{direpa_task_conf}/mock_project' already exists, Do you want to add git to directory anyway? [Y/n/q]:
+        _out:Do you want to add git to directory anyway? [Y/n/q]:
         _type:n
         _fail:
         cd {direpa_task_conf}
@@ -101,7 +101,7 @@ def test_new_project(conf):
         git init .
         cd -
         {cmd}
-        _out:Path '{direpa_task_conf}/mock_project' already exists, Do you want to add git to directory anyway? [Y/n/q]:
+        _out:Do you want to add git to directory anyway? [Y/n/q]:
         _type:Y
         _out:Enter git user name [q to quit]:
         _type:{user_git}
