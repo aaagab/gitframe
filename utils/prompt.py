@@ -4,6 +4,7 @@ import utils.message as msg
 # import utils.shell_helpers as shell
 # readline allows to use arrow keys and backspace when input text however there is a bug with tmux
 # when text is wrapped some characters are eaten so I have to display first the text with print,
+# I abandonned this alternative I just try to prompt shorter sentence.
 # then there is also another bug that eat the print text if no newline when readline is init for the first time in a screen session inside a tmux session.
 
 
@@ -16,11 +17,9 @@ def prompt(txt):
     return tmp_var.strip()
 
 def get_input(text):
-    print(text, end="")
     import readline
-    tmp_var=input()
+    tmp_var=input(text)
     del readline
-
     return tmp_var
 
 def prompt_boolean(txt, Y_N="y"):

@@ -48,25 +48,18 @@ def validator(enabled):
 		regex_branches=get_all_branch_regexes(repo)
 
 		check_master_develop_exists(regex_branches)
-		# force_unique_release_branch_name(regex_branches)
 		synchronize_branch_name(repo, regex_branches, "master")
 		synchronize_branch_name(repo, regex_branches, "develop")
-
-		synchronize_branch_type(repo, regex_branches, "feature")
+		synchronize_branch_type(repo, regex_branches, "features")
 		synchronize_branch_type(repo, regex_branches, "support")
-		# synchronize_branch_type(repo, regex_branches, "release")
 		synchronize_branch_type(repo, regex_branches, "hotfix")
 		
 		synchronize_tags(repo)
 
-		# update branches after synchronization
 		regex_branches=get_all_branch_regexes(repo)
 
-		# support and hotfix validator can only be executed after all the other branches have been synchronized
 		all_version_tags=get_all_version_tags()
 		version_tags_validator(regex_branches, all_version_tags)
-		# hotfix_history_json_validator(regex_branches)
-		# validate_release_branch_name(regex_branches, all_version_tags)
 
 		msg.dbg("success", sys._getframe().f_code.co_name)
 		return repo, regex_branches, all_version_tags
