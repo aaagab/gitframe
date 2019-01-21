@@ -73,5 +73,5 @@
         "waiting_time_between_cmds": 20
     },
     "validator": true,
-    "version": "0.3.3"
+    "version": "0.3.4"
 }
