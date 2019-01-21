@@ -1,7 +1,7 @@
 {
     "app_name": "gitframe",
     "author": "Gabriel Auger",
-    "debug": true,
+    "debug": false,
     "deps": [
         {
             "app": "git",

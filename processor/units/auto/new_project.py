@@ -35,7 +35,7 @@ def new_project(conf):
     set_task_steps(conf,"""
         {step} automated new_project
         {this_cmd}
-        _out:Path '{current_path}' already exists, Do you want to add git to directory anyway? [Y/n/q]:
+        _out:Do you want to add git to directory anyway? [Y/n/q]:
         _type:Y
         _out:Enter git user name [q to quit]:
         _type:{git_user_name}
