@@ -132,8 +132,6 @@ def close_hotfix(repo, regex_branch, regex_branches, all_version_tags, deploy_ar
 		)
 
 		print()
-		if prompt_boolean("Is this a recommended release version", "N"):
-			release_version=release_version+"-r"
 
 		version.bump_version_for_user(release_version)
 		git.set_annotated_tags(repo, "v"+release_version, "hotfix")
@@ -175,8 +173,6 @@ def close_hotfix(repo, regex_branch, regex_branches, all_version_tags, deploy_ar
 			ro.Version_regex(latest_release_tag_spt)
 		)
 
-		release_version=release_version+"-r"
-		
 		git.checkout(regex_branch.text)
 		version.bump_version_for_user(release_version)
 		git.set_annotated_tags(repo, "v"+release_version, "hotfix")
