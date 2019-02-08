@@ -1,0 +1,32 @@
+{
+    "Licenses": [
+        "M",
+        "I",
+        "T"
+    ],
+    "author": [
+        "\"",
+        "G",
+        "a",
+        "b",
+        "r",
+        "i",
+        "e",
+        "l",
+        " ",
+        "A",
+        "u",
+        "g",
+        "e",
+        "r",
+        "\""
+    ],
+    "deps": [],
+    "description": "Python wrapper for git. It applies a git workflow close to GitFlow model from nvie.com. It uses semantic versioning 2.0.0",
+    "filen_main": "gitframe.py",
+    "name": "gitframe",
+    "repository": "/data/rel",
+    "standalone": true,
+    "uuid4": "97e9f6a4-cf46-4022-8a39-145c129d9480",
+    "version": "0.3.5"
+}
