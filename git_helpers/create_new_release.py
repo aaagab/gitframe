@@ -107,9 +107,6 @@ def create_new_release(repo="", regex_branches="", all_version_tags="", deploy_a
                     sys.exit(1)
                     
     print()
-    if prompt_boolean("Is this a recommended release version", "N"):
-        regex_release_version.set_text(regex_release_version.text+"-r")
-
     version.bump_version_for_user(regex_release_version.text)
     git.commit("Bump Release Version "+regex_release_version.text)
     
