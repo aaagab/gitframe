@@ -25,8 +25,8 @@ def get_menu_branch_types():
     menu="""
         1 - Features
         2 - Draft
-        2 - Hotfix
-        3 - Support
+        3 - Hotfix
+        4 - Support
 
         Choose a Branch Type or 'q' to quit: """
 
