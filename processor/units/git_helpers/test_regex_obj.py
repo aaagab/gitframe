@@ -36,13 +36,11 @@ def test_regex_obj(conf):
         {step} Version_regex
         {cmd}
         _out:version
-        _out:^\d+\.\d+\.\d+(-r)?$
+        _out:^\d+\.\d+\.\d+$
         _out:1
         _out:2
         _out:3
         _out:1.2
-        _out:False
-        _out:True
         
         {step} Support_regex
         {cmd}
@@ -124,10 +122,8 @@ if __name__ == "__main__":
         print(obj_regex.minor)
         print(obj_regex.patch)
         print(obj_regex.major_minor)
-        print(obj_regex.recommended)
 
-        obj_regex=Version_regex("1.2.3-r")
-        print(obj_regex.recommended)
+        obj_regex=Version_regex("1.2.3")
 
     elif sys.argv[1] == "Support_regex":
         from git_helpers.regex_obj import Support_regex

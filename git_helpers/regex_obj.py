@@ -13,7 +13,7 @@ class Regex_obj():
 
 class Version_regex(Regex_obj):
     def __init__(self, txt=""):
-        Regex_obj.__init__(self, r"(^)(\d+)(\.)(\d+)(\.)(\d+)((-r)?)($)")
+        Regex_obj.__init__(self, r"(^)(\d+)(\.)(\d+)(\.)(\d+)($)")
         self.type="version"
         self.tag_prefix="v"
         self.set_text(txt)
@@ -27,10 +27,6 @@ class Version_regex(Regex_obj):
                 self.major=self.matching_obj.group(2)
                 self.minor=self.matching_obj.group(4)
                 self.patch=self.matching_obj.group(6)
-                if self.matching_obj.group(7) == "-r":
-                    self.recommended=True
-                else:
-                    self.recommended=False
                 self.major_minor=self.major+"."+self.minor
                 self.major_minor_patch=self.major_minor+"."+self.patch
                 self.tag=self.tag_prefix+self.text
@@ -41,7 +37,6 @@ class Version_regex(Regex_obj):
                 self.patch=""
                 self.major_minor=""
                 self.tag=""
-                self.recommended=""
         
         return self
 
