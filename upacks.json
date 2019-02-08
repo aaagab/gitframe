@@ -1,25 +1,9 @@
 {
     "Licenses": [
-        "M",
-        "I",
-        "T"
+        "MIT"
     ],
     "author": [
-        "\"",
-        "G",
-        "a",
-        "b",
-        "r",
-        "i",
-        "e",
-        "l",
-        " ",
-        "A",
-        "u",
-        "g",
-        "e",
-        "r",
-        "\""
+        "Gabriel Auger"
     ],
     "deps": [],
     "description": "Python wrapper for git. It applies a git workflow close to GitFlow model from nvie.com. It uses semantic versioning 2.0.0",

@@ -21,17 +21,15 @@ def test_close_hotfix(conf):
         git checkout -b hfx-1.X.X-my_repair
         {cmd}
         _out:# hfx-1.X.X-my_repair is on latest release
-        _out:Is this a recommended release version [y/N/q]:
-        _type:Y
         _out:### close hfx-1.X.X-my_repair on master
         _out:### close hfx-1.X.X-my_repair on develop
         _out:√ hfx-1.X.X-my_repair has been closed.
         _out:# launch script deploy
-        _out:1.0.1-r
+        _out:1.0.1
         git checkout master
         git tag --delete v1.0.0
-        git tag --delete v1.0.1-r
-        git push origin --delete v1.0.1-r
+        git tag --delete v1.0.1
+        git push origin --delete v1.0.1
         git reset --hard start_master
 
         {step} close_hotfix with_support_branch
@@ -45,13 +43,13 @@ def test_close_hotfix(conf):
         _out:### close hfx-1.X.X-my_repair on spt-1.X.X
         _out:√ hfx-1.X.X-my_repair has been closed.
         _out:# launch script deploy
-        _out:1.0.1-r
+        _out:1.0.1
         git checkout master
         git tag --delete v1.0.0
         git tag --delete v2.0.0
         git branch -D spt-1.X.X
-        git tag --delete v1.0.1-r
-        git push origin --delete v1.0.1-r
+        git tag --delete v1.0.1
+        git push origin --delete v1.0.1
         git reset --hard start_master
 
         {step} is_hotfix_on_latest_release
