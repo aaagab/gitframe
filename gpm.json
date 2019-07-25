@@ -1,0 +1,16 @@
+{
+    "authors": [
+        "Gabriel Auger"
+    ],
+    "deps": [],
+    "description": "Python wrapper for git. It applies a git workflow close to GitFlow model from nvie.com. It uses semantic versioning 2.0.0",
+    "filen_main": "gitframe.py",
+    "gpm_version": "0.2.0",
+    "installer": "gpm",
+    "licenses": [
+        "MIT"
+    ],
+    "name": "gitframe",
+    "uuid4": "78d3adc7-fdd5-46c4-ba26-30d987237a51",
+    "version": "1.1.0"
+}
