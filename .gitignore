@@ -5,3 +5,5 @@ __pycache__/
 *.pyc
 testing/logs
 config/private_config.json
+modules/
+gpkgs/
