@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 import os
-import utils.message as msg
-import utils.shell_helpers as shell
-import git_helpers.git_utils as git
-from utils.prompt import prompt, prompt_boolean
-
 import shutil
 import sys
 import re
+
+from . import git_utils as git
+from . import msg_helpers as msgh
+
+
+from ..gpkgs import message as msg
+
+from ..utils import shell_helpers as shell
+from ..utils.prompt import prompt, prompt_boolean
+
+
+
 
 # if in a src directory
 #     ok
@@ -33,7 +40,7 @@ def delete_dir(direpa):
         shutil.rmtree(direpa)
         msg.success("'{}' deleted on local.".format(direpa))
     except:
-        msg.app_error("'{}' not deleted on local.".format(direpa))
+        msg.error("'{}' not deleted on local.".format(direpa))
         sys.exit(1)
 
 def clone_project_to_remote(repo):
@@ -43,7 +50,7 @@ def clone_project_to_remote(repo):
     direpa_par_app=os.path.dirname(direpa_app)
     direpa_app_git=os.path.join(direpa_par_app, diren_app+".git")
 
-    msg.title("clone '{}' to remote repository".format(diren_app))
+    msgh.title("clone '{}' to remote repository".format(diren_app))
 
     if repo.is_reachable:
         if not repo.is_git_directory:
@@ -81,13 +88,13 @@ def clone_project_to_remote(repo):
 
                 delete_dir(direpa_app_git)
         else:
-            msg.user_error(
+            msg.error(
                 "Remote Directory "+direpa_app+".git Already Exists on remote repository 'Origin'",
                 "Clone "+direpa_app+".git from remote to Local or Change application name"
                 )
             sys.exit(1)
     else:
-        msg.user_error("Remote repository 'Origin' is not reachable, verify your internet connectivity.")
+        msg.error("Remote repository 'Origin' is not reachable, verify your internet connectivity.")
         sys.exit(1)
 
         

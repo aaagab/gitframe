@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
-import sys, os
-import utils.message as msg
-from utils.json_config import Json_config
-import git_helpers.git_utils as git
+import os
 from pprint import pprint
+import sys 
+
+from ..git_helpers import git_utils as git
+from ..git_helpers import msg_helpers as msgh
+
+
+from ..gpkgs import message as msg
+
+from .json_config import Json_config
+
 
 def create_directory(path):
     if os.path.exists(path):
         diren_path=os.path.basename(path)
         if diren_path == "src":
-            msg.user_error("src folder already exists be sure that it is empty, erase it and relaunch the command.")
+            msg.error("src folder already exists be sure that it is empty, erase it and relaunch the command.")
             sys.exit(1)
         else:
             msg.warning("'"+path+"' already exists.")
@@ -18,7 +25,7 @@ def create_directory(path):
             os.mkdir(path)
             msg.success("Path '"+path+"' created.")
         except:
-            msg.app_error("Cannot create path '"+path+"'")
+            msg.error("Cannot create path '"+path+"'")
             sys.exit(1)
 
         return path
@@ -31,7 +38,7 @@ def create_file(filenpa):
             open(filenpa, 'w').close()
             msg.success("File '"+filenpa+"' created.")
         except:
-            msg.app_error("Cannot create file '"+filenpa+"'")
+            msg.error("Cannot create file '"+filenpa+"'")
             sys.exit(1)
 
         return filenpa
@@ -44,12 +51,12 @@ def create_symlink(filenpa_src, filenpa_dst):
         os.symlink(filenpa_src, filenpa_dst)
         msg.success("Symlink '"+filenpa_dst+"' created.")
     except:
-        msg.app_error("Cannot create symlink '"+filenpa_dst+"'")
+        msg.error("Cannot create symlink '"+filenpa_dst+"'")
         sys.exit(1)
 
 def create_directory_tree(git_user_name):
     conf=Json_config().data
-    msg.title("Create directory Tree")
+    msgh.title("Create directory Tree")
 
     directorys=[
         "src",

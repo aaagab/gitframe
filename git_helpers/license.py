@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-import utils.message as msg
+import datetime
 import os
 import sys
-import datetime
-from utils.prompt import prompt
-from utils.format_text import Format_text as ft
+
+from ..gpkgs import message as msg
+
+from ..utils.prompt import prompt
+from ..utils.format_text import Format_text as ft
 
 def remove_tabs_heredoc(text):
     new_text=""
@@ -78,6 +80,6 @@ def get_license_content():
             isValid=False
 
         if not isValid:
-            msg.user_error("Wrong input")
+            msg.warning("Wrong input")
             input("  Press Enter To Continue...")
             user_choice=""

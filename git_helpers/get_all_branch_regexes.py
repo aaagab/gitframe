@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-import utils.message as msg
-import git_helpers.git_utils as git
 import re
 import sys
-import git_helpers.regex_obj as ro
+
+from . import git_utils as git
+from . import regex_obj as ro
+
+from ..gpkgs import message as msg
 
 def get_branch_type_from_location(branch_type, location, reg_branches):
     msg.dbg("info","Search for '{}' branches of type '{}'".format(location, branch_type))

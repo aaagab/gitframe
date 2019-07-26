@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-import sys, os
-import utils.message as msg
+import os
+import sys
+
+from ..gpkgs import message as msg
+
 # import utils.shell_helpers as shell
 # readline allows to use arrow keys and backspace when input text however there is a bug with tmux
 # when text is wrapped some characters are eaten so I have to display first the text with print,
@@ -17,9 +20,9 @@ def prompt(txt):
     return tmp_var.strip()
 
 def get_input(text):
-    import readline
+    # import readline # removed because not installed on windows and I am not sure about linux anymore.
     tmp_var=input(text)
-    del readline
+    # del readline
     return tmp_var
 
 def prompt_boolean(txt, Y_N="y"):
@@ -34,7 +37,7 @@ def prompt_boolean(txt, Y_N="y"):
             if tmp_var.lower() == "":
                 return False
         else:
-            msg.app_error("Wrong Value for prompt_boolean: "+Y_N )
+            msg.error("Wrong Value for prompt_boolean: "+Y_N )
             sys.exit(1)
 
         if tmp_var.lower() == "q":

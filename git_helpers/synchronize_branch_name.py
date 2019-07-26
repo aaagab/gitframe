@@ -1,13 +1,18 @@
+
 #!/usr/bin/env python3
-import utils.message as msg
-import utils.shell_helpers as shell
-import git_helpers.git_utils as git
-from utils.prompt import prompt_boolean
-from utils.format_text import Format_text as ft
+import os
+import re
+import sys
 
-import git_helpers.regex_obj as ro
+from . import git_utils as git
+from . import msg_helpers as msgh
+from . import regex_obj as ro
 
-import os, sys, re
+from ..gpkgs import message as msg
+
+from ..utils.prompt import prompt_boolean
+from ..utils.format_text import Format_text as ft
+from ..utils import shell_helpers as shell
 
 def synchronize_branch_name(repo, regex_branches, branch_name=""):
     
@@ -16,7 +21,7 @@ def synchronize_branch_name(repo, regex_branches, branch_name=""):
 
     start_branch=git.get_active_branch_name()
 
-    msg.title("Synchronize Branch "+branch_name)
+    msgh.title("Synchronize Branch "+branch_name)
 
     branch_on={
         "local": False,
@@ -178,7 +183,7 @@ def get_value_from_menu(values, branch_name):
             isValid=False
 
         if not isValid:
-            msg.user_error("Wrong input")
+            msg.warning("Wrong input")
             input("  Press Enter To Continue...")
             user_choice=""
             # clear terminal 
@@ -273,7 +278,7 @@ def synchronize_local_with(location, branch_name, cmp_status):
 
 def execute_action(action, branch_name):
     if action == "exit":
-        msg.user_error("Operation cancelled 'synchronize' branch '"+branch_name+"'")
+        msg.error("Operation cancelled 'synchronize' branch '"+branch_name+"'")
         sys.exit(1)
     elif action == "ignore":
         msg.warning("Operation ignored 'synchronize' branch '"+branch_name+"'")
@@ -296,7 +301,7 @@ def execute_action(action, branch_name):
         git.merge(branch_name)
         git.checkout(previous_branch)
     else:
-        msg.user_error("Action unknown "+action+" for operation 'synchronize' on branch "+branch_name)
+        msg.error("Action unknown "+action+" for operation 'synchronize' on branch "+branch_name)
         sys.exit(1)
 
 def get_branch_compare_status_repository(location, branch_on, branch_name="" ):

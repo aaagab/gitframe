@@ -1,6 +1,8 @@
-from utils.format_text import Format_text as ft
+import inspect
+import sys
 import traceback
-import inspect, sys
+
+from .format_text import Format_text as ft
 
 def app_error(*msgs):
     if len(msgs) == 1:
