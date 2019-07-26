@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
 
-import os, sys, re
-import utils.message as msg
-from utils.format_text import Format_text as ft
+import os
+import re
+import sys
 
-import git_helpers.git_utils as git
+from .. import git_utils as git
+from .. import msg_helpers as msgh
+from .. import regex_obj as ro
+from ..get_all_version_tags import get_all_version_tags
+from ..get_all_branch_regexes import get_branch_type_from_location
 
-from git_helpers.get_all_version_tags import get_all_version_tags
-from git_helpers.get_all_branch_regexes import get_branch_type_from_location
-import git_helpers.regex_obj as ro
+from ...gpkgs import message as msg
+
+from ...utils.format_text import Format_text as ft
 
 def open_support(repo, regex_branches, all_version_tags):
-	msg.subtitle("Open Support Branch")
+	msgh.subtitle("Open Support Branch")
 
 	if not all_version_tags:
-		msg.user_error("There are no version tags in this project. You can't open a Support Branch")
+		msg.error("There are no version tags in this project. You can't open a Support Branch")
 		sys.exit(1)
 
 	regex_support_branches=get_branch_type_from_location("support", "local", regex_branches)
@@ -22,7 +26,7 @@ def open_support(repo, regex_branches, all_version_tags):
 	tag_to_branch_from=get_tag_for_support(all_version_tags, regex_support_branches)
 
 	if not tag_to_branch_from:
-		msg.user_error("There are no Tags from where to start a support branch. You need to have at least 2 releases before you can create a support branch.")
+		msg.error("There are no Tags from where to start a support branch. You need to have at least 2 releases before you can create a support branch.")
 		sys.exit(1)
 	else:
 		tag_regex=ro.Version_regex(tag_to_branch_from)
@@ -81,7 +85,7 @@ def get_tag_for_support(all_version_tags, regex_support_branches):
 				isValid=False
 
 			if not isValid:
-				msg.user_error("Wrong input")
+				msg.warning("Wrong input")
 				input("  Press Enter To Continue...")
 				user_choice=""
 				# clear terminal 

@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
-import sys, os
-import git_helpers.git_utils as git
-import utils.message as msg
 import re
-import utils.shell_helpers as shell
+import os
+import sys
 
-from git_helpers.get_all_branch_regexes import get_branch_type_from_location, filter_all_regex_branches_from_location
-import git_helpers.version as version
+from .. import git_utils as git
+from .. import msg_helpers as msgh
+from .. import regex_obj as ro
+from ..get_all_branch_regexes import get_branch_type_from_location, filter_all_regex_branches_from_location
+from ..validator.hotfix import check_hotfix_is_either_on_master_or_on_support
+from ..validator.support import find_related_tag_for_support_branch_name
 
-import git_helpers.regex_obj as ro
+from ...gpkgs import message as msg
 
-# from git_helpers.validator.hotfix import compare_version_tag_with_hotfix_branch_name
-from git_helpers.validator.support import find_related_tag_for_support_branch_name
-from git_helpers.validator.hotfix import check_hotfix_is_either_on_master_or_on_support
+from ...utils import shell_helpers as shell
+
 
 # if a release_tag exists.
     # each version_value must follow the form \d+\.\d+\.\d+
@@ -23,7 +24,7 @@ from git_helpers.validator.hotfix import check_hotfix_is_either_on_master_or_on_
 
 # def version_file_validator(regex_branches, all_version_tags):
 def version_tags_validator(regex_branches, all_version_tags):
-    msg.subtitle("Verify version tags.")
+    msgh.subtitle("Verify version tags.")
     
     local_regex_branches=filter_all_regex_branches_from_location(regex_branches, "local")
 
@@ -43,7 +44,7 @@ def version_tags_validator(regex_branches, all_version_tags):
             regex_branch.type=ro.get_element_regex(regex_branch.text).type
 
             if regex_branch.type in ["hotfix", "support"]:
-                msg.user_error(
+                msg.error(
                     "The project has no release tags",
                     " Branch '{}' shouldn't exist.".format(regex_branch.text)
                 )

@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-import os
-import json
-import sys
-from utils.format_text import Format_text as ft
-import traceback
-import utils.message as msg
-from utils.prompt import prompt_boolean
 import inspect
+import json
+import os
+import sys
+import traceback
+
+from .format_text import Format_text as ft
+from .prompt import prompt_boolean
+
+from ..gpkgs import message as msg
 
 class Json_config():
 	def __init__(self, file_path=""):
@@ -24,7 +26,7 @@ class Json_config():
 			if prompt_boolean("File '"+self.file_path+"' does not exist, Do you want to create it."):
 				open(self.file_path, 'w').close()
 			else:
-				msg.user_error("Command Cancelled, File '"+self.file_path+"' not found!")
+				msg.error("Command Cancelled, File '"+self.file_path+"' not found!")
 				sys.exit(1)
 
 		self.data=self.get_data_from_file()
@@ -36,14 +38,14 @@ class Json_config():
 
 			return self
 		else:
-			msg.app_error("Key "+value_name+" not Found in \""+self.file_path+"\"")
+			msg.error("Key "+value_name+" not Found in \""+self.file_path+"\"")
 			sys.exit(1)
 			
 	def get_value(self, value):
 		try:
 			return self.data[value]
 		except:
-			msg.app_error("Value not Found: \""+value+"\" in \""+self.file_path+"\"")
+			msg.error("Value not Found: \""+value+"\" in \""+self.file_path+"\"")
 			sys.exit(1)
 
 	def set_file_with_data(self, data=""):

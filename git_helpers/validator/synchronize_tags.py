@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-import sys
-import git_helpers.git_utils as git
-import utils.message as msg
-import utils.shell_helpers as shell
-import re
-import git_helpers.regex_obj as ro
-from git_helpers.tags_commits import Tags_commits
 from copy import deepcopy
+import re
+import sys
+
+from .. import git_utils as git
+from .. import msg_helpers as msgh
+from .. import regex_obj as ro
+from ..tags_commits import Tags_commits
+
+from ...gpkgs import message as msg
+from ...utils import shell_helpers as shell
 
 
 # all tags from remote are fetched
@@ -16,7 +19,7 @@ from copy import deepcopy
 # As a rule Tags are not fetch globally from remote because if two tags with same name but different commits then the one local is updated without prompt with the one from remote. This behaviour is not desired. That is why only tag of importance are fetch automatically, the other tags have to be pushed and fetched manually
 
 def err_msg_commit(name, tags_commits):
-    msg.user_error(
+    msg.error(
         "local tag '"+name+"' with commit '"+tags_commits["local"][name]+"' is different than: ",
         "remote tag '"+name+"' with commit '"+tags_commits["remote"][name]+"'",
         "Correct issue."
@@ -24,7 +27,7 @@ def err_msg_commit(name, tags_commits):
     sys.exit(1)
 
 def synchronize_tags(repo):
-    msg.subtitle("Verify Tags on local and remote")
+    msgh.subtitle("Verify Tags on local and remote")
     from datetime import datetime
 
     if repo.is_reachable:
@@ -55,24 +58,24 @@ def process_tag_not_found(tag_name, not_found_location):
 
     if regex_version.match:
         if not_found_location=="remote":
-            msg.user_error("tag '"+tag_name+"' exists on local but not on remote. tag not pushed.")
+            msg.error("tag '"+tag_name+"' exists on local but not on remote. tag not pushed.")
         elif not_found_location == "local":
-            msg.user_error("tag '"+tag_name+"' exists on remote but not on local. tag not pulled.")
+            msg.error("tag '"+tag_name+"' exists on remote but not on local. tag not pulled.")
 
         if regex_version.match:
             # for release
             if int(regex_version.patch) == 0:
                 if not_found_location=="remote":
-                    msg.user_error("Maybe master branch needs to be pushed with the tag.")
+                    msg.error("Maybe master branch needs to be pushed with the tag.")
                 elif not_found_location == "local":
-                    msg.user_error("Maybe master branch needs to be pulled with the tag.")
+                    msg.error("Maybe master branch needs to be pulled with the tag.")
 
             # for patch
             elif int(regex_version.patch) > 0:
                 if not_found_location=="remote":
-                    msg.user_error("Maybe a support branch or master needs to be pushed with the tag.")
+                    msg.error("Maybe a support branch or master needs to be pushed with the tag.")
                 elif not_found_location == "local":
-                    msg.user_error("Maybe a support branch or master needs to be pulled with the tag.")
+                    msg.error("Maybe a support branch or master needs to be pulled with the tag.")
 
     else: # less important tag
         if not_found_location=="remote":

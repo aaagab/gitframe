@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
-import utils.message as msg
-import utils.shell_helpers as shell
-import git_helpers.git_utils as git
-from utils.prompt import prompt
-from git_helpers.init_local_config import init_local_config
 import sys
 
+from . import git_utils as git
+from . import msg_helpers as msgh
+from .init_local_config import init_local_config
+
+from ..gpkgs import message as msg
+
+from ..utils.prompt import prompt
+from ..utils import shell_helpers as shell
+
+
 def prompt_for_commit():
-    msg.subtitle("Prompt for commit")
+    msgh.subtitle("Prompt for commit")
     
     init_local_config()
 

@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
-import utils.message as msg
-import utils.shell_helpers as shell
 import sys
-from utils.format_text import Format_text as ft
-from git_helpers.branch.features import open_features
-from git_helpers.branch.draft import open_draft
-from git_helpers.branch.hotfix import open_hotfix
-from git_helpers.branch.support import open_support
+
+from . import msg_helpers as msgh
+
+from .branch.draft import open_draft
+from .branch.features import open_features
+from .branch.hotfix import open_hotfix
+from .branch.support import open_support
+
+from ..gpkgs import message as msg
+from ..utils import shell_helpers as shell
+from ..utils.format_text import Format_text as ft
 
 def open_branch(repo, regex_branches, all_version_tags):
-    msg.title("Open Branch")
+    msgh.title("Open Branch")
 
     user_choice=get_menu_branch_types()
     if user_choice == "features":
@@ -44,7 +48,7 @@ def get_menu_branch_types():
         elif user_choice.lower() == "q":
             sys.exit(1)
         else:
-            msg.user_error("Wrong input")
+            msg.warning("Wrong input")
             input("  Press Enter To Continue...")
             user_choice=""
             # clear terminal 
