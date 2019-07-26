@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 2.0.1
+# version: 2.0.2
 # name: gitframe
 # license: MIT
 
-__version__ = "2.0.1"
+__version__ = "2.0.2"
 
 from .git_helpers import git_utils as git
 from .git_helpers import msg_helpers as msgh
