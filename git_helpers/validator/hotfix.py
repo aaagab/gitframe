@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import sys
 
-import utils.message as msg
-import git_helpers.git_utils as git
+from .. import git_utils as git
+from .. import regex_obj as ro
 
-import git_helpers.regex_obj as ro
+from ...gpkgs import message as msg
 
 # you can have multiple hotfix
 # hotfix must always be on the latest release of all major releases
@@ -18,7 +18,7 @@ def check_hotfix_is_either_on_master_or_on_support(regex_hotfix_branch, all_vers
     if regex_latest_release.major != regex_hotfix_branch.major:
         # if no check if hotfix comes from one of the support branch
         if not regex_support_branches:
-            msg.user_error(
+            msg.error(
                 "Hotfix branch '"+regex_hotfix_branch.text+"' does not come from master and no support branches are also present.",
                 "Checkout Hotfix branch according to master or a support branch."
                 )
@@ -33,7 +33,7 @@ def check_hotfix_is_either_on_master_or_on_support(regex_hotfix_branch, all_vers
                     break
 
             if not found:
-                msg.user_error(
+                msg.error(
                     "Hotfix branch '"+regex_hotfix_branch.text+"' does not come from a support branch nor from master.",
                     "Checkout Hotfix branch according to master or a support branch."
                 )

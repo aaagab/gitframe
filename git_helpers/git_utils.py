@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 import os
-import utils.message as msg
-import utils.shell_helpers as shell
-import sys
 import re
-from utils.prompt import prompt_boolean
+import sys
+
+from ..gpkgs import message as msg
+
+from ..utils import shell_helpers as shell
+from ..utils.prompt import prompt_boolean
 
 def is_git_project(path=""):
     start_path=""
@@ -33,7 +35,7 @@ def get_root_dir_path(path=""):
     previous_path=""
     if path:
         if not os.path.exists(path):
-            msg.user_error("Path '{}' not found.".format(path))
+            msg.error("Path '{}' not found.".format(path))
         
         if path != os.getcwd():
             previous_path=os.getcwd()
@@ -49,7 +51,7 @@ def get_root_dir_path(path=""):
 def get_active_branch_name():
     branch_name=shell.cmd_get_value("git rev-parse --abbrev-ref HEAD")
     if not branch_name:
-        msg.app_error("No branch name from command git rev-parse --abbrev-ref HEAD")
+        msg.error("No branch name from command git rev-parse --abbrev-ref HEAD")
         sys.exit(1)
     else:
         return branch_name
@@ -109,9 +111,11 @@ def commit(message):
             if shell.cmd("git commit -a -m \""+message+"\"") == 0:
                 msg.success("Files committed.")
             else:
-                msg.app_error("Committing Files Failed!")
+                msg.error("Committing Files Failed!")
+                sys.exit(1)
         else:
-            msg.app_error("Adding Files Failed!")
+            msg.error("Adding Files Failed!")
+            sys.exit(1)
     else:
         msg.info("No Files To Commit")
 
@@ -206,7 +210,7 @@ def commit_empty(txt):
     shell.cmd_prompt("git commit --allow-empty -m \""+txt+"\"")
     
 def get_latest_release_for_each_major(all_version_tags):
-    import git_helpers.regex_obj as ro
+    from . import regex_obj as ro
     
     all_major_array=[]
     tmp_array=[]

@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
-import utils.message as msg
-import git_helpers.git_utils as git
 import os
-import sys
 import re
-import git_helpers.regex_obj as ro
-from utils.json_config import Json_config
-import utils.shell_helpers as shell
+import sys
+
+from . import git_utils as git
+from . import msg_helpers as msgh
+from . import regex_obj as ro
+
+from ..gpkgs import message as msg
+
+from ..utils.json_config import Json_config
+from ..utils import shell_helpers as shell
 
 def increment_version_value(version_type, regex_version_value):
     msg.info("Increment '"+version_type+"' for Version Value '"+regex_version_value.text+"'")
@@ -26,8 +30,7 @@ def increment_version_value(version_type, regex_version_value):
             )
 
 def bump_version_for_user(version):
-    from utils.json_config import Json_config
-    msg.subtitle("Check bump release version script.")
+    msgh.subtitle("Check bump release version script.")
     conf = Json_config()
     filer_bump_version=conf.get_value("filer_bump_version")
 
@@ -63,11 +66,12 @@ def bump_version_for_user(version):
     if filenpa_bump_version:
         is_cmd_executable= os.access(filenpa_bump_version, os.X_OK)
         if not is_cmd_executable:
-            msg.user_error("script "+filer_bump_version+" is not executable")
+            msg.error("script "+filer_bump_version+" is not executable")
             sys.exit(1)
 
         msg.dbg("info","Execute script "+filer_bump_version)
-        shell.cmd(filenpa_bump_version+" "+version)       
+        # shell.cmd(filenpa_bump_version+" "+version)       
+        os.system(filenpa_bump_version+" "+version)     
     else:
         msg.warning(bump_release_version_script_err_msg[1:])
         sys.exit(1)

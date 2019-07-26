@@ -1,24 +1,22 @@
 #!/usr/bin/env python3
 import os
-import sys
 import re
+import sys
 
-import utils.message as msg
-from utils.format_text import Format_text as ft
+from . import git_utils as git
+from . import msg_helpers as msgh
 
-from utils.prompt import prompt_boolean, prompt
-import git_helpers.git_utils as git
+from . import regex_obj as ro
+from . import version as version
+from .get_all_branch_regexes import get_branch_type_from_location, get_all_branch_regexes
+from .get_all_version_tags import get_all_version_tags
+from .pick_up_release import pick_up_release
+from .remote_repository import Remote_repository
 
-import git_helpers.version as version
+from ..gpkgs import message as msg
 
-from git_helpers.get_all_branch_regexes import get_branch_type_from_location, get_all_branch_regexes
-from git_helpers.get_all_version_tags import get_all_version_tags
-
-from git_helpers.pick_up_release import pick_up_release
-
-from git_helpers.remote_repository import Remote_repository
-
-import git_helpers.regex_obj as ro
+from ..utils.format_text import Format_text as ft
+from ..utils.prompt import prompt_boolean, prompt
 
 def get_increment_type(regex_curr_tag):
     menu="""
@@ -40,7 +38,7 @@ def get_increment_type(regex_curr_tag):
         elif user_choice.lower() == "q":
             sys.exit(1)
         else:
-            msg.user_error("Wrong input")
+            msg.warning("Wrong input")
             input("  Press Enter To Continue...")
             user_choice=""
             # clear terminal 
@@ -58,12 +56,12 @@ def create_new_release(repo="", regex_branches="", all_version_tags="", deploy_a
         all_version_tags=get_all_version_tags()
 
     if branch_regex.type != "features":
-        msg.user_error(
+        msg.error(
             "Non-authorized branch type '{}'".format(branch_regex.type),
             "A new release can only be created from a 'features' branch")
         sys.exit(1)
 
-    msg.subtitle("Create new release from '{}'".format(branch_regex.text))
+    msgh.subtitle("Create new release from '{}'".format(branch_regex.text))
     
 
     # Do I want to decide on what version do I start??? I am not sure
@@ -96,7 +94,7 @@ def create_new_release(repo="", regex_branches="", all_version_tags="", deploy_a
                 if prompt_boolean("Do you want to continue anyway"):
                     # create a support branch from latest release.
                     new_support_branch=ro.Support_regex().get_new_branch_name(regex_latest_release.major)
-                    msg.subtitle("Create Support branch '{}' from latest release '{}'".format(
+                    msgh.subtitle("Create Support branch '{}' from latest release '{}'".format(
                         new_support_branch,
                         regex_latest_release.text
                     ))
@@ -109,6 +107,7 @@ def create_new_release(repo="", regex_branches="", all_version_tags="", deploy_a
     print()
     version.bump_version_for_user(regex_release_version.text)
     git.commit("Bump Release Version "+regex_release_version.text)
+    git.push_origin(repo, branch_regex.text)
     
     git.checkout("develop")
     git.merge_noff(branch_regex.text)

@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-import utils.message as msg
-from git_helpers.get_all_branch_regexes import get_branch_type_from_location
-from git_helpers.synchronize_branch_name import synchronize_branch_name
 import sys
 
+from . import msg_helpers as msgh
+from .get_all_branch_regexes import get_branch_type_from_location
+from .synchronize_branch_name import synchronize_branch_name
+
+from ..gpkgs import message as msg
+
 def synchronize_branch_type(repo, regex_branches, branch_type):
-    msg.subtitle("Synchronize Branch Type "+branch_type)
+    msgh.subtitle("Synchronize Branch Type "+branch_type)
 
     # first get all branches of the special type
     # type_reg_branches=get_branch_type_from_location(branch_type, "all", reg_branches)

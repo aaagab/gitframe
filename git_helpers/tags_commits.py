@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
-import utils.message as msg
-import utils.shell_helpers as shell
-import git_helpers.git_utils as git
-from utils.prompt import prompt
-from git_helpers.init_local_config import init_local_config
-import sys
 from pprint import pprint
+import sys
+
+from . import git_utils as git
+from .init_local_config import init_local_config
+
+from ..gpkgs import message as msg
+
+from ..utils import shell_helpers as shell
+from ..utils.prompt import prompt
 
 class Tags_commits():
     def __init__(self, location):
         if not location in ["local", "remote", "all"]:
-            msg.user_error(
+            msg.error(
                 "Unknown location '{}' for Tags_commits".format(location),
                 "Authorized location are '{}'.".format("local, remote, all")    
             )

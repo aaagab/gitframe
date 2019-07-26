@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-import utils.message as msg
-import git_helpers.git_utils as git
-from utils.prompt import prompt_boolean
-
-import utils.shell_helpers as shell
 import os
-import sys
 import re
-import git_helpers.regex_obj as ro
+import sys
+
+from . import git_utils as git
+from . import regex_obj as ro
+
+from ..gpkgs import message as msg
+
+from ..utils import shell_helpers as shell
+from ..utils.prompt import prompt_boolean
+
 
 def get_all_version_tags():
     results=shell.cmd_get_value("git tag")

@@ -1,22 +1,25 @@
 #!/usr/bin/env python3
 import os
-import sys
-import shutil
-
-import utils.message as msg
-import git_helpers.git_utils as git
-from git_helpers.clone_project_to_remote import clone_project_to_remote
-from git_helpers.init_local_config import init_local_config
-import utils.shell_helpers as shell
-from utils.prompt import prompt_boolean, prompt
-from git_helpers.license import get_license_content
-from git_helpers.remote_repository import Remote_repository
-from utils.create_directory_tree import create_directory_tree
 import re
+import shutil
+import sys
+
+from . import git_utils as git
+from . import msg_helpers as msgh
+from .clone_project_to_remote import clone_project_to_remote
+from .init_local_config import init_local_config
+from .license import get_license_content
+from .remote_repository import Remote_repository
+
+from ..gpkgs import message as msg
+
+from ..utils import shell_helpers as shell
+from ..utils.prompt import prompt_boolean, prompt
+from ..utils.create_directory_tree import create_directory_tree
 
 def test_path_is_not_file(path):
     if os.path.isfile(path):
-        msg.user_error("Path '"+path+"' is not a directory.")
+        msg.error("Path '"+path+"' is not a directory.")
         sys.exit(1)
 
 def test_path_syntax(path):
@@ -28,7 +31,7 @@ def test_path_syntax(path):
             del path_splitted[0] # empty for posix, drive letter for windows
         for path_chunk in path_splitted:
             if not re.match(reg_text, path_chunk):
-                msg.user_error("Element '"+path_chunk+"' is not conform to path regex syntax '"+reg_text+"'")
+                msg.error("Element '"+path_chunk+"' is not conform to path regex syntax '"+reg_text+"'")
                 sys.exit(1)
 
 def create_directory(path):
@@ -37,14 +40,14 @@ def create_directory(path):
             os.mkdir(path)
             msg.success("Path '"+path+"' created.")
         except:
-            msg.app_error("cannot create path '"+path+"'")
+            msg.error("cannot create path '"+path+"'")
             sys.exit(1)
     else:
         sys.exit(1)
 
 def test_file_not_exist(file):
     if os.path.exists(file):
-        msg.user_error("File '"+file+"' already exists.")
+        msg.error("File '"+file+"' already exists.")
         sys.direns
 
 def init_git_folder(direpa_to_init, user_obj, files_added):
@@ -69,7 +72,7 @@ def init_git_folder(direpa_to_init, user_obj, files_added):
     git.commit_empty("Branch master created on '"+diren_to_init+"'")
 
 def new_project(path=""):
-    msg.title("Create new Git Project")
+    msgh.title("Create new Git Project")
     existing_directory=False
     start_directory=os.getcwd()
 
@@ -93,7 +96,7 @@ def new_project(path=""):
 
         if git.is_git_project(path):
             if git.get_root_dir_path(path) == path:
-                msg.user_error("Current Path '"+path+"' is at a git project toplevel",
+                msg.error("Current Path '"+path+"' is at a git project toplevel",
                     "cd into another directory or remove its .git directory and restart the operation.")
                 sys.exit(1)
 
@@ -103,7 +106,7 @@ def new_project(path=""):
     else: # path does not exist
         parent_directory_path=os.path.dirname(path)
         if not os.path.exists(parent_directory_path):
-            msg.user_error("Path parent directory '"+parent_directory_path+"' does not exist.")
+            msg.error("Path parent directory '"+parent_directory_path+"' does not exist.")
             sys.exit(1)
 
         root_dir=os.path.basename(os.path.normpath(path))
@@ -162,7 +165,7 @@ def new_project(path=""):
         if repo.is_reachable:
             if repo.is_git_directory:
                 diren_repo=os.path.basename(repo.path)
-                msg.user_error(
+                msg.error(
                     "Remote Directory "+diren_repo+" Already Exists on remote repository 'Origin'",
                     "Clone "+diren_repo+" from Remote or Change application name"
                 )
@@ -183,7 +186,7 @@ def new_project(path=""):
                             os.chdir(os.path.dirname(path))
                             shutil.rmtree(root_dir)
                     except:
-                        msg.app_error("cannot clean directory '"+root_dir+"'")
+                        msg.error("cannot clean directory '"+root_dir+"'")
                         sys.exit(1)
 
                     msg.info("directory '"+root_dir+"' cleaned.")

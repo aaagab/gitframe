@@ -72,6 +72,6 @@
         "txt_screen_log_eof": "++ end unit ++",
         "waiting_time_between_cmds": 20
     },
-    "validator": true,
+    "validator": false,
     "version": "1.2.0"
 }
