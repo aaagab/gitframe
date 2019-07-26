@@ -6,7 +6,6 @@ import sys
 from ..git_helpers import git_utils as git
 from ..git_helpers import msg_helpers as msgh
 
-
 from ..gpkgs import message as msg
 
 from .json_config import Json_config
