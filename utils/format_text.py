@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-import re
 import os
-import sys
+import re
 import subprocess
-
+import sys
 
 class Format_text(object):
 	# create color function

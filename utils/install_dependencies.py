@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-import os
-import sys
-import utils.shell_helpers as shell
-import utils.message as msg
-import platform
-import subprocess, shlex
-import shutil
-import git_helpers.git_utils as git
 import getpass
+import platform
+import os
+import shutil
+import subprocess, shlex
+import sys
+
+from ..git_helpers import git_utils as git
+
+from ..gpkgs import message as msg
+
+from . import shell_helpers as shell
 
 def install_dependencies(obj_deps):
     if os.name == 'posix':
@@ -15,11 +18,11 @@ def install_dependencies(obj_deps):
         user=getpass.getuser()
 
         if not shutil.which("sudo"):
-            msg.user_error("sudo not found.")
+            msg.error("sudo not found.")
             sys.exit(1)
         elif user != "root":
             if not "sudo" in shell.cmd_get_value("groups"):
-                msg.user_error("user does not belong to sudo group.")
+                msg.error("user does not belong to sudo group.")
                 sys.exit(1)
 
         for obj_dep in obj_deps:
@@ -35,8 +38,9 @@ def install_dependencies(obj_deps):
                     else:
                         shell.cmd_prompt("sudo apt-get install " + app)
                 else:
-                    msg.user_error("Install '"+app+"' to continue.")
+                    msg.error("Install '"+app+"' to continue.")
                     sys.exit(1)
     else:
-        print("This program has been created for Linux.")
-        sys.exit(1)	
+        # print("This program has been created for Linux.")
+        # sys.exit(1)	
+        pass

@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 import sys
-import git_helpers.git_utils as git
-import utils.message as msg
-import git_helpers.regex_obj as ro
+
+from .. import git_utils as git
+from .. import regex_obj as ro
+
+from ...gpkgs import message as msg
+
 
 # there is no support branch on releases that has the latest major
 # if one support branch it must be on the latest release of previous major releases
@@ -20,7 +23,7 @@ def find_related_tag_for_support_branch_name(regex_branch, all_version_tags):
             break
 
     if not found:
-        msg.user_error(
+        msg.error(
             "Support Branch name '"+regex_branch.text+"' does not contain tag from one of the latest releases '"+', '.join(latest_release_tags)+"' that matches its Major Number",
             "Please rename Support branch_name to match the tag of the latest release on one Major."    
         )
@@ -30,7 +33,7 @@ def find_related_tag_for_support_branch_name(regex_branch, all_version_tags):
 
         # there is no support branch on releases that has the latest major
         if regex_latest_release.major == regex_branch.major:
-            msg.user_error(
+            msg.error(
                 "Support branch name major '"+regex_branch.text+"' can't be equal to Latest release Major from '"+regex_latest_release.text+"'",
                 "No support branch on latest major version is tolerated."
             )

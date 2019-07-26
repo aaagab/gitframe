@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-import utils.message as msg
-import utils.shell_helpers as shell
-from utils.prompt import prompt
-import sys, os
+import os
+import sys
+
+from ..gpkgs import message as msg
+
+from ..utils import shell_helpers as shell
+from ..utils.prompt import prompt
 
 def set_username(username):
     shell.cmd("git config --local user.name "+username)
@@ -17,7 +20,7 @@ def set_repository(repository):
     msg.info("Repository set to '"+repository+"'")
 
 def init_local_config(user_obj=""):
-    import git_helpers.git_utils as git
+    from . import git_utils as git
     
     root_dir=git.get_root_dir_name()
 

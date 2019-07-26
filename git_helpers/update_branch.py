@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
-import utils.message as msg
-from utils.prompt import prompt_boolean
-import git_helpers.regex_obj as ro
-import git_helpers.git_utils as git
-import os, sys
+import os
+import sys
+
+from . import git_utils as git
+from . import msg_helpers as msgh
+from . import regex_obj as ro
+
+from ..gpkgs import message as msg
+
+from ..utils.prompt import prompt_boolean
 
 def update_branch(all_version_tags, regex_branch=""):
 
     if not regex_branch:
         regex_branch=ro.get_element_regex(git.get_active_branch_name())
 
-    msg.title("Update Branch '"+regex_branch.text+"'")
+    msgh.title("Update Branch '"+regex_branch.text+"'")
 
     # if regex_branch.type in ["master", "develop", "release", "support"]:
     if regex_branch.type in ["master", "develop", "support"]:
@@ -40,9 +45,10 @@ def update_branch(all_version_tags, regex_branch=""):
         elif cmp_status in ["pull","divergent_with_common_ancestor"]:
             git.merge_noff(linked_branch)
         elif cmp_status == "divergent_without_common_ancestor":
-            msg.user_error(
+            msg.error(
                 "Compare Status for '"+regex_branch.text+"' and '"+linked_branch+"' is '"+cmp_status+"'",
                 "Branches are not related, find and correct the issue."
             )
+            sys.exit(1)
 
     msg.success("Branch '"+regex_branch.text+"' updated.")

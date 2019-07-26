@@ -1,7 +1,9 @@
 import re
-import git_helpers.git_utils as git
-import utils.message as msg
 import sys
+
+from ..gpkgs import message as msg
+
+from . import git_utils as git
 
 class Regex_obj():
     def __init__(self, group_string):
@@ -197,7 +199,7 @@ def error_unknown_regex(regexes):
     for reg in regexes:
         txt_regexes+="\t"+reg.string+"\n"
 
-    msg.user_error(
+    msg.error(
         "Branch '"+regexes[0].text+"' type unknown.",
         "Authorized Branch Names are :\n"+txt_regexes
     )

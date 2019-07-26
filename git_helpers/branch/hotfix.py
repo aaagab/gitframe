@@ -1,30 +1,31 @@
 #!/usr/bin/env python3
+from pprint import pprint
 import os
 import sys
 import re
 
-import utils.message as msg
-from utils.format_text import Format_text as ft
-import utils.shell_helpers as shell
+from .. import git_utils as git
+from .. import msg_helpers as msgh
+from .. import version as version
+from .. import regex_obj as ro
+from ..get_all_version_tags import get_all_version_tags, tag_sort_index
+from ..get_all_branch_regexes import get_branch_type_from_location
+from ..pick_up_release import pick_up_release
+from ..update_branch import update_branch
 
-from git_helpers.pick_up_release import pick_up_release
-import git_helpers.git_utils as git
-import git_helpers.version as version
-from git_helpers.get_all_version_tags import get_all_version_tags, tag_sort_index
-from git_helpers.get_all_branch_regexes import get_branch_type_from_location
-from utils.json_config import Json_config
-from utils.prompt import prompt, prompt_boolean
-from pprint import pprint
-import git_helpers.regex_obj as ro
+from ...gpkgs import message as msg
 
-from git_helpers.update_branch import update_branch
+from ...utils import shell_helpers as shell
+from ...utils.json_config import Json_config
+from ...utils.prompt import prompt, prompt_boolean
+from ...utils.format_text import Format_text as ft
 
 def open_hotfix(repo, all_version_tags):
 	conf = Json_config()
-	msg.subtitle("Open Hotfix Branch")
+	msgh.subtitle("Open Hotfix Branch")
 
 	if not all_version_tags:
-		msg.user_error(
+		msg.error(
 			"There are no tags in this project. You can't open a Hotfix Branch",
 			"You need to have published at least 1 release before you can create a hotfix branch."
 		)
@@ -46,10 +47,11 @@ def open_hotfix(repo, all_version_tags):
 		new_hotfix_branch=ro.Hotfix_regex().get_new_branch_name(regex_tag_to_branch_from.major, keywords)
 
 		if git.is_branch_on_local(new_hotfix_branch):
-			msg.user_error(
+			msg.error(
 				"Branch "+new_hotfix_branch+" already exists on local.",
 				"Please git checkout -b "+new_hotfix_branch+" or choose a new branch name."    
 			)
+			sys.exit(1)
 		else:
 			break
 
@@ -58,23 +60,23 @@ def open_hotfix(repo, all_version_tags):
 	if git.is_branch_on_local(related_support_branch):
 		msg.dbg("info", "hotfix from existing support branch")
 		git.checkout(related_support_branch)
-		msg.subtitle("Open Hotfix "+new_hotfix_branch+" from "+related_support_branch)
+		msgh.subtitle("Open Hotfix "+new_hotfix_branch+" from "+related_support_branch)
 		git.checkoutb(new_hotfix_branch)
 	else:
 		latest_release_tag=all_version_tags[-1]
 		if tag_to_branch_from == latest_release_tag:
 			msg.dbg("info", "hotfix from latest release")
 			git.checkout("master")
-			msg.subtitle("Open Hotfix "+new_hotfix_branch+" from tag v"+latest_release_tag)
+			msgh.subtitle("Open Hotfix "+new_hotfix_branch+" from tag v"+latest_release_tag)
 			git.checkoutb(new_hotfix_branch+" v"+latest_release_tag)
 		else:
 			# create first a support branch and branch from it the hotfix
 			msg.dbg("info", "hotfix from new support branch")
-			msg.subtitle("Create branch "+related_support_branch)
+			msgh.subtitle("Create branch "+related_support_branch)
 			git.checkoutb(related_support_branch+" v"+tag_to_branch_from)
 			git.commit_empty("Creating Branch "+related_support_branch)
 			git.push_origin(repo, related_support_branch)
-			msg.subtitle("Open Hotfix "+new_hotfix_branch+" from "+related_support_branch)
+			msgh.subtitle("Open Hotfix "+new_hotfix_branch+" from "+related_support_branch)
 			git.checkoutb(new_hotfix_branch+" "+related_support_branch)
 
 	git.commit_empty("Creating Branch "+new_hotfix_branch)
@@ -108,7 +110,7 @@ def get_tag_for_hotfix(all_version_tags):
 			isValid=False
 
 		if not isValid:
-			msg.user_error("Wrong input")
+			msg.warning("Wrong input")
 			input("  Press Enter To Continue...")
 			user_choice=""
 			# clear terminal 
@@ -116,7 +118,7 @@ def get_tag_for_hotfix(all_version_tags):
 
 def close_hotfix(repo, regex_branch, regex_branches, all_version_tags, deploy_args=[]):
 	conf = Json_config()
-	msg.subtitle("Close Branch "+regex_branch.text)
+	msgh.subtitle("Close Branch "+regex_branch.text)
 
 	update_branch(all_version_tags, regex_branch)
 

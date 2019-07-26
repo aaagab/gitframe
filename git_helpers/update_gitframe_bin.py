@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-import utils.message as msg
-import git_helpers.git_utils as git
-import os, sys
-import shutil
 from distutils.dir_util import copy_tree
+import os
+import shutil
+import sys
+
+from . import git_utils as git
+from . import msg_helpers as msgh
+
+from ..gpkgs import message as msg
+
 
 def is_direpa_dev_sources(conf, path=""):
 	is_direpa_dev_sources=True
@@ -42,20 +47,20 @@ def get_direpa_dev_sources(conf):
 	else:
 		if conf.data["direpa_dev_sources"]:
 			if not os.path.exists(conf.data["direpa_dev_sources"]):
-				msg.user_error(
+				msg.error(
 					"Current 'direpa_dev_sources' '{}' does not exists".format(conf.data["direpa_dev_sources"]),
 					"Go to real path development sources and run './gitframe.py --update-gitframe' to set direpa_dev_sources."
 				)
 				sys.exit(1)
 			else:
 				if not is_direpa_dev_sources(conf, conf.data["direpa_dev_sources"]):
-					msg.user_error(
+					msg.error(
 						"Current 'direpa_dev_sources' '{}' exists but it is not the real path development sources for gitframe.".format(conf.data["direpa_dev_sources"]),
 						"Go to real path development sources and run './gitframe.py --update-gitframe' to set direpa_dev_sources."
 					)
 					sys.exit(1)
 		else:
-			msg.user_error(
+			msg.error(
 				"'direpa_dev_sources' has not been defined",
 				"Go to real path development sources and run './gitframe.py --update-gitframe' to set direpa_dev_sources."
 			)
@@ -65,7 +70,7 @@ def get_direpa_dev_sources(conf):
 
 def update_gitframe_bin(conf, parameters=""):
 
-	msg.subtitle("Update Gitframe Bin")
+	msgh.subtitle("Update Gitframe Bin")
 
 	direpa_source_app=get_direpa_dev_sources(conf)
 

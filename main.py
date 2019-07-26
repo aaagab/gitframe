@@ -1,40 +1,50 @@
 #!/usr/bin/env python3
-import os, sys
-from utils.format_text import Format_text as ft
-from utils.prompt import prompt, prompt_boolean
-
-import git_helpers.git_utils as git
-
-if os.name != 'posix':
-	print("This program has been created for debian Linux.")
-	sys.exit(1)	
-
-from utils.json_config import Json_config
-conf = Json_config()
-conf.set_value("debug", False)
-conf.data["validator"]=True
-
-import getopt
-from utils.install_dependencies import install_dependencies
-from git_helpers.remote_repository import Remote_repository
-import utils.message as msg
-import importlib
-
-import git_helpers.version as version
-
-from git_helpers.main_validator import validator
+# author: Gabriel Auger
+# version: 2.0.0
+# name: gitframe
+# license: MIT
 
 import argparse
+import getopt
+import getpass  
+import importlib
+import json
+import os 
+import platform
 from pprint import pprint
+import sys
 
 if __name__ == "__main__":
-	install_dependencies(conf.get_value("deps"))
+	direpa_script_parent=os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+	module_name=os.path.basename(os.path.dirname(os.path.realpath(__file__)))
+	sys.path.insert(0, direpa_script_parent)
+	pkg = importlib.import_module(module_name)
+	del sys.path[0]
+
+	conf = pkg.Json_config()
+	conf.set_value("debug", False)
+	# conf.data["validator"]=True
+
+
+
+
+	pkg.install_dependencies(conf.get_value("deps"))
+	filenpa_script=os.path.realpath(__file__)
+	direpa_script=os.path.dirname(filenpa_script)
+	dy_app=None
+	filenpa_json=os.path.join(direpa_script, "config", "config.json")	
+	with open(filenpa_json, 'r') as f:
+		dy_app=json.load(f)
+
+	dy_app["platform"]=platform.system()
 
 	class MyParser(argparse.ArgumentParser):
 		def error(self, message):
 			sys.stderr.write('error: %s\n' % message)
 			self.print_help()
 			sys.exit(1)
+
+
 
 	parser=MyParser(description="Python wrapper for git. It applies a git workflow close to GitFlow model from nvie.com. It uses semantic versioning 2.0.0")
 
@@ -153,6 +163,7 @@ if __name__ == "__main__":
 		dest="version",
 		help="get program version"
 	)
+	# Remote_repository(_platform=dy_app["platform"])
 
 	if not sys.argv[1:]:
 		parser.print_usage()
@@ -165,98 +176,89 @@ if __name__ == "__main__":
 		sys.exit(1)
 
 	if args.update_gitframe:
-		from git_helpers.update_gitframe_bin import update_gitframe_bin
 		if args.update_gitframe is True:
-			update_gitframe_bin(conf)
+			pkg.update_gitframe_bin(conf)
 		else:
-			update_gitframe_bin(conf, args.update_gitframe)
+			pkg.update_gitframe_bin(conf, args.update_gitframe)
 		sys.exit(0)
 
 	if args.debug is True:
-		msg.subtitle("Debug mode started")
+		pkg.msgh.subtitle("Debug mode started")
 		conf.set_value("debug", True)
 		importlib.reload(msg)
 
 	if args.disable_validator is True:
-		msg.subtitle("Validator mode disabled")
+		pkg.msgh.subtitle("Validator mode disabled")
 		conf.data["validator"]=False
 		# if not args.pick_up_release and not args.publish_early_release:
 		if not args.pick_up_release:
-			msg.user_error(
+			msg.error(
 				"Disable Validator can only be enabled with Pick up Release (--pr tag).",
 				"It allows to work quickly with the deploy_release script."
 			)
 			sys.exit(1)
 
 	if args.close_branch is True:
-		from git_helpers.close_branch import close_branch
 		if args.deploy_args is None:
 			args.deploy_args=[]
-		close_branch(*validator(conf.data["validator"]), args.deploy_args)
+		pkg.close_branch(*pkg.validator(conf.data["validator"]), args.deploy_args)
 		sys.exit(0)
 		
 	elif args.new_project is True:
-		from git_helpers.new_project import new_project
-		new_project()
+		pkg.new_project()
 		sys.exit(0)
 
 	elif args.new_project:
-		from git_helpers.new_project import new_project
-		new_project(args.new_project)
+		pkg.new_project(args.new_project)
 		sys.exit(0)
 
 	elif args.automated_new_project:
-		import processor.utils.processor_engine as pe
-		pe.terminal_setup(conf.data, ["new_project"])
+		# pkg.pe.terminal_setup(conf.data, ["new_project"])
+		print("Need to be refactored")
 		sys.exit(0)
 
 	elif args.clone_project_to_remote is True:
-		from git_helpers.clone_project_to_remote import clone_project_to_remote
-		# repo, regex_branches, all_version_tags=validator(conf.data["validator"])
+		# repo, regex_branches, all_version_tags=pkg.validator(conf.data["validator"])
 
-		clone_project_to_remote(Remote_repository())
+		pkg.clone_project_to_remote(pkg.Remote_repository())
 		sys.exit(0)
 
 	elif args.open_branch is True:
-		from git_helpers.open_branch import open_branch
-		open_branch(*validator(conf.data["validator"]))
+		pkg.open_branch(*pkg.validator(conf.data["validator"]))
 		sys.exit(0)
 
 	elif args.pick_up_release:
-		from git_helpers.pick_up_release import pick_up_release
-		from git_helpers.create_new_release import create_new_release
-
 		if args.deploy_args is None:
 			args.deploy_args=[]
 
 		if args.pick_up_release is True:
-			repo, regex_branches, all_version_tags=validator(conf.data["validator"])
-			create_new_release(repo, regex_branches, all_version_tags, *args.deploy_args)
+			repo, regex_branches, all_version_tags=pkg.validator(conf.data["validator"])
+			pkg.create_new_release(repo, regex_branches, all_version_tags, *args.deploy_args)
 		else:
 			if conf.data["validator"]:
-				repo, regex_branches, all_version_tags=validator(conf.data["validator"])
+				repo, regex_branches, all_version_tags=pkg.validator(conf.data["validator"])
 
-			pick_up_release(args.pick_up_release, *args.deploy_args)
+			pkg.pick_up_release(args.pick_up_release, *args.deploy_args)
 
 	elif args.synchronize_project is True:
-		validator(conf.data["validator"])
+		pkg.validator(conf.data["validator"])
 		sys.exit(0)
 
 	elif args.test:
-		import processor.utils.processor_engine as pe
-		pe.terminal_setup(conf.data, args.test)
+		print("Need to be refactored")
+		# pkg.pe.terminal_setup(conf.data, args.test)
 		sys.exit(0)
 
 	elif args.update_branch is True:
-		from git_helpers.update_branch import update_branch			
-		repo, regex_branches, all_version_tags=validator(conf.data["validator"])
-		update_branch(all_version_tags)
+		print("Need to be refactored")
+		repo, regex_branches, all_version_tags=pkg.validator(conf.data["validator"])
+		pkg.update_branch(all_version_tags)
 		sys.exit(0)
 
 	elif args.version is True:
 		lspace="  "
-		print(lspace+ft.bold("Name: ")+conf.get_value("app_name"))
-		print(lspace+ft.bold("Author: ")+conf.get_value("author"))
-		print(lspace+ft.bold("License: ")+conf.get_value("license"))
-		print(lspace+ft.bold("Version: ")+conf.get_value("version"))
+		print(lspace+pkg.ft.bold("Name: ")+conf.get_value("app_name"))
+		print(lspace+pkg.ft.bold("Author: ")+conf.get_value("author"))
+		print(lspace+pkg.ft.bold("License: ")+conf.get_value("license"))
+		print(lspace+pkg.ft.bold("Version: ")+conf.get_value("version"))
 		sys.exit(0)

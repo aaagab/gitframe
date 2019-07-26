@@ -1,16 +1,26 @@
 #!/usr/bin/env python3
+import platform
 import os
-import sys
-import git_helpers.git_utils as git
-import utils.message as msg
-import utils.shell_helpers as shell
-from git_helpers.init_local_config import init_local_config
 import re
+import sys
+
+from . import git_utils as git
+from . import msg_helpers as msgh
+from .init_local_config import init_local_config
+
+from ..gpkgs import message as msg
+
+from ..utils import shell_helpers as shell
 
 class Remote_repository():
-    def __init__(self):
-        msg.subtitle("Initializing Remote Repository")
+    def __init__(self,
+        _platform=None
+    ):
+        msgh.subtitle("Initializing Remote Repository")
         
+        self.platform=_platform
+        if self.platform is None:
+            self.platform=platform.system()
         self.path=self.get_path()
         self.domain=""
         self.direpa_src=""
@@ -45,13 +55,30 @@ class Remote_repository():
             else:
                 msg.warning("Remote Path '"+self.direpa_par_src+"' is not reachable.")
         elif self.path_type == "url":
-            if shell.cmd_devnull("ping -c2 -W1 " + self.domain) == 0:
+            # if shell.cmd_devnull("ping -c2 -W1 " + self.domain) == 0:
+            if self.short_ping(self.platform, self.domain) is True:
                 found=True
                 msg.success("Remote Path '"+self.domain+"' is reachable.")
             else:
                 msg.warning("Remote Path '"+self.domain+"' is not reachable.")
         
         return found
+
+    def short_ping(self, platform, domain):
+        count_arg=""
+        null_arg=""
+        if platform == "Windows":
+            count_arg="-n"
+            null_arg="> nul 2>&1"
+        elif platform == "Linux":
+            count_arg="-c"
+            null_arg="> /dev/null 2>&1"
+
+        cmd="ping {} 2 {} {}".format(count_arg, domain, null_arg)
+        if os.system(cmd) == 0:
+            return True
+        else:
+            return False
 
     def set_is_git_directory(self):
         exists=False

@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
-import utils.message as msg
-import git_helpers.git_utils as git
-import git_helpers.regex_obj as ro
 import sys
-from git_helpers.branch.features import close_features
-from git_helpers.branch.draft import close_draft
-from git_helpers.branch.hotfix import close_hotfix
+
+from . import git_utils as git
+from . import msg_helpers as msgh
+
+from . import regex_obj as ro
+from .branch.features import close_features
+from .branch.draft import close_draft
+from .branch.hotfix import close_hotfix
+
+from ..gpkgs import message as msg
 
 def close_branch(repo, regex_branches, all_version_tags, deploy_args=[]):
-    msg.title("Close Branch")
+    msgh.title("Close Branch")
     # get branch type
     branch_name=git.get_active_branch_name()
     branch_regex=ro.get_element_regex(branch_name)
@@ -19,7 +23,7 @@ def close_branch(repo, regex_branches, all_version_tags, deploy_args=[]):
     elif branch_regex.type == "hotfix":
         close_hotfix(repo, branch_regex, regex_branches, all_version_tags, deploy_args)
     else:
-        msg.user_error(
+        msg.error(
             "You can't close on branch '"+ branch_name+"'.",
             "git checkout another_branch_type \"features|hotfix\""
         )
