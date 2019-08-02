@@ -5,3 +5,4 @@ __pycache__/
 .git/
 .gitignore
 /archives/
+private_config.json
