@@ -10,9 +10,9 @@ from . import regex_obj as ro
 
 from ..gpkgs import message as msg
 
-from ..utils.prompt import prompt_boolean
-from ..utils.format_text import Format_text as ft
-from ..utils import shell_helpers as shell
+from ..gpkgs.prompt import prompt_boolean
+from ..gpkgs.format_text import ft
+from ..gpkgs import shell_helpers as shell
 
 def synchronize_branch_name(repo, regex_branches, branch_name=""):
     

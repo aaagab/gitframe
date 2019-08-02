@@ -12,7 +12,7 @@ from ..get_all_branch_regexes import get_branch_type_from_location
 
 from ...gpkgs import message as msg
 
-from ...utils.format_text import Format_text as ft
+from ...gpkgs.format_text import ft
 
 def open_support(repo, regex_branches, all_version_tags):
 	msgh.subtitle("Open Support Branch")
