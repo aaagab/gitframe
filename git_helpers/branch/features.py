@@ -11,8 +11,8 @@ from ..update_branch import update_branch
 
 from ...gpkgs import message as msg
 
-from ...utils.prompt import prompt
-from ...utils.prompt import prompt_boolean
+from ...gpkgs.prompt import prompt
+from ...gpkgs.prompt import prompt_boolean
 
 def open_features(repo):
     

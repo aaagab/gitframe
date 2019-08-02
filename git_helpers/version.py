@@ -10,7 +10,7 @@ from . import regex_obj as ro
 from ..gpkgs import message as msg
 
 from ..utils.json_config import Json_config
-from ..utils import shell_helpers as shell
+from ..gpkgs import shell_helpers as shell
 
 def increment_version_value(version_type, regex_version_value):
     msg.info("Increment '"+version_type+"' for Version Value '"+regex_version_value.text+"'")

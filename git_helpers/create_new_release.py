@@ -15,8 +15,8 @@ from .remote_repository import Remote_repository
 
 from ..gpkgs import message as msg
 
-from ..utils.format_text import Format_text as ft
-from ..utils.prompt import prompt_boolean, prompt
+from ..gpkgs.format_text import ft
+from ..gpkgs.prompt import prompt_boolean, prompt
 
 def get_increment_type(regex_curr_tag):
     menu="""
