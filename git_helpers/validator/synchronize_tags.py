@@ -9,7 +9,7 @@ from .. import regex_obj as ro
 from ..tags_commits import Tags_commits
 
 from ...gpkgs import message as msg
-from ...utils import shell_helpers as shell
+from ...gpkgs import shell_helpers as shell
 
 
 # all tags from remote are fetched

@@ -7,8 +7,8 @@ from .init_local_config import init_local_config
 
 from ..gpkgs import message as msg
 
-from ..utils.prompt import prompt
-from ..utils import shell_helpers as shell
+from ..gpkgs.prompt import prompt
+from ..gpkgs import shell_helpers as shell
 
 
 def prompt_for_commit():

@@ -8,8 +8,8 @@ from . import regex_obj as ro
 
 from ..gpkgs import message as msg
 
-from ..utils import shell_helpers as shell
-from ..utils.prompt import prompt_boolean
+from ..gpkgs import shell_helpers as shell
+from ..gpkgs.prompt import prompt_boolean
 
 
 def get_all_version_tags():

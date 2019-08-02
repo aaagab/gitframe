@@ -9,9 +9,7 @@ from ..get_all_branch_regexes import get_branch_type_from_location
 
 from ...gpkgs import message as msg
 
-from ...utils.prompt import prompt
-from ...utils.prompt import prompt_boolean
-
+from ...gpkgs.prompt import prompt
 
 def open_draft(repo):
     

@@ -15,10 +15,10 @@ from ..update_branch import update_branch
 
 from ...gpkgs import message as msg
 
-from ...utils import shell_helpers as shell
+from ...gpkgs import shell_helpers as shell
 from ...utils.json_config import Json_config
-from ...utils.prompt import prompt, prompt_boolean
-from ...utils.format_text import Format_text as ft
+from ...gpkgs.prompt import prompt, prompt_boolean
+from ...gpkgs.format_text import ft
 
 def open_hotfix(repo, all_version_tags):
 	conf = Json_config()
