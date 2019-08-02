@@ -7,8 +7,8 @@ from .init_local_config import init_local_config
 
 from ..gpkgs import message as msg
 
-from ..utils import shell_helpers as shell
-from ..utils.prompt import prompt
+from ..gpkgs import shell_helpers as shell
+from ..gpkgs.prompt import prompt
 
 class Tags_commits():
     def __init__(self, location):

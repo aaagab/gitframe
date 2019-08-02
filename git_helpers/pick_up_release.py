@@ -8,8 +8,8 @@ from . import regex_obj as ro
 from .get_all_version_tags import get_all_version_tags
 from .tags_commits import Tags_commits			
 
-from ..utils.prompt import prompt_boolean
-from ..utils import shell_helpers as shell
+from ..gpkgs.prompt import prompt_boolean
+from ..gpkgs import shell_helpers as shell
 from ..utils.json_config import Json_config
 
 from ..gpkgs import message as msg

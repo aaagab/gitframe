@@ -10,8 +10,8 @@ from . import msg_helpers as msgh
 
 from ..gpkgs import message as msg
 
-from ..utils import shell_helpers as shell
-from ..utils.prompt import prompt, prompt_boolean
+from ..gpkgs import shell_helpers as shell
+from ..gpkgs.prompt import prompt, prompt_boolean
 
 
 
