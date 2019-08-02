@@ -9,8 +9,8 @@ from .branch.hotfix import open_hotfix
 from .branch.support import open_support
 
 from ..gpkgs import message as msg
-from ..utils import shell_helpers as shell
-from ..utils.format_text import Format_text as ft
+from ..gpkgs import shell_helpers as shell
+from ..gpkgs.format_text import ft
 
 def open_branch(repo, regex_branches, all_version_tags):
     msgh.title("Open Branch")

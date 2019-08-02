@@ -13,8 +13,8 @@ from .remote_repository import Remote_repository
 
 from ..gpkgs import message as msg
 
-from ..utils import shell_helpers as shell
-from ..utils.prompt import prompt_boolean, prompt
+from ..gpkgs import shell_helpers as shell
+from ..gpkgs.prompt import prompt_boolean, prompt
 from ..utils.create_directory_tree import create_directory_tree
 
 def test_path_is_not_file(path):
