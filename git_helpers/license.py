@@ -5,8 +5,8 @@ import sys
 
 from ..gpkgs import message as msg
 
-from ..utils.prompt import prompt
-from ..utils.format_text import Format_text as ft
+from ..gpkgs.prompt import prompt
+from ..gpkgs.format_text import ft
 
 def remove_tabs_heredoc(text):
     new_text=""

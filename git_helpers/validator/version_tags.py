@@ -12,7 +12,7 @@ from ..validator.support import find_related_tag_for_support_branch_name
 
 from ...gpkgs import message as msg
 
-from ...utils import shell_helpers as shell
+from ...gpkgs import shell_helpers as shell
 
 
 # if a release_tag exists.

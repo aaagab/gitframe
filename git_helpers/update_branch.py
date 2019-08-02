@@ -8,7 +8,7 @@ from . import regex_obj as ro
 
 from ..gpkgs import message as msg
 
-from ..utils.prompt import prompt_boolean
+from ..gpkgs.prompt import prompt_boolean
 
 def update_branch(all_version_tags, regex_branch=""):
 

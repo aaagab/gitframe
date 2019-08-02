@@ -4,8 +4,8 @@ import sys
 
 from ..gpkgs import message as msg
 
-from ..utils import shell_helpers as shell
-from ..utils.prompt import prompt
+from ..gpkgs import shell_helpers as shell
+from ..gpkgs.prompt import prompt
 
 def set_username(username):
     shell.cmd("git config --local user.name "+username)
