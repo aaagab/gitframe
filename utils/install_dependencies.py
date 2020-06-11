@@ -6,11 +6,17 @@ import shutil
 import subprocess, shlex
 import sys
 
-from ..git_helpers import git_utils as git
-
-from ..gpkgs import message as msg
-
-from . import shell_helpers as shell
+try:
+    from ..git_helpers import git_utils as git
+    from ..gpkgs import message as msg
+    from . import shell_helpers as shell
+except:
+    direpa_script=os.path.realpath(__file__)
+    direpa_launcher=os.path.dirname(os.path.dirname(direpa_script))
+    sys.path.insert(0,direpa_launcher)
+    from git_helpers import git_utils as git
+    from gpkgs import message as msg
+    from gpkgs import shell_helpers as shell
 
 def install_dependencies(obj_deps):
     if os.name == 'posix':

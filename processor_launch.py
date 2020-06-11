@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
-import os, sys
-direpa_script=os.path.realpath(__file__)
-direpa_launcher=os.path.dirname(os.path.dirname(direpa_script))
-sys.path.insert(0,direpa_launcher)
+from pprint import pprint
+import os
+import sys
+import importlib
 import getpass
 
-import utils.message as msg
-import processor.utils.processor_helpers as ph
-from processor.utils.processor_engine import init_config
-from utils.json_config import Json_config
-from processor.utils.task_clean import delete_test_and_repo
-from utils.format_text import Format_text as ft
-from utils.prompt import prompt, prompt_boolean
-import utils.shell_helpers as shell
+from utils import message as msg
+from gpkgs.format_text import Format_text as ft
+from gpkgs.prompt import prompt, prompt_boolean
+import gpkgs.shell_helpers as shell
+from gpkgs.json_config import Json_config
 
 def test_processor(conf):
     from processor.units.test_processor import test_processor
@@ -298,8 +295,14 @@ def automated_new_project(conf):
         }
     new_project(conf)
 
-def main(*args):
-    Json_config().set_value("debug", True)
+def main(pkg, *args):
+    direpa_launcher=os.path.dirname(os.path.realpath(__file__))
+    filenpa_conf=os.path.join(direpa_launcher, "config", "config.json")
+    # /data/wrk/g/gitframe/1/src/config/config.json
+
+    conf=Json_config(filenpa_conf)
+    conf.data["debug"]=True
+    conf.save()
 
     args=args[0]
     task_mode=""
@@ -315,20 +318,20 @@ def main(*args):
     conf=dict(task_mode=task_mode)
 
     direpa_processor_script=os.path.dirname( os.path.realpath(__file__))
-    conf.update(init_config(direpa_processor_script))
+    conf.update(pkg.init_config(direpa_processor_script))
 
-    sudo=ph.Sudo()
+    sudo=pkg.ph.Sudo()
     if task_mode in ["ssh_url", "local_path"]:
-        sudo.pswd=ph.get_pass_from_private_conf()
+        sudo.pswd=pkg.ph.get_pass_from_private_conf()
         sudo.enable()
         os.chdir(conf["direpa_task_conf"])
 
     if task_mode == "ssh_url":
         conf["sudo_pass"]=sudo.get_pswd()
-        ph.setup_mock_repository(conf)    
+        pkg.ph.setup_mock_repository(conf)    
 
-    ft.clear_scrolling_history()
-    ph.clean_logs(conf)
+    # ft.clear_scrolling_history()
+    # pkg.ph.clean_logs(conf)
 
     try:
         init_readline_screen(conf)
@@ -336,6 +339,8 @@ def main(*args):
         if task_mode == "new_project":
             automated_new_project(conf)
         else:
+            print("needs to be refactored or dumped")
+            sys.exit()
             test_processor(conf)
             
             message(conf)
@@ -405,7 +410,13 @@ def main(*args):
         msg.user_error("Task '"+conf["filen_launcher"]+"' Failed")
         sys.exit(1)
     finally:
-        ph.open_logs(conf)
+        pkg.ph.open_logs(conf)
 
 if __name__ == "__main__":
-    main(sys.argv)
+    direpa_script_parent=os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    module_name=os.path.basename(os.path.dirname(os.path.realpath(__file__)))
+    sys.path.insert(0, direpa_script_parent)
+    pkg = importlib.import_module(module_name)
+    del sys.path[0]
+
+    main(pkg, sys.argv)

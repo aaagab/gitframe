@@ -4,20 +4,34 @@ import shlex
 import sys
 from shutil import copyfile
 from datetime import datetime
-import utils.message as msg
 import os
 import getpass
-import utils.shell_helpers as shell
-from utils.json_config import Json_config
 from pprint import pprint
 import shutil
-from processor.utils.read_logs import read_logs
 import uuid
 import time
 import stat
-import git_helpers.git_utils as git
 import re
 from datetime import datetime
+
+try:
+    from ...gpkgs import message as msg
+    from ...gpkgs import shell_helpers as shell
+    from ...gpkgs.json_config import Json_config
+    from ...git_helpers import git_utils as git
+    from ...git_helpers import msg_helpers as msgh
+
+except:
+    direpa_script=os.path.realpath(__file__)
+    direpa_launcher=os.path.dirname(os.path.dirname(os.path.dirname(direpa_script)))
+    sys.path.insert(0,direpa_launcher)
+    from gpkgs import message as msg
+    from gpkgs import shell_helpers as shell
+    from gpkgs.json_config import Json_config
+    from git_helpers import git_utils as git
+    from git_helpers import msg_helpers as msgh
+
+from .read_logs import read_logs
 
 def log_to_task_status_file(task_status_file, elem_type, *args):
     text=""
@@ -85,7 +99,7 @@ def get_file_user_obj(passwd_file):
     return file_user_obj
 
 def setup_mock_repository(conf):  
-    msg.subtitle("Setup remote repository for testing")
+    msgh.subtitle("Setup remote repository for testing")
 
     user_git=conf["remote"]["user_git"]
 

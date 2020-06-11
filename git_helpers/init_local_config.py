@@ -2,10 +2,17 @@
 import os
 import sys
 
-from ..gpkgs import message as msg
-
-from ..gpkgs import shell_helpers as shell
-from ..gpkgs.prompt import prompt
+try:
+    from ..gpkgs import message as msg
+    from ..gpkgs import shell_helpers as shell
+    from ..gpkgs.prompt import prompt
+except:
+    direpa_script=os.path.realpath(__file__)
+    direpa_launcher=os.path.dirname(direpa_script)
+    sys.path.insert(0,direpa_launcher)
+    from gpkgs import message as msg
+    from gpkgs import shell_helpers as shell
+    from gpkgs.prompt import prompt
 
 def set_username(username):
     shell.cmd("git config --local user.name "+username)

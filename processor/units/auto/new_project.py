@@ -2,23 +2,18 @@
 import os
 if __name__ != "__main__":
     from processor.utils.processor_engine import start_processor, set_task_steps, set_task_vars
-    from utils.json_config import Json_config
+    # from utils.json_config import Json_config
     
     import sys
 
 def new_project(conf):
     from pprint import pprint
-    # pprint(conf)
-    
+
     set_task_vars(conf, {
         'block_ssh_credentials': """
             _out:Type ssh username [q to quit]:
             _type:{ssh_user}
-            _out:{ssh_user}@{domain}'s password:
-            _type:{server_pass}
-            _out:{ssh_user}@{domain}'s password:
-            _type:{server_pass}
-            _out:{ssh_user}@{domain}'s password:
+            _out:[sudo] password for {ssh_user}:
             _type:{server_pass}
         """,
         'current_path': os.getcwd(),
@@ -35,7 +30,7 @@ def new_project(conf):
     set_task_steps(conf,"""
         {step} automated new_project
         {this_cmd}
-        _out:Do you want to add git to directory anyway? [Y/n/q]:
+        _out:Do you want to add git to directory anyway [Ynq]?
         _type:Y
         _out:Enter git user name [q to quit]:
         _type:{git_user_name}
