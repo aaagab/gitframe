@@ -29,7 +29,7 @@
         }
     ],
     "diren_update_gitframe": "bin",
-    "direpa_dev_sources": "/data/projs/apps/dt/gitframe/src",
+    "direpa_dev_sources": "/data/wrk/g/gitframe/1/src",
     "filen_hotfix_history": "hotfix-history.json",
     "filen_scriptjob_save_json": "scriptjob_save.json",
     "filer_bump_version": "bump_version",

@@ -21,8 +21,12 @@ from .git_helpers.remote_repository import Remote_repository
 from .git_helpers.update_branch import update_branch			
 from .git_helpers.update_gitframe_bin import update_gitframe_bin
 
+from .processor.utils import processor_engine as pe
 
-# from .processor.utils import processor_engine as pe
+from .processor.utils import processor_helpers as ph
+from .processor.utils.processor_engine import init_config
+from .processor.utils.task_clean import delete_test_and_repo
+
 
 from .gpkgs import message as msg
 from .gpkgs.message import ft

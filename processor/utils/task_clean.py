@@ -1,15 +1,30 @@
 #!/usr/bin/env python3
-import os, sys, shutil, re
-import utils.message as msg
-from git_helpers.remote_repository import Remote_repository
-from utils.json_config import Json_config
-import git_helpers.git_utils as git
+import os 
+import sys
+import shutil
+import re
 from pprint import pprint
 import getpass
-import utils.shell_helpers as shell
+
+try:
+    from ...git_helpers.remote_repository import Remote_repository
+    from ...git_helpers import git_utils as git
+    from ...gpkgs import message as msg
+    from ...gpkgs import shell_helpers as shell
+    from ...git_helpers import msg_helpers as msgh
+except:
+    direpa_script=os.path.realpath(__file__)
+    direpa_launcher=os.path.dirname(os.path.dirname(os.path.dirname(direpa_script)))
+    sys.path.insert(0,direpa_launcher)
+    from git_helpers.remote_repository import Remote_repository
+    from git_helpers import git_utils as git
+    from gpkgs import message as msg
+    from gpkgs import shell_helpers as shell
+    from git_helpers import msg_helpers as msgh
+
 
 def delete_test_and_repo(conf):
-    msg.subtitle("Cleaning Unit assets")
+    msgh.subtitle("Cleaning Unit assets")
     os.chdir(conf["direpa_task_conf"])
 
     if os.path.exists(conf["direpa_task"]):
@@ -66,7 +81,7 @@ def clean_end_cmds(conf):
     return re.sub(r'\n\s*','\n',clean_heredoc)[1:-1]
 
 def clean_after_cmd(conf):
-    msg.subtitle("Cleaning Unit")
+    msgh.subtitle("Cleaning Unit")
     path=os.path.join(conf['direpa_task_conf'],conf['diren_task'], conf['diren_src'])
     dev_null=" > /dev/null 2>&1"
     if os.path.exists(path):
