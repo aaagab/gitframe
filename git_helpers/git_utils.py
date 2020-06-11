@@ -3,10 +3,17 @@ import os
 import re
 import sys
 
-from ..gpkgs import message as msg
-
-from ..gpkgs import shell_helpers as shell
-from ..gpkgs.prompt import prompt_boolean
+try:
+    from ..gpkgs import message as msg
+    from ..gpkgs import shell_helpers as shell
+    from ..gpkgs.prompt import prompt_boolean
+except:
+    direpa_script=os.path.realpath(__file__)
+    direpa_launcher=os.path.dirname(os.path.dirname(direpa_script))
+    sys.path.insert(0,direpa_launcher)
+    from gpkgs import message as msg
+    from gpkgs import shell_helpers as shell
+    from gpkgs.prompt import prompt_boolean
 
 def is_git_project(path=""):
     start_path=""

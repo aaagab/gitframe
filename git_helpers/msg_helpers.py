@@ -3,7 +3,13 @@ import os
 import re
 import sys
 
-from ..gpkgs.message import ft
+try:
+    from ..gpkgs.message import ft
+except:
+    direpa_script=os.path.realpath(__file__)
+    direpa_launcher=os.path.dirname(direpa_script)
+    sys.path.insert(0,direpa_launcher)
+    from gpkgs.message import ft
 
 def title(msg):
     print()
