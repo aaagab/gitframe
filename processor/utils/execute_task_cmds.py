@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
+from pprint import pprint
 import os
 import subprocess
 import shlex
 import sys
-import utils.message as msg
-import processor.utils.processor_helpers as ph
 import re
 import tempfile
-from utils.format_text import Format_text as ft
-from pprint import pprint
-from utils.json_config import Json_config
 import time
-import utils.shell_helpers as shell
+
+try:
+    from ...gpkgs import message as msg
+    from ...gpkgs import shell_helpers as shell
+    from ...gpkgs.format_text import Format_text as ft
+except:
+    direpa_script=os.path.realpath(__file__)
+    direpa_launcher=os.path.dirname(os.path.dirname(os.path.dirname(direpa_script)))
+    sys.path.insert(0,direpa_launcher)
+    from gpkgs import message as msg
+    from gpkgs import shell_helpers as shell
+    from gpkgs.format_text import Format_text as ft
 
 def execute_task_cmds(conf, unit_name):
     
