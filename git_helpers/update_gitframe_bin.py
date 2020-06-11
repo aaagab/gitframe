@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 from distutils.dir_util import copy_tree
+import json
+from pprint import pprint
 import os
 import shutil
 import sys
@@ -11,34 +13,14 @@ from ..gpkgs import message as msg
 
 
 def is_direpa_dev_sources(conf, path=""):
-	is_direpa_dev_sources=True
-	if path:
-		if git.is_git_project(path):
-
-			if os.path.exists(
-				os.path.join(
-					git.get_root_dir_path(path),
-					conf.data["processor"]["filen_launcher"]
-					)
-				):
-				return True
-			else:
-				return False
-		else:
-			return False
-	else:
-		if git.is_git_project():
-			if os.path.exists(
-				os.path.join(
-					git.get_root_dir_path(),
-					conf.data["processor"]["filen_launcher"]
-					)
-				):
-				return True
-			else:
-				return False
-		else:
-			return False
+	if git.is_git_project(path):
+		filenpa_gpm=os.path.join(git.get_root_dir_path(path), "gpm.json")
+		if os.path.exists(filenpa_gpm):
+			with open(filenpa_gpm, "r") as f:
+				data=json.load(f)
+				if data["name"] == "gitframe":
+					return True
+	return False
 
 def get_direpa_dev_sources(conf):
 	if is_direpa_dev_sources(conf):
@@ -49,7 +31,7 @@ def get_direpa_dev_sources(conf):
 			if not os.path.exists(conf.data["direpa_dev_sources"]):
 				msg.error(
 					"Current 'direpa_dev_sources' '{}' does not exists".format(conf.data["direpa_dev_sources"]),
-					"Go to real path development sources and run './gitframe.py --update-gitframe' to set direpa_dev_sources."
+					"Go to real path development sources and run './main.py --update-gitframe' to set direpa_dev_sources."
 				)
 				sys.exit(1)
 			else:
@@ -69,12 +51,16 @@ def get_direpa_dev_sources(conf):
 	return conf.data["direpa_dev_sources"]
 
 def update_gitframe_bin(conf, parameters=""):
-
 	msgh.subtitle("Update Gitframe Bin")
+	# input(os.getcwd())
+
 
 	direpa_source_app=get_direpa_dev_sources(conf)
+	# print("direpa_source", direpa_source_app)
 
 	direpa_previous=os.getcwd()
+	# print("direpa_previous", direpa_previous)
+
 
 	direpa_bin="/data/bin"
 	direpa_source_dst=os.path.join(direpa_bin, "gitframe_data","draft")
@@ -92,23 +78,24 @@ def update_gitframe_bin(conf, parameters=""):
 	if os.path.exists(filenpa_private_config):
 		os.remove(filenpa_private_config)
 
-	filenpa_dst_exe=os.path.join(direpa_source_dst, "gitframe.py")
+	filenpa_dst_exe=os.path.join(direpa_source_dst, "main.py")
 	filepa_gitframe_symlink_dst=os.path.join(direpa_bin, "gitframe")
 
 	if os.path.exists(filepa_gitframe_symlink_dst):
 		os.remove(filepa_gitframe_symlink_dst)
-
+	
 	os.symlink(
 		filenpa_dst_exe,
 		filepa_gitframe_symlink_dst
 	)
 
-	if direpa_source_app != direpa_previous:
-		os.chdir(direpa_source_app)
+
+	# if direpa_source_app != direpa_previous:
+		# os.chdir(direpa_previous)
 
 	if parameters:
 		other_parameters=False
-		os.system("{} {}".format(
+		os.system("pwd; {} {}".format(
 			"gitframe",
 			parameters
 		))

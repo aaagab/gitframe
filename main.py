@@ -213,8 +213,8 @@ if __name__ == "__main__":
 		sys.exit(0)
 
 	elif args.automated_new_project:
-		# pkg.pe.terminal_setup(conf.data, ["new_project"])
-		print("Need to be refactored")
+		pkg.pe.terminal_setup(conf.data, ["new_project"])
+		# print("Need to be refactored")
 		sys.exit(0)
 
 	elif args.clone_project_to_remote is True:

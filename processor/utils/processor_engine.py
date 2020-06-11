@@ -3,27 +3,41 @@ import os
 import subprocess
 import shlex
 import sys
-import utils.message as msg
-import processor.utils.processor_helpers as ph
+from pprint import pprint
 import time
 import re
-
 import inspect
-from utils.install_dependencies import install_dependencies
 from copy import deepcopy
-from utils.format_text import Format_text as ft
-
-import utils.shell_helpers as shell
-from processor.utils.task_clean import clean_after_cmd
-from processor.utils.execute_task_cmds import execute_task_cmds
-from utils.prompt import prompt
-
-from utils.json_config import Json_config
-conf_param = Json_config()
-from pprint import pprint
-
 import tempfile
 import getpass
+import traceback
+
+try:
+    from .execute_task_cmds import execute_task_cmds
+    from . import processor_helpers as ph
+    from .task_clean import clean_after_cmd
+    from ...gpkgs.format_text import Format_text as ft
+    from ...gpkgs import shell_helpers as shell
+    from ...gpkgs.prompt import prompt
+    from ...gpkgs import message as msg
+    from ...gpkgs.json_config import Json_config
+    from ...utils.install_dependencies import install_dependencies
+    from ...git_helpers import msg_helpers as msgh
+except:
+    direpa_script=os.path.realpath(__file__)
+    direpa_launcher=os.path.dirname(os.path.dirname(os.path.dirname(direpa_script)))
+    sys.path.insert(0,direpa_launcher)
+    from processor.utils.execute_task_cmds import execute_task_cmds
+    import processor.utils.processor_helpers as ph
+    from processor.utils.task_clean import clean_after_cmd
+    from gpkgs.format_text import Format_text as ft
+    from gpkgs import shell_helpers as shell
+    from gpkgs.prompt import prompt
+    from gpkgs import message as msg
+    from gpkgs.json_config import Json_config
+    from utils.install_dependencies import install_dependencies
+    from git_helpers import msg_helpers as msgh
+
 
 def get_screen_session_conf(conf):
     return dict(
@@ -37,9 +51,10 @@ def get_screen_session_conf(conf):
 def terminal_setup(launcher_conf, args):
     direpa_script=os.path.dirname(os.path.realpath(__file__))
     filepa_processor=os.path.join(
-        os.path.dirname(direpa_script),
-        "processor.py"
+        os.path.dirname(os.path.dirname(direpa_script)),
+        "processor_launch.py"
     )
+
     task_name=launcher_conf["processor"]["task"]["name"]
 
     screen_conf=get_screen_session_conf(launcher_conf)
@@ -65,38 +80,53 @@ def terminal_setup(launcher_conf, args):
             if task_name in tmux_session:
                 shell.cmd_prompt("tmux kill-session -t '"+task_name+"'")
                 
-    cmd=re.sub(r"\n\s*", "\n","""
-        tmux new-session -s '{task_name}' -d \\; \\
-        set -g mouse on \\; \\
-        send-keys "echo -en '\e]2;{task_name}\e[0m'" \\; \\
-        send-keys KPEnter \\; \\
-        send-keys 'echo -en "\ec\e[3J"' \\; \\
-        send-keys KPEnter \\; \\
-        split-window -h \\; \\
-        send-keys "echo -en '\e]2;processor\e[0m'" \\; \\
-        send-keys KPEnter \\; \\
-        send-keys 'echo -en "\ec\e[3J"' \\; \\
-        send-keys KPEnter \\; \\
-        split-window -h \\; \\
-        send-keys "echo -en '\e]2;logs\e[0m'" \\; \\
-        send-keys KPEnter \\; \\
-        send-keys 'echo -en "\ec\e[3J"' \\; \\
-        send-keys KPEnter \\; \\
-        select-layout even-horizontal \\; \\
-        select-pane -t 0 \\; \\
-        send-keys "{cmd_processor}" \\; \\
-        send-keys KPEnter \\; \\
-        attach-session -d
-        """.format(
+    cmd="""
+        tmux new-session -s '{task_name}' -d
+        tmux set -g mouse on
+        tmux send-keys "echo -en '\e]2;{task_name}\e[0m'"
+        tmux send-keys KPEnter
+        tmux send-keys "export PS1='{task_name}:$ '"
+        tmux send-keys KPEnter
+        tmux send-keys 'echo -en "\ec\e[3J"'
+        tmux send-keys KPEnter
+        tmux split-window -h
+        tmux send-keys "echo -en '\e]2;processor\e[0m'"
+        tmux send-keys KPEnter
+        tmux send-keys "export PS1='processor:$ '"
+        tmux send-keys KPEnter
+        tmux send-keys 'echo -en "\ec\e[3J"'
+        tmux send-keys KPEnter
+        tmux split-window -h
+        tmux send-keys "echo -en '\e]2;logs\e[0m'"
+        tmux send-keys KPEnter
+        tmux send-keys "export PS1='logs:$ '"
+        tmux send-keys KPEnter
+        tmux send-keys 'echo -en "\ec\e[3J"'
+        tmux send-keys KPEnter
+        tmux select-layout even-horizontal
+        tmux select-pane -t 0
+        tmux send-keys "history -s pkill tmux"
+        tmux send-keys KPEnter
+        tmux send-keys "{cmd_processor}"
+        tmux send-keys KPEnter
+        tmux attach-session -d
+    """.format(
         task_name=task_name,
         cmd_processor=filepa_processor+" '"+"' '".join(args)+"'",
         )
-    )[1:-1]
 
-    os.system(cmd)
+    cmds=[]
+    for line in cmd.splitlines():
+        line=line.strip()
+        if line:
+            if line[0] != "#":
+                subprocess.run(shlex.split(line))
+
 
 def init_config(direpa_processor_script):
-    launcher_conf=Json_config().data
+    # print(direpa_processor_script)
+    filenpa_config=os.path.join(direpa_processor_script, "config", "config.json")
+    launcher_conf=Json_config(filenpa_config).data
     ft.clear_screen()
 
     install_dependencies(launcher_conf["processor"]["deps"])
@@ -197,7 +227,7 @@ def set_unit_conf(conf):
     conf_for_json.pop('tmp', None)
     conf_for_json.pop('sudo_pass', None)
 
-    Json_config(conf["filenpa_conf"]).set_file_with_data(conf_for_json)
+    Json_config(conf["filenpa_conf"]).save(conf_for_json)
     
 def start_processor(conf):
 
@@ -217,12 +247,12 @@ def start_processor(conf):
         execute_task_cmds(conf, unit_name)
 
         if not os.path.exists(conf["filenpa_screen_log"]):
-            msg.app_error(conf["filenpa_screen_log"]+" not found.")
+            msg.error(conf["filenpa_screen_log"]+" not found.")
             sys.exit(1)
 
-        msg.title("UNIT: "+conf["filen_launcher"]+" "+unit_name)
+        msgh.title("UNIT: "+conf["filen_launcher"]+" "+unit_name)
         
-        msg.subtitle("Starting Unit")
+        msgh.subtitle("Starting Unit")
         tail_obj=dict(
             interrupted=False,
             file_start_position=0,
@@ -251,7 +281,7 @@ def start_processor(conf):
                     if (int(obj_value)):
                         tail_obj["waiting_time"]=seconds_to_hhmmss(int(obj_value))
                 else:
-                    msg.user_error(
+                    msg.error(
                         "Format unknown time: "+obj_value+" for object: ",
                         str(line_obj),
                         "from file: "+caller_filename
@@ -286,7 +316,7 @@ def start_processor(conf):
                 tail_obj["waiting_time"]="" # reset waiting time
                 
             else:
-                msg.user_error(
+                msg.error(
                     "key unknown: "+key+" for object: ",
                     str(line_obj),
                     "from file: "+caller_filename
@@ -316,19 +346,20 @@ def start_processor(conf):
     except KeyboardInterrupt:
         conf["num_unit_failures"]+=1
         # when a unit is stopped by ctrl+c on the unit windows
-        msg.user_error("Unit "+unit_name+" canceled.")
+        msg.error("Unit "+unit_name+" canceled.")
         sys.exit(1)
     except SystemExit as e:
         if int(str(e)) != 3:
             conf["num_unit_failures"]+=1
-            msg.user_error("Predictable Error for Unit "+unit_name)
+            msg.error("Predictable Error for Unit "+unit_name)
 
         time.sleep(1)
         ph.kill_screen_session(unit_name)
 
     except Exception as e:
+        print(traceback.format_exc())
         conf["num_unit_failures"]+=1
-        msg.app_error("Not Predictable Error for Unit "+unit_name)
+        msg.error("Not Predictable Error for Unit "+unit_name)
         time.sleep(1)
         ph.kill_screen_session(unit_name)
         
@@ -345,8 +376,11 @@ def start_processor(conf):
         del conf["tmp"]
         conf_for_json=deepcopy(conf)
         conf_for_json.pop('sudo_pass', None)
-
-        Json_config(conf["filenpa_conf"]).set_file_with_data(conf_for_json)
+        # pprint(conf_for_json)
+        # print(conf["filenpa_conf"])
+        # tmp_conf=
+        Json_config(conf["filenpa_conf"]).save(conf_for_json)
+        # tmp_conf.set_file_with_data(conf_for_json)
         # ph.send_cmd_to_screen(
         #     conf["task_name"], 
         #     r'echo -ne "\e]2;'+conf["task_name"]+r'\e[0m"'
@@ -396,11 +430,11 @@ def tail_screen_file(conf, tail_obj):
                 else:
                     if line == conf["txt_screen_cmd_error"]:
                         check_for_KeyboardInterrupt_in_screen_file(f, previous_p)
-                        msg.user_error("cmd_error Unit "+conf['tmp']['unit_name']+" failed on '"+tail_obj["searched_value"]+"'")
+                        msg.error("cmd_error Unit "+conf['tmp']['unit_name']+" failed on '"+tail_obj["searched_value"]+"'")
                         tail_return_obj["interrupted"]=True
                         return tail_return_obj
                     elif line == conf["txt_screen_log_eof"]:
-                        msg.user_error("EOF Unit "+conf['tmp']['unit_name']+" failed on '"+tail_obj["searched_value"]+"'")
+                        msg.error("EOF Unit "+conf['tmp']['unit_name']+" failed on '"+tail_obj["searched_value"]+"'")
                         tail_return_obj["interrupted"]=True
                         return tail_return_obj
 
@@ -420,7 +454,7 @@ def tail_screen_file(conf, tail_obj):
     except KeyboardInterrupt:
         conf["num_unit_failures"]+=1
         print()
-        msg.user_error("Program Exited Ctrl+C")
+        msg.error("Program Exited Ctrl+C")
         sys.exit(1)
 
 def seconds_to_hhmmss(total_seconds):
@@ -470,7 +504,7 @@ def check_for_KeyboardInterrupt_in_screen_file(file, last_position):
 
     if grabbed_input:
         if clean_ansii_code(read_text).strip() == text:
-            msg.user_error("keyboard interrupt in unit window")
+            msg.error("keyboard interrupt in unit window")
             sys.exit(1)
 
 def set_task_steps(conf, cmds):
@@ -507,7 +541,7 @@ def set_task_steps(conf, cmds):
             # ignore commented line
             if not re.match(r"^#.*", cmd):
                 block=re.match(r"^{(block_.+)}$",cmd)
-                # msg.title('ere')
+                # msgh.title('ere')
                 if block:
                     if "cmd_vars" in conf["tmp"]:
                         if block.group(1) in conf["tmp"]["cmd_vars"]:
@@ -519,11 +553,11 @@ def set_task_steps(conf, cmds):
                                     if not re.match(r"^#.*", block_cmd):
                                         step_args=process_cmd(conf, block_cmd, count_line, caller_filename, block_cmds, j, step_args)
                         else:
-                            msg.user_error("'"+block+"' has no related key from set_task_vars",
+                            msg.error("'"+block+"' has no related key from set_task_vars",
                                 "Line:"+str(count_line)+" "+caller_filename)
                             sys.exit(1)
                     else:
-                        msg.user_error("'"+block+"' because set_task_vars is not set",
+                        msg.error("'"+block+"' because set_task_vars is not set",
                             "Line:"+str(count_line)+" "+caller_filename)
                         sys.exit(1)
                 else:
@@ -538,7 +572,7 @@ def replace_cmd_heredoc(conf, cmd):
         for key_doc in here_doc_vars:
             for key_cmd in conf["tmp"]["cmd_vars"]:
                 if key_doc == key_cmd:
-                    # msg.title(key_doc)
+                    # msgh.title(key_doc)
                     cmd=cmd.replace("{"+key_doc+"}", conf["tmp"]["cmd_vars"][key_cmd])
 
     return cmd
@@ -561,7 +595,7 @@ def process_cmd(conf, cmd, count_line, caller_filename, cmds, index, step_args):
                 regex_authorized="[A-Za-z0-9_-]"
                 for parameter in step_value.split(" "):
                     if not re.match(r"^[A-Za-z0-9_-]+$", parameter):
-                        msg.user_error(
+                        msg.error(
                             "Wrong parameter syntax for >> "+parameter+" <<",
                             "Authorized symbols are "+regex_authorized,
                             "Rename your parameters or surround the text with quotes to transform it into a step title only",
@@ -592,7 +626,7 @@ def process_cmd(conf, cmd, count_line, caller_filename, cmds, index, step_args):
             if dep_value_found:
                 return step_args
             else:
-                msg.user_error(
+                msg.error(
                     "cmd depends on step '"+dep_value+"'",
                     "However step is not found or disabled",
                     "Line:"+str(count_line)+" "+caller_filename
@@ -602,7 +636,7 @@ def process_cmd(conf, cmd, count_line, caller_filename, cmds, index, step_args):
     this_cmd=re.match(r"^{cmd}(.*)$",cmd)
     if this_cmd:
         if this_cmd.group(1):
-            msg.user_error(
+            msg.error(
                 "{cmd} does not accept parameters '"+this_cmd.group(1).strip()+"'",
                 "Line:"+str(count_line)+" "+caller_filename
             )
@@ -629,7 +663,7 @@ def process_cmd(conf, cmd, count_line, caller_filename, cmds, index, step_args):
                     raw_cmd_to_monitor.group(1)[1:]: fail_msg
                 })
             else:
-                msg.user_error(
+                msg.error(
                     "cmd to monitor '"+raw_cmd_to_monitor.group(0)+"' has no value." ,
                     "Line:"+str(count_line)+" "+caller_filename
                 )
@@ -652,7 +686,7 @@ def set_task_vars(conf, var_obj):
 
     for key in var_obj:
         if key in  ["cmd","step", "info", "dep"]:
-            msg.user_error(
+            msg.error(
                 "In file: "+str(caller_line_number)+" "+caller_filename,
                 "key: '"+key+"' is a reserved keyword for processor_engine.",
                 "Choose another key name."

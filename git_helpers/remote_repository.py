@@ -4,13 +4,22 @@ import os
 import re
 import sys
 
-from . import git_utils as git
-from . import msg_helpers as msgh
-from .init_local_config import init_local_config
+try:
+    from . import git_utils as git
+    from . import msg_helpers as msgh
+    from .init_local_config import init_local_config
+    from ..gpkgs import message as msg
+    from ..gpkgs import shell_helpers as shell
+except:
+    direpa_script=os.path.realpath(__file__)
+    direpa_launcher=os.path.dirname(direpa_script)
+    sys.path.insert(0,direpa_launcher)
+    import git_utils as git
+    import msg_helpers as msgh
+    from init_local_config import init_local_config
+    from gpkgs import message as msg
+    from gpkgs import shell_helpers as shell
 
-from ..gpkgs import message as msg
-
-from ..gpkgs import shell_helpers as shell
 
 class Remote_repository():
     def __init__(self,
