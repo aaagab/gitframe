@@ -5,7 +5,6 @@ import sys
 from . import git_utils as git
 from . import msg_helpers as msgh
 from . import regex_obj as ro
-from .get_all_version_tags import get_all_version_tags
 from .tags_commits import Tags_commits			
 
 from ..gpkgs.prompt import prompt_boolean

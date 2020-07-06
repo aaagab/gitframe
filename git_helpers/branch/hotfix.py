@@ -8,7 +8,6 @@ from .. import git_utils as git
 from .. import msg_helpers as msgh
 from .. import version as version
 from .. import regex_obj as ro
-from ..get_all_version_tags import get_all_version_tags, tag_sort_index
 from ..get_all_branch_regexes import get_branch_type_from_location
 from ..pick_up_release import pick_up_release
 from ..update_branch import update_branch

@@ -27,9 +27,9 @@ def get_all_version_tags():
         if versions:
             return tag_sort(versions)
         else:
-            return ""
+            return []
     else:
-        return ""
+        return []
 
 # # bubble sort
 def bubble_sort_array(array, size):

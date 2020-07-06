@@ -6,7 +6,6 @@ from .. import git_utils as git
 from .. import msg_helpers as msgh
 from .. import regex_obj as ro
 
-from ..get_all_branch_regexes import get_branch_type_from_location
 from ..update_branch import update_branch			
 
 from ...gpkgs import message as msg
