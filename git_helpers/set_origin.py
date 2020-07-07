@@ -44,9 +44,9 @@ def set_origin(
         os.chdir(direpa_git)
 
     if shell.cmd_get_value("git config --get remote.origin.url") != "":
-        shell.cmd_prompt("git remote set-url origin {}".format(path_origin))
+        shell.cmd_prompt("git remote set-url origin '{}'".format(path_origin))
     else:
-        shell.cmd_prompt("git remote add origin {}".format(path_origin))
+        shell.cmd_prompt("git remote add origin '{}'".format(path_origin))
 
     if sync is True:
         verify_branch=False
