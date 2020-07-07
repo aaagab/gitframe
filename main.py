@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.0.0
+# version: 4.1.0
 # name: gitframe
 # license: MIT
 
@@ -65,10 +65,10 @@ if __name__ == "__main__":
 		sys.exit(0)
 	elif args.examples.here:
 		print("""
-			gitframe --init . ../doc --username user --email user@email.com
-			gitframe --clone-to-repository . ../doc --repository /data/git --package gitlib --add-origin --sync
-			gitframe --set-origin /data/git/g/gitframe/1/src.git --project . --sync
-			gitframe --tag --version-file gpm.json
+gitframe --init . ../doc --username user --email user@email.com
+gitframe --clone-to-repository . ../doc --repository /data/git --package gitlib --add-origin --sync
+gitframe --set-origin /data/git/g/gitframe/1/src.git --project . --sync
+gitframe --tag --version-file gpm.json
 		""")
 	elif args.clone_to_repository.here or args.clone_to_directory.here:
 		direpa_dst=None
