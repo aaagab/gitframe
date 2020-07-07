@@ -12,7 +12,10 @@ from ..gpkgs import message as msg
 from ..gpkgs import shell_helpers as shell
 from ..gpkgs.format_text import ft
 
-def open_branch(repo, regex_branches, all_version_tags):
+def open_branch(
+    repo, 
+    regex_branches, 
+    all_version_tags):
     msgh.title("Open Branch")
 
     user_choice=get_menu_branch_types()
