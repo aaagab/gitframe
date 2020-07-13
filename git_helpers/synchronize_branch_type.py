@@ -8,7 +8,7 @@ from .synchronize_branch_name import synchronize_branch_name
 from ..gpkgs import message as msg
 
 def synchronize_branch_type(repo, regex_branches, branch_type):
-    msgh.subtitle("Synchronize Branch Type "+branch_type)
+    msg.info("Synchronize Branch Type "+branch_type)
 
     # first get all branches of the special type
     # type_reg_branches=get_branch_type_from_location(branch_type, "all", reg_branches)

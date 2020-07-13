@@ -15,7 +15,7 @@ def update_branch(all_version_tags, regex_branch=""):
     if not regex_branch:
         regex_branch=ro.get_element_regex(git.get_active_branch_name())
 
-    msgh.title("Update Branch '"+regex_branch.text+"'")
+    msg.info("Update Branch '"+regex_branch.text+"'")
 
     # if regex_branch.type in ["master", "develop", "release", "support"]:
     if regex_branch.type in ["master", "develop", "support"]:

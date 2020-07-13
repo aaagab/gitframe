@@ -7,14 +7,13 @@
         "info": "add path to origin",
         "nested": true
     },
-    "automated_new_project": {
-        "aliases": "--automated-new-project,--anp",
-        "info": "Create a  new project using the processor engine. It avoids having to type multiple times the same entry.",
-        "show": false
+    "branch": {
+        "args": "close,commit,open,update",
+        "nvalues": "?",
+        "values": "NAME"
     },
-    "close_branch": {
-        "aliases": "-c,--close-branch,--cb",
-        "info": "close current working branch"
+    "close": {
+        "nested": true
     },
     "clone_to_directory": {
         "aliases": "--clone-to-directory,--ctd",
@@ -30,22 +29,15 @@
         "nvalues": "*",
         "values": "PATH"
     },
-    "clone_project_to_remote": {
-        "aliases": "--clone-project-to-remote,--cp,--cptr",
-        "info": "clone Project directory to Remote Repository",
-        "show": false
+    "commit": {
+        "info": "add a default commit message if commit is needed",
+        "nested": true,
+        "values": "MESSAGE"
     },
     "debug": {
         "aliases": "--debug,-d",
         "info": "debug mode in order to display all processing steps. Mainly use for testing",
         "show": false
-    },
-    "deploy_args": {
-        "aliases": "--deploy-args,--da",
-        "info": "This parameter can be added to --close-branch for hotfix branch type only. It can also be added to --pick-up-release. The arguments are going to be send to the script deploy",
-        "nvalues": "*",
-        "show": false,
-        "values": "RELEASE_NUMBER"
     },
     "directory": {
         "args": "package,add_origin",
@@ -71,15 +63,8 @@
         "nvalues": "*",
         "values": "PATH"
     },
-    "new_project": {
-        "aliases": "-n,--new-project,--np",
-        "info": "create a new git project. Use relative path or Full Path, existing or not",
-        "nvalues": "?",
-        "values": "PATH"
-    },
-    "open_branch": {
-        "aliases": "-o,--open-branch,--ob",
-        "info": "open branch Feature"
+    "open": {
+        "nested": true
     },
     "package": {
         "nested": true,
@@ -89,13 +74,6 @@
         "nested": true,
         "nvalues": "1",
         "values": "PATH"
-    },
-    "pick_up_release": {
-        "aliases": "--pick-up-release,--pr,--pur",
-        "info": "select a tag to pick up a release version from. ex: 1.0.0",
-        "nvalues": "?",
-        "show": false,
-        "values": "RELEASE_NUMBER"
     },
     "repository": {
         "args": "add_origin,index,package",
@@ -111,6 +89,7 @@
     },
     "synchronize_project": {
         "aliases": "-s,--synchronize-project,--sp",
+        "args": "commit",
         "info": "branching model validator is applied and all branches are synchronized"
     },
     "sync": {
@@ -120,7 +99,7 @@
         "values": "BRANCHES"
     },
     "tag": {
-        "args": "version_file",
+        "args": "commit,version_file",
         "info": "Create a git version tag. If no tag is given then a version file path has to be provided.",
         "nvalues": "?",
         "values": "TAG"
@@ -131,9 +110,9 @@
         "show": false,
         "values": "MODE"
     },
-    "update_branch": {
-        "aliases": "-u,--update-branch,--ub",
-        "info": "if active branch has a linked branch, then depending on circumstances, linked branch is merged into active branch"
+    "update": {
+        "info": "if active branch has a linked branch, then depending on circumstances, linked branch is merged into active branch",
+        "nested": true
     },
     "update_gitframe": {
         "aliases": "--update-gitframe,--ug",

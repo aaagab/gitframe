@@ -9,7 +9,7 @@ from .. import msg_helpers as msgh
 from .. import version as version
 from .. import regex_obj as ro
 from ..get_all_branch_regexes import get_branch_type_from_location
-from ..pick_up_release import pick_up_release
+# from ..pick_up_release import pick_up_release
 from ..update_branch import update_branch
 
 from ...gpkgs import message as msg
@@ -21,7 +21,7 @@ from ...gpkgs.format_text import ft
 
 def open_hotfix(repo, all_version_tags):
 	conf = Json_config()
-	msgh.subtitle("Open Hotfix Branch")
+	msg.info("Open Hotfix Branch")
 
 	if not all_version_tags:
 		msg.error(
@@ -59,23 +59,23 @@ def open_hotfix(repo, all_version_tags):
 	if git.is_branch_on_local(related_support_branch):
 		msg.dbg("info", "hotfix from existing support branch")
 		git.checkout(related_support_branch)
-		msgh.subtitle("Open Hotfix "+new_hotfix_branch+" from "+related_support_branch)
+		msg.info("Open Hotfix "+new_hotfix_branch+" from "+related_support_branch)
 		git.checkoutb(new_hotfix_branch)
 	else:
 		latest_release_tag=all_version_tags[-1]
 		if tag_to_branch_from == latest_release_tag:
 			msg.dbg("info", "hotfix from latest release")
 			git.checkout("master")
-			msgh.subtitle("Open Hotfix "+new_hotfix_branch+" from tag v"+latest_release_tag)
+			msg.info("Open Hotfix "+new_hotfix_branch+" from tag v"+latest_release_tag)
 			git.checkoutb(new_hotfix_branch+" v"+latest_release_tag)
 		else:
 			# create first a support branch and branch from it the hotfix
 			msg.dbg("info", "hotfix from new support branch")
-			msgh.subtitle("Create branch "+related_support_branch)
+			msg.info("Create branch "+related_support_branch)
 			git.checkoutb(related_support_branch+" v"+tag_to_branch_from)
 			git.commit_empty("Creating Branch "+related_support_branch)
 			git.push_origin(repo, related_support_branch)
-			msgh.subtitle("Open Hotfix "+new_hotfix_branch+" from "+related_support_branch)
+			msg.info("Open Hotfix "+new_hotfix_branch+" from "+related_support_branch)
 			git.checkoutb(new_hotfix_branch+" "+related_support_branch)
 
 	git.commit_empty("Creating Branch "+new_hotfix_branch)
@@ -116,8 +116,10 @@ def get_tag_for_hotfix(all_version_tags):
 			ft.clear_screen()
 
 def close_hotfix(repo, regex_branch, regex_branches, all_version_tags, deploy_args=[]):
+	print("this needs to be refactored not sure if I keep it or not")
+	sys.exit(1)
 	conf = Json_config()
-	msgh.subtitle("Close Branch "+regex_branch.text)
+	msg.info("Close Branch "+regex_branch.text)
 
 	update_branch(all_version_tags, regex_branch)
 
@@ -186,7 +188,7 @@ def close_hotfix(repo, regex_branch, regex_branches, all_version_tags, deploy_ar
 		git.delete_origin_branch(repo, regex_branch.text)
 
 	msg.success(regex_branch.text+" has been closed.")
-	pick_up_release(release_version, deploy_args)
+	# pick_up_release(release_version, deploy_args)
 
 	msg.dbg("success", sys._getframe().f_code.co_name)
 	

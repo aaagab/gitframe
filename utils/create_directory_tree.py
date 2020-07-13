@@ -55,7 +55,7 @@ def create_symlink(filenpa_src, filenpa_dst):
 
 def create_directory_tree(git_user_name):
     conf=Json_config().data
-    msgh.title("Create directory Tree")
+    msg.info("Create directory Tree")
 
     directorys=[
         "src",

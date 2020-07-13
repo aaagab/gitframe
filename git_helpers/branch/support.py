@@ -14,7 +14,7 @@ from ...gpkgs import message as msg
 from ...gpkgs.format_text import ft
 
 def open_support(repo, regex_branches, all_version_tags):
-	msgh.subtitle("Open Support Branch")
+	msg.info("Open Support Branch")
 
 	if not all_version_tags:
 		msg.error("There are no version tags in this project. You can't open a Support Branch")

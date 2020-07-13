@@ -6,7 +6,6 @@ import sys
 
 from . import git_utils as git
 from . import msg_helpers as msgh
-from .clone_project_to_remote import clone_project_to_remote
 from .license import get_license_content
 from .remote_repository import Remote_repository
 from .helpers import get_path
