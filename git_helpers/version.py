@@ -30,7 +30,7 @@ def increment_version_value(version_type, regex_version_value):
             )
 
 def bump_version_for_user(version):
-    msgh.subtitle("Check bump release version script.")
+    msg.info("Check bump release version script.")
     conf = Json_config()
     filer_bump_version=conf.get_value("filer_bump_version")
 

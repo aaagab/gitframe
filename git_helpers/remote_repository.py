@@ -25,7 +25,7 @@ class Remote_repository():
     def __init__(self,
         _platform=None
     ):
-        msgh.subtitle("Initializing Remote Repository")
+        msg.info("Initializing Remote Repository")
         
         self.platform=_platform
         if self.platform is None:

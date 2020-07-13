@@ -20,7 +20,7 @@ from ..gpkgs import message as msg
 
 
 # this file tries to guarantee that the git flow structure is preserved so it runs once at start of each command to detect issues early.
-def validator(enabled):
+def validator(enabled, commit_message=None):
 
 	# print(enabled)
 	# input("ia m here")
@@ -32,16 +32,16 @@ def validator(enabled):
 		sys.exit(1)
 
 	if not enabled:
-		prompt_for_commit()
+		prompt_for_commit(commit_message=commit_message)
 		repo=Remote_repository()
 		regex_branches=get_all_branch_regexes(repo)
 		all_version_tags=get_all_version_tags()
 
 		return repo, regex_branches, all_version_tags
 	else:
-		msgh.title("Git Frame Validator")
+		msg.info("Git Frame Validator")
 
-		prompt_for_commit()
+		prompt_for_commit(commit_message=commit_message)
 
 		repo=Remote_repository()
 		regex_branches=get_all_branch_regexes(repo)

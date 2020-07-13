@@ -51,7 +51,7 @@ def get_direpa_dev_sources(conf):
 	return conf.data["direpa_dev_sources"]
 
 def update_gitframe_bin(conf, parameters=None):
-	msgh.subtitle("Update Gitframe Bin")
+	msg.info("Update Gitframe Bin")
 	# input(os.getcwd())
 
 

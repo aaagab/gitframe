@@ -24,7 +24,7 @@ from ...gpkgs import shell_helpers as shell
 
 # def version_file_validator(regex_branches, all_version_tags):
 def version_tags_validator(regex_branches, all_version_tags):
-    msgh.subtitle("Verify version tags.")
+    msg.info("Verify version tags.")
     
     local_regex_branches=filter_all_regex_branches_from_location(regex_branches, "local")
 

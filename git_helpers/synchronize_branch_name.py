@@ -21,7 +21,7 @@ def synchronize_branch_name(repo, regex_branches, branch_name=""):
 
     start_branch=git.get_active_branch_name()
 
-    msgh.title("Synchronize Branch "+branch_name)
+    msg.info("Synchronize Branch "+branch_name)
 
     branch_on={
         "local": False,

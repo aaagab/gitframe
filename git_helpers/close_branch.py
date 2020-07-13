@@ -11,17 +11,28 @@ from .branch.hotfix import close_hotfix
 
 from ..gpkgs import message as msg
 
-def close_branch(repo, regex_branches, all_version_tags, deploy_args=[]):
-    msgh.title("Close Branch")
+def close_branch(repo,
+    regex_branches,
+    all_version_tags,
+    branch_name=None,
+):
+    msg.title("Close Branch")
     # get branch type
-    branch_name=git.get_active_branch_name()
+    if branch_name is None:
+        branch_name=git.get_active_branch_name()
+    else:
+        if git.is_branch_on_local(branch_name) == False:
+            msg.error(
+                "Branch "+branch_name+" already not found on local.",
+            )
+            sys.exit(1)
     branch_regex=ro.get_element_regex(branch_name)
     if branch_regex.type == "features":
         close_feature(repo, branch_regex, regex_branches, all_version_tags)
     elif branch_regex.type == "draft":
         close_draft(repo, branch_regex)
     elif branch_regex.type == "hotfix":
-        close_hotfix(repo, branch_regex, regex_branches, all_version_tags, deploy_args)
+        close_hotfix(repo, branch_regex, regex_branches, all_version_tags)
     else:
         msg.error(
             "You can't close on branch '"+ branch_name+"'.",

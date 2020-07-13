@@ -68,7 +68,7 @@ def tag(
         )
         sys.exit(1)
 
-    msgh.title("Pick up release v"+tag )
+    msg.info("Pick up release v"+tag )
 
     if not Tags_commits("local").get_tag_commit("v"+tag):
         msg.error("There is no tag in the project that matches v"+ tag)

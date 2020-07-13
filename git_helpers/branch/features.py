@@ -13,28 +13,32 @@ from ...gpkgs import message as msg
 from ...gpkgs.prompt import prompt
 from ...gpkgs.prompt import prompt_boolean
 
-def open_features(repo):
+def open_features(
+    repo,
+    branch_name=None
+):
     
-    msgh.subtitle("Open Features Branch")
+    msg.info("Open Features Branch")
 
     git.checkout("develop")
         
-    new_branch_name="{}-{}".format(ro.Features_regex().abbrev,prompt("\nEnter Features Branch Keyword(s)").replace(" ","_"))
+    if branch_name is None:
+        branch_name="{}-{}".format(ro.Features_regex().abbrev,prompt("\nEnter Features Branch Keyword(s)").replace(" ","_"))
 
-    if git.is_branch_on_local(new_branch_name):
+    if git.is_branch_on_local(branch_name):
         msg.error(
-            "Branch "+new_branch_name+" already exists on local.",
-            "Please git checkout -b "+new_branch_name+" or choose a new branch name."    
+            "Branch "+branch_name+" already exists on local.",
+            "Please git checkout -b "+branch_name+" or choose a new branch name."    
         )
         sys.exit(1)
 
-    git.checkoutb(new_branch_name)
-    git.push_origin(repo, new_branch_name)
+    git.checkoutb(branch_name)
+    git.push_origin(repo, branch_name)
 
     msg.dbg("success", sys._getframe().f_code.co_name)
 
 def close_features(repo, regex_branch, regex_branches, all_version_tags):
-    msgh.subtitle("Close Features Branch '"+regex_branch.text+"'")
+    msg.info("Close Features Branch '"+regex_branch.text+"'")
 
     update_branch(all_version_tags, regex_branch)
 
