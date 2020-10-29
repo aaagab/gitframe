@@ -45,9 +45,7 @@ def open_branch(
         open_hotfix(repo, all_version_tags,
         )
     elif branch_type == "support":
-        open_support(repo, regex_branches, all_version_tags,
-            branch_name=branch_name
-        )
+        open_support(repo, regex_branches, all_version_tags)
 
 def get_menu_branch_types():
     menu="""
