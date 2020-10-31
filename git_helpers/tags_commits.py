@@ -33,37 +33,40 @@ class Tags_commits():
         self.tags.update({
                 location: {}
             })
-        all_tags=shell.cmd_get_value("git tag").splitlines()
-        for name in all_tags:
-            self.tags[location].update({
-                    name: shell.cmd_get_value("git rev-list -n 1 "+name).strip()
-                })
+        all_tags=shell.cmd_get_value("git tag")
+        if all_tags is not None:
+            for name in all_tags.splitlines():
+                self.tags[location].update({
+                        name: shell.cmd_get_value("git rev-list -n 1 "+name).strip()
+                    })
 
     def get_remote_tags(self):
         location="remote"
         self.tags.update({
             location: {}
         })
-        all_tags=shell.cmd_get_value("git ls-remote --tags origin").splitlines()
-        for line in all_tags:
-            commit, name=line.split('\t')
-            name=name.replace("refs/tags/","")
+        all_tags=shell.cmd_get_value("git ls-remote --tags origin")
+        
+        if all_tags is not None:
+            for line in all_tags.splitlines():
+                commit, name=line.split('\t')
+                name=name.replace("refs/tags/","")
 
-            is_annotated_tag=False
-            if "^{}" in name:
-                is_annotated_tag=True
+                is_annotated_tag=False
+                if "^{}" in name:
+                    is_annotated_tag=True
 
-            # if annotated tag commit is chosen instead of regular tag for same name
-            if is_annotated_tag:
-                name=name.replace("^{}", "")
-                self.tags[location].update({
-                    name: commit
-                })
-            else:
-                if not name in self.tags[location]:
+                # if annotated tag commit is chosen instead of regular tag for same name
+                if is_annotated_tag:
+                    name=name.replace("^{}", "")
                     self.tags[location].update({
                         name: commit
                     })
+                else:
+                    if not name in self.tags[location]:
+                        self.tags[location].update({
+                            name: commit
+                        })
 
     def get_tag_commit(self, tag_name, location=""):
         if not location:

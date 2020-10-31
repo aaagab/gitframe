@@ -13,7 +13,7 @@ from ...gpkgs import message as msg
 # then the other branch have to follow regex rules
 
 def check_master_develop_exists(regex_branches):
-    msgh.subtitle("master and develop branches presence on local or on local remote")
+    msg.info("master and develop branches presence on local or on local remote")
 
     master_found=False
     develop_found=False

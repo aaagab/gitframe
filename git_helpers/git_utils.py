@@ -204,9 +204,14 @@ def delete_origin_branch(repo, branch_name):
             "Branch '"+branch_name+"' can't be delete on remote for now."
             )
 
-def push_origin(repo, branch_name):
+def push_origin(repo, branch_name, set_upstream=False):
+    upstream=""
+    if set_upstream is True:
+        upstream=" -u"
+
+
     if repo.is_reachable:
-        shell.cmd_prompt("git push origin "+branch_name)
+        shell.cmd_prompt("git push{} origin {}".format(upstream, branch_name))
     else:
         msg.warning(
             "Remote repository is not reachable",
