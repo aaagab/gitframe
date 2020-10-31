@@ -67,8 +67,9 @@ def tag(
     if reg_branch.type in ["features", "hotfix"]:
         for main_branch in ["develop", "master"]:
             if main_branch in branches:
-                process=not (reg_branch.type == "hotfix" and main_branch == "develop")
-                if process is True:
+                if reg_branch.type == "hotfix" and main_branch == "develop":
+                    pass
+                else:
                     git.checkout(main_branch) 
                     git.merge_noff(branch)
                     git.push("origin", branch_name=main_branch)
