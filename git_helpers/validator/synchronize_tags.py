@@ -27,7 +27,7 @@ def err_msg_commit(name, tags_commits):
     sys.exit(1)
 
 def synchronize_tags(repo):
-    msgh.subtitle("Verify Tags on local and remote")
+    msg.info("Verify Tags on local and remote")
     from datetime import datetime
 
     if repo.is_reachable:

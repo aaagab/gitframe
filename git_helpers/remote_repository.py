@@ -4,28 +4,28 @@ import os
 import re
 import sys
 
-try:
-    from . import git_utils as git
-    from . import msg_helpers as msgh
-    from .init_local_config import init_local_config
-    from ..gpkgs import message as msg
-    from ..gpkgs import shell_helpers as shell
-except:
-    direpa_script=os.path.realpath(__file__)
-    direpa_launcher=os.path.dirname(direpa_script)
-    sys.path.insert(0,direpa_launcher)
-    import git_utils as git
-    import msg_helpers as msgh
-    from init_local_config import init_local_config
-    from gpkgs import message as msg
-    from gpkgs import shell_helpers as shell
+# try:
+# from . import git_utils as git
+from . import msg_helpers as msgh
+from .init_local_config import init_local_config
+from ..gpkgs import message as msg
+from ..gpkgs import shell_helpers as shell
+# except:
+#     direpa_script=os.path.realpath(__file__)
+#     direpa_launcher=os.path.dirname(direpa_script)
+#     sys.path.insert(0,direpa_launcher)
+#     import git_utils as git
+#     import msg_helpers as msgh
+#     from init_local_config import init_local_config
+#     from gpkgs import message as msg
+#     from gpkgs import shell_helpers as shell
 
 
 class Remote_repository():
     def __init__(self,
         _platform=None
     ):
-        msgh.subtitle("Initializing Remote Repository")
+        msg.info("Initializing Remote Repository")
         
         self.platform=_platform
         if self.platform is None:
@@ -110,9 +110,9 @@ class Remote_repository():
 
     def get_path(self):
         path=shell.cmd_get_value("git config --get remote.origin.url")
-        while not path:
+        while path is None:
             msg.info("remote git url not set, launching init_local_config")
             init_local_config()
             path=shell.cmd_get_value("git config --get remote.origin.url")
 
-        return path
+        return path.replace("\\", "/")

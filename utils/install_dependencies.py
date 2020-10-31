@@ -27,9 +27,11 @@ def install_dependencies(obj_deps):
             msg.error("sudo not found.")
             sys.exit(1)
         elif user != "root":
-            if not "sudo" in shell.cmd_get_value("groups"):
-                msg.error("user does not belong to sudo group.")
-                sys.exit(1)
+            groups=shell.cmd_get_value("groups")
+            if groups is not None:
+                if not "sudo" in groups:
+                    msg.error("user does not belong to sudo group.")
+                    sys.exit(1)
 
         for obj_dep in obj_deps:
             cmd=obj_dep["cmd"]

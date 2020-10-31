@@ -72,7 +72,7 @@ def init_git_folder(direpa_to_init, user_obj, files_added):
     git.commit_empty("Branch master created on '"+diren_to_init+"'")
 
 def new_project(path=""):
-    msgh.title("Create new Git Project")
+    msg.info("Create new Git Project")
     existing_directory=False
     start_directory=os.getcwd()
 
