@@ -8,7 +8,7 @@
         "nested": true
     },
     "branch": {
-        "args": "close,commit,open,update",
+        "args": "close,commit,path_src,open",
         "nvalues": "?",
         "values": "NAME"
     },
@@ -27,6 +27,7 @@
         "args": "repository",
         "required": "repository",
         "nvalues": "*",
+        "type": "directory",
         "values": "PATH"
     },
     "commit": {
@@ -58,10 +59,8 @@
         "nested": true
     },
     "init": {
-        "args": "email,username",
-        "info": "Init directories. Add master and develop branches, set username and email",
-        "nvalues": "*",
-        "values": "PATH"
+        "info": "Create new git project with master and develop branches.",
+        "nested": true
     },
     "open": {
         "nested": true
@@ -69,6 +68,12 @@
     "package": {
         "nested": true,
         "values": "NAME"
+    },
+    "path_src": {
+        "info": "path of the git project, it doesn't have to be the root path",
+        "nested": true,
+        "type": "directory",
+        "values": "PATH"
     },
     "project": {
         "nested": true,
@@ -87,9 +92,15 @@
         "info": "Set given path as origin to project. If no project selected then current path is consider the project",
         "values": "PATH.git"
     },
+    "set_project": {
+        "args": "email,init,username",
+        "nvalues": "*",
+        "type": "directory",
+        "values": "PATHS"
+    },
     "synchronize_project": {
         "aliases": "-s,--synchronize-project,--sp",
-        "args": "commit",
+        "args": "commit,path_src",
         "info": "branching model validator is applied and all branches are synchronized"
     },
     "sync": {
@@ -99,7 +110,7 @@
         "values": "BRANCHES"
     },
     "tag": {
-        "args": "commit,version_file",
+        "args": "commit,path_src,version_file",
         "info": "Create a git version tag. If no tag is given then a version file path has to be provided.",
         "nvalues": "?",
         "values": "TAG"
@@ -111,14 +122,23 @@
         "values": "MODE"
     },
     "update": {
-        "info": "if active branch has a linked branch, then depending on circumstances, linked branch is merged into active branch",
-        "nested": true
+        "args": "commit",
+        "info": "go to git directories, commit if needed and then for each branch in each folder push to origin.",
+        "nvalues": "*",
+        "type": "directory",
+        "values": "PATH"
     },
     "update_gitframe": {
         "aliases": "--update-gitframe,--ug",
         "info": "this is for gitframe developers only. This command is needed in order to allow development on gitframe with gitframe. It copies the src code to a temporary folder and execute gitframe from this folder with the remaining parameters. ex: ./gitframe.py --ug=\"--pr\" will execute /tmp/test-gf/bin/gitframe.py --pr. NOTE: --test command does not need --update_gitframe and it must be executed from the main source code.",
         "nvalues": "?",
         "values": "PARAMETERS"
+    },
+    "update_gitignore": {
+        "info": "refresh gitignore cache",
+        "type": "directory",
+        "nvalues": "?",
+        "values": "PATH"
     },
     "username": {
         "nested": true,

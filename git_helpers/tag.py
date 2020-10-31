@@ -3,24 +3,39 @@ from pprint import pprint
 import os
 import sys
 
-from . import git_utils as git
+# from . import git_utils as git
 from . import msg_helpers as msgh
 from . import regex_obj as ro
-from .tags_commits import Tags_commits		
+from .get_all_version_tags import get_all_version_tags
 from .helpers import get_path	
+from .prompt_for_commit import prompt_for_commit
+from .remote_repository import Remote_repository
+from .tags_commits import Tags_commits		
+
 
 from ..gpkgs.prompt import prompt_boolean
 from ..gpkgs import shell_helpers as shell
 from ..utils.json_config import Json_config
 
 from ..gpkgs import message as msg
+from ..gpkgs.gitlib import GitLib
 
 def tag(
-    all_version_tags=[],
-    repo=None,
+    commit_message=None,
+    direpa_src=None,
     tag=None,
-    version_file=None
+    version_file=None,
 ):
+    git=GitLib(direpa=direpa_src)
+    git.is_direpa_git(fail_exit=True)
+    prompt_for_commit(commit_message=commit_message)
+    repo=Remote_repository()
+
+    branch=git.get_active_branch_name()
+    reg_branch=ro.get_element_regex(branch)
+    if reg_branch.type in ["develop", "master", "draft"]:
+        msg.error("tag is not done on branch '{}'".format(branch), exit=1)
+
     if tag is None:
         if version_file is None:
             msg.error("--version-file needs to be set", exit=1)
@@ -39,7 +54,7 @@ def tag(
             with open(version_file, "r") as f:
                 tag=f.read().strip()
 
-    if tag in all_version_tags:
+    if tag in get_all_version_tags():
         msg.error("tag '{}' already exists".format(tag),exit=1)
 
     if tag == "":
@@ -47,57 +62,17 @@ def tag(
     if tag[0]!="v":
         tag="v"+tag
 
+    git.set_annotated_tags(tag, "Bump release version {}".format(tag.replace("v", "")), remote_names=["origin"])
+    branches=git.get_local_branches()
+    if reg_branch.type in ["features", "hotfix"]:
+        for main_branch in ["develop", "master"]:
+            if main_branch in branches:
+                process=not (reg_branch.type == "hotfix" and main_branch == "develop")
+                if process is True:
+                    git.checkout(main_branch) 
+                    git.merge_noff(branch)
+                    git.push("origin", branch_name=main_branch)
 
-
-    git.set_annotated_tags(repo, tag, "release")
-
-    for branch in git.get_local_branch_names():
-        git.push_origin(repo, branch)
-    
-
-    sys.exit()
-    if tag[0]=="v":
-        tag=tag[1:]
-
-    obj_reg_release=ro.Version_regex(tag)
-    if not obj_reg_release.match:
-        msg.error(
-            "Release tag authorized forms:",
-            "'(v)?"+ro.Version_regex().string+"'",
-            "However your tag is '"+tag+"'"
-        )
-        sys.exit(1)
-
-    msg.info("Pick up release v"+tag )
-
-    if not Tags_commits("local").get_tag_commit("v"+tag):
-        msg.error("There is no tag in the project that matches v"+ tag)
-        sys.exit(1)
-
-    conf = Json_config()
-    filer_deploy=conf.get_value("filer_deploy")
-    direpa_parent=os.path.dirname(git.get_root_dir_path())
-
-    filerpa_deploy_release=os.path.join(direpa_parent, filer_deploy)
-
-    if os.path.exists(filerpa_deploy_release+".py"):
-        filenpa_deploy=filerpa_deploy_release+".py"
-    elif os.path.exists(filerpa_deploy_release+".sh"):
-        filenpa_deploy=filerpa_deploy_release+".sh"
-    else:
-        filenpa_deploy=""
-
-    if filenpa_deploy:
-        is_cmd_executable= os.access(filenpa_deploy, os.X_OK)
-        if not is_cmd_executable:
-            msg.error("script "+filer_deploy+" is not executable")
-            sys.exit(1)
-        else:
-            msg.dbg("info","launch script "+filer_deploy)
-            if deploy_args:
-                os.system(filenpa_deploy+" "+tag+" "+deploy_args)
-            else:
-                os.system(filenpa_deploy+" "+tag)
-    else:
-        msg.warning(release_err_msg[1:])
-        sys.exit(1)
+    if git.get_active_branch_name() != branch:
+        git.checkout(branch)
+        git.push("origin", branch_name=branch)

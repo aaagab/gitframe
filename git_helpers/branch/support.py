@@ -25,7 +25,7 @@ def open_support(repo, regex_branches, all_version_tags):
 	tag_to_branch_from=get_tag_for_support(all_version_tags, regex_support_branches)
 
 	if not tag_to_branch_from:
-		msg.error("There are no Tags from where to start a support branch. You need to have at least 2 releases before you can create a support branch.")
+		msg.error("There are no Tags from where to start a support branch. You need to have at least 2 major releases before you can create a support branch.")
 		sys.exit(1)
 	else:
 		tag_regex=ro.Version_regex(tag_to_branch_from)

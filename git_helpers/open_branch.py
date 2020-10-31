@@ -1,26 +1,38 @@
 #!/usr/bin/env python3
 import sys
 
-from . import msg_helpers as msgh
-
 from .branch.draft import open_draft
 from .branch.features import open_features
 from .branch.hotfix import open_hotfix
 from .branch.support import open_support
 from . import regex_obj as ro
+from .get_all_version_tags import get_all_version_tags
+from .prompt_for_commit import prompt_for_commit
+from .get_all_branch_regexes import get_all_branch_regexes
+
+from .remote_repository import Remote_repository
+
 
 
 from ..gpkgs import message as msg
 from ..gpkgs import shell_helpers as shell
 from ..gpkgs.format_text import ft
+from ..gpkgs.gitlib import GitLib
 
 def open_branch(
-    repo, 
-    regex_branches, 
-    all_version_tags,
+    # repo, 
+    # regex_branches, 
+    # all_version_tags,
     branch_name=None,
+    commit_message=None,
+    direpa_src=None,
 ):
     msg.info("Open Branch")
+
+    git=GitLib(direpa=direpa_src)
+    git.is_direpa_git(fail_exit=True)
+    prompt_for_commit(commit_message=commit_message)
+    repo=Remote_repository()
 
     if branch_name is None:
         branch_type=get_menu_branch_types()
@@ -42,10 +54,9 @@ def open_branch(
             branch_name=branch_name
         )
     elif branch_type == "hotfix":
-        open_hotfix(repo, all_version_tags,
-        )
+        open_hotfix(repo, get_all_version_tags())
     elif branch_type == "support":
-        open_support(repo, regex_branches, all_version_tags)
+        open_support(repo, get_all_branch_regexes(repo, git), get_all_version_tags())
 
 def get_menu_branch_types():
     menu="""
