@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 5.0.1
+# version: 6.0.0
 # name: gitframe
 # license: MIT
 
@@ -58,13 +58,25 @@ if __name__ == "__main__":
 
 
 	elif args.examples.here:
-		print("""
-gitframe --init . ../doc --username user --email user@email.com
+		print(r"""
+gitframe --set-project . ../doc --username user --email user@email.com --init
 gitframe --clone-to-repository . ../doc --repository /data/git --package gitlib --add-origin --sync
+gitframe --clone-to-repository . ..\doc ..\mgt --repository %userprofile%\data\git --package git_test --add-origin --sync
 gitframe --set-origin /data/git/g/gitframe/1/src.git --project . --sync
+release --bump-version --increment
 gitframe --tag --version-file gpm.json
+gitframe --branch fts-at_work --commit "adding base files" --open
+gitframe --branch --open # support
+release --bump-version --increment # only minor or patch
+gitframe --tag --version-file gpm.json
+gitframe --update . ..\doc
 		""")
 	elif args.clone_to_repository.here or args.clone_to_directory.here:
+		# C:\Users\user\data\wrk\g\gitframe\src\main.py  --clone-to-repository . ..\doc ..\mgt --repository %userprofile%\data\git --package git_test --add-origin --sync
+		# gitframe --set-origin /data/git/g/git_test/1/src.git --project .
+		if os.path.exists(r"C:\Users\user\data\git\g\git_test"):
+			pkg.shell.rmtree(r"C:\Users\user\data\git\g\git_test")
+
 		direpa_dst=None
 		projects_paths=None
 		if args.clone_to_repository.here:
@@ -83,41 +95,44 @@ gitframe --tag --version-file gpm.json
 			projects_paths=projects_paths,
 			sync=args.sync.here,
 		)
-	elif args.init.here:
-		pkg.init(
-			direpas=args.init.values,
+	elif args.update_gitignore.here:
+		pkg.update_gitignore(
+			direpa=args.update_gitignore.value,
+		)
+		sys.exit(0)	
+	elif args.set_project.here:
+		pkg.set_project(
+			direpas=args.set_project.values,
 			email=args.email.value,
+			init=args.init.here,
 			username=args.username.value,
 		)
 		sys.exit(0)	
 	elif args.branch.here:
-		repo, regex_branches, all_version_tags=pkg.validator(
-			conf.data["validator"],
-			commit_message=args.commit.value,
-		)
 		if args.open.here:
 			pkg.open_branch(
-				repo,
-				regex_branches,
-				all_version_tags,
 				branch_name=args.branch.value,
+				commit_message=args.commit.value,
+				direpa_src=args.path_src.value,
+
 			)
 			sys.exit(0)
 		elif args.close.here:
 			print("Need to be refactored")
 			sys.exit(1)
 			pkg.close_branch(
-				repo,
-				regex_branches,
-				all_version_tags,
 				branch_name=args.branch.value,
+				commit_message=args.commit.value,
+				direpa_src=args.path_src.value,
 			)
 			sys.exit(0)
-		elif args.update.here:
-			print("Need to be refactored")
-			sys.exit(1)
-			pkg.update_branch(all_version_tags)
-			sys.exit(0)
+	elif args.update.here:
+		pkg.update_branch(
+			commit_message=args.commit.value,
+			projects_paths=args.update.values,
+			
+		)
+		sys.exit(0)
 
 	elif args.set_origin.here:
 		pkg.set_origin(
@@ -130,17 +145,13 @@ gitframe --tag --version-file gpm.json
 		pkg.validator(
 			conf.data["validator"],
 			commit_message=args.commit.value,
+			direpa_src=args.path_src.value,
 		)
 		sys.exit(0)
 	elif args.tag.here:
-	
-		repo, regex_branches, all_version_tags=pkg.validator(
-			conf.data["validator"],
-			commit_message=args.commit.value,
-		)
 		pkg.tag(
-			all_version_tags=all_version_tags,
-			repo=repo,
+			commit_message=args.commit.value,
+			direpa_src=args.path_src.value,
 			tag=args.tag.value,
 			version_file=args.version_file.value
 		)

@@ -43,7 +43,7 @@ def set_origin(
     if current_path is False:
         os.chdir(direpa_git)
 
-    if shell.cmd_get_value("git config --get remote.origin.url") != "":
+    if shell.cmd_get_value("git config --get remote.origin.url") is not None:
         shell.cmd_prompt("git remote set-url origin '{}'".format(path_origin))
     else:
         shell.cmd_prompt("git remote add origin '{}'".format(path_origin))

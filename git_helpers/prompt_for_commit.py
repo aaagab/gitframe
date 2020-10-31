@@ -16,7 +16,7 @@ def prompt_for_commit(commit_message=None):
     init_local_config()
 
     files_to_commit=shell.cmd_get_value("git status --porcelain")
-    if files_to_commit:
+    if files_to_commit is not None:
         print("__untracked files present__")
         for f in files_to_commit.splitlines():
             print("  "+str(f))

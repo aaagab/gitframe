@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import re
 import sys
+from pprint import pprint
 
-from . import git_utils as git
+# from . import git_utils as git
 from . import regex_obj as ro
 
 from ..gpkgs import message as msg
+from ..gpkgs.gitlib import GitLib
 
 def get_branch_type_from_location(branch_type, location, reg_branches):
     msg.dbg("info","Search for '{}' branches of type '{}'".format(location, branch_type))
@@ -33,11 +35,11 @@ def filter_all_regex_branches_from_location(reg_branches, location):
 
     return reg_objs
 
-def get_all_branch_regexes(repo):
+def get_all_branch_regexes(repo, git):
     regex_branches=[]
     if repo.is_reachable:
         if repo.is_git_directory:
-            for branch_name in git.get_heads_remote_branch_names(repo):
+            for branch_name in git.get_remote_branches("origin"):
                 reg_obj=ro.get_element_regex(branch_name)
                 reg_obj.location="remote"
                 regex_branches.append(reg_obj)
@@ -48,12 +50,13 @@ def get_all_branch_regexes(repo):
         msg.warning("Branches on Remote Cannot be retrieved.",
                 "Validator is going to be partially executed.")
 
-    for branch_name in git.get_local_branch_names():
+    for branch_name in git.get_local_branches():
         reg_obj=ro.get_element_regex(branch_name)
         reg_obj.location="local"
         regex_branches.append(reg_obj)
 
-    for branch_name in git.get_local_remote_branch_names():
+    for branch_name in git.get_local_remote_branches():
+        branch_name=branch_name.split("/")[-1]
         reg_obj=ro.get_element_regex(branch_name)
         reg_obj.location="local_remote"
         regex_branches.append(reg_obj)

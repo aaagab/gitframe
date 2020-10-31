@@ -4,7 +4,6 @@ import shutil
 import sys
 import re
 
-from . import git_utils as git
 from . import msg_helpers as msgh
 from .helpers import get_path
 from .set_origin import set_origin
@@ -12,6 +11,7 @@ from .set_origin import set_origin
 from ..gpkgs import message as msg
 from ..gpkgs import shell_helpers as shell
 from ..gpkgs.prompt import prompt, prompt_boolean
+from ..gpkgs.gitlib import GitLib
 
 def clone(
     add_origin=False,
@@ -22,27 +22,14 @@ def clone(
     projects_paths=[],
     sync=False,
 ):
-    current_path=False
-    direpa_current=os.getcwd()
     if len(projects_paths) == 0:
-        current_path=True
-        projects_paths=[direpa_current]
+        projects_paths=[os.getcwd()]
 
     direpa_dst=get_path(direpa_dst, exit_not_found=False)
     for d, direpa_git in enumerate(projects_paths):
+        git=GitLib(direpa=direpa_git)
+        git.is_direpa_git(fail_exit=True)
         direpa_dst_full=None
-        if current_path is False:
-            if os.path.isfile(direpa_git):
-                msg.error("Path '"+direpa_git+"' is not a directory.")
-                sys.exit(1)
-            direpa_git=get_path(direpa_git)
-
-        if git.is_git_project(direpa_git) is False:
-            msg.error("Not a Git directory '{}'".format(direpa_git))
-            sys.exit(1)
-
-        if current_path is False:
-            os.chdir(direpa_git)
 
         diren_git=os.path.basename(direpa_git)
 
@@ -68,8 +55,21 @@ def clone(
         if os.path.exists(direpa_dst_full):
             msg.error("directory already exists '{}'".format(direpa_dst_full), exit=1)
 
-        cmd="git clone --quiet --bare \"{}\" \"{}\"".format(direpa_git, direpa_dst_full)
-        shell.cmd_prompt(cmd)
+
+        branches=git.get_local_branches()
+        branch=git.get_active_branch_name()
+        
+        if branch != "master":
+            # you have to checkout to the branch that you want as head on repository, it can only be done when cloning.
+            if "master" in branches:
+                git.checkout("master")
+            elif "develop" in branches:
+                git.checkout("develop")
+
+        git.clone(direpa_git, direpa_dst=direpa_dst_full, bare=True)
+
+        if git.get_active_branch_name() != branch:
+            git.checkout(branch)
 
         if add_origin is True:
             set_origin(
@@ -77,9 +77,3 @@ def clone(
                 path_git=direpa_git,
                 sync=sync,
             )
-
-
-    if current_path is False:
-        os.chdir(direpa_current)
-
-        

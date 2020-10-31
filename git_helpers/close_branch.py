@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
 import sys
 
-from . import git_utils as git
+# from . import git_utils as git
 from . import msg_helpers as msgh
 
 from . import regex_obj as ro
 from .branch.features import close_features
 from .branch.draft import close_draft
 from .branch.hotfix import close_hotfix
+from .get_all_version_tags import get_all_version_tags
+from .prompt_for_commit import prompt_for_commit
 
 from ..gpkgs import message as msg
+from ..gpkgs.gitlib import GitLib
 
 def close_branch(repo,
-    regex_branches,
-    all_version_tags,
+    # regex_branches,
+    # all_version_tags,
     branch_name=None,
+    commit_message=None,
+    direpa_src=None,
 ):
     msg.title("Close Branch")
     # get branch type
