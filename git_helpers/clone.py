@@ -26,6 +26,7 @@ def clone(
         projects_paths=[os.getcwd()]
 
     direpa_dst=get_path(direpa_dst, exit_not_found=False)
+    print(direpa_dst)
     for d, direpa_git in enumerate(projects_paths):
         git=GitLib(direpa=direpa_git)
         git.is_direpa_git(fail_exit=True)
