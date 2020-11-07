@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 6.0.5
+# version: 7.0.0
 # name: gitframe
 # license: MIT
 
@@ -23,6 +23,7 @@ if __name__ == "__main__":
 
 	conf = pkg.Json_config()
 	conf.set_value("debug", False)
+	conf.data["direpa_dev_sources"]=conf.data["direpa_dev_sources"].format(user_profile=os.path.expanduser("~"))
 
 	pkg.install_dependencies(conf.get_value("deps"))
 	filenpa_script=os.path.realpath(__file__)
@@ -74,8 +75,8 @@ gitframe --update . ..\doc
 	elif args.clone_to_repository.here or args.clone_to_directory.here:
 		# C:\Users\user\data\wrk\g\gitframe\src\main.py  --clone-to-repository . ..\doc ..\mgt --repository %userprofile%\data\git --package git_test --add-origin --sync
 		# gitframe --set-origin /data/git/g/git_test/1/src.git --project .
-		if os.path.exists(r"C:\Users\user\data\git\g\git_test"):
-			pkg.shell.rmtree(r"C:\Users\user\data\git\g\git_test")
+		# if os.path.exists(r"C:\Users\user\data\git\g\git_test"):
+			# pkg.shell.rmtree(r"C:\Users\user\data\git\g\git_test")
 
 		direpa_dst=None
 		projects_paths=None
