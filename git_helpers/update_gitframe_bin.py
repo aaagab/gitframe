@@ -62,8 +62,8 @@ def update_gitframe_bin(conf, parameters=None):
 	# print("direpa_previous", direpa_previous)
 
 
-	direpa_bin="/data/bin"
-	direpa_source_dst=os.path.join(direpa_bin, "gitframe_data","draft")
+	direpa_bin="{}/fty/bin".format(os.path.expanduser("~"))
+	direpa_source_dst=os.path.join(direpa_bin, "gitframe_data","beta")
 	if os.path.exists(direpa_source_dst):
 		shutil.rmtree(direpa_source_dst)
 
