@@ -29,7 +29,7 @@
         }
     ],
     "diren_update_gitframe": "bin",
-    "direpa_dev_sources": "{user_profile}/data/wrk/g/gitframe/1/src",
+    "direpa_dev_sources": "{user_profile}/fty/wrk/g/gitframe/1/src",
     "filen_hotfix_history": "hotfix-history.json",
     "filen_scriptjob_save_json": "scriptjob_save.json",
     "filer_bump_version": "bump_version",
@@ -73,5 +73,5 @@
         "waiting_time_between_cmds": 20
     },
     "validator": false,
-    "version": "7.0.0"
+    "version": "8.0.0"
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 7.0.0
+# version: 8.0.0
 # name: gitframe
 # license: MIT
 
@@ -61,9 +61,9 @@ if __name__ == "__main__":
 	elif args.examples.here:
 		print(r"""
 gitframe --set-project . ../doc --username user --email user@email.com --init
-gitframe --clone-to-repository . ../doc --repository /data/git --package gitlib --add-origin --sync
-gitframe --clone-to-repository . ..\doc ..\mgt --repository %userprofile%\data\git --package git_test --add-origin --sync
-gitframe --set-origin /data/git/g/gitframe/1/src.git --project . --sync
+gitframe --clone-to-repository . ../doc --repository ~/fty/git --package gitlib --add-origin --sync
+gitframe --clone-to-repository . ..\doc ..\mgt --repository %userprofile%\fty\git --package git_test --add-origin --sync
+gitframe --set-origin ~/fty/git/g/gitframe/1/src.git --project . --sync
 release --bump-version --increment
 gitframe --tag --version-file gpm.json
 gitframe --branch fts-at_work --commit "adding base files" --open
@@ -73,11 +73,6 @@ gitframe --tag --version-file gpm.json
 gitframe --update . ..\doc
 		""")
 	elif args.clone_to_repository.here or args.clone_to_directory.here:
-		# C:\Users\user\data\wrk\g\gitframe\src\main.py  --clone-to-repository . ..\doc ..\mgt --repository %userprofile%\data\git --package git_test --add-origin --sync
-		# gitframe --set-origin /data/git/g/git_test/1/src.git --project .
-		# if os.path.exists(r"C:\Users\user\data\git\g\git_test"):
-			# pkg.shell.rmtree(r"C:\Users\user\data\git\g\git_test")
-
 		direpa_dst=None
 		projects_paths=None
 		if args.clone_to_repository.here:
