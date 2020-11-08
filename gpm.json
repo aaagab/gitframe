@@ -7,7 +7,7 @@
         "0573e36e-e267-4200-a666-11c5b27cb9a2|gitlib|0.3.4|gpm",
         "44878e31-5356-49d9-af95-d9d24f2d5310|json_config|2.0.0|gpm",
         "cf09346e-b436-4259-b6dd-e56516b508a5|message|5.0.8|gpm",
-        "ca72f0a9-8a9b-4ff6-a013-e5d0974cb1e5|options|8.5.0|gpm",
+        "ca72f0a9-8a9b-4ff6-a013-e5d0974cb1e5|options|8.6.0|gpm",
         "b1a980c3-6e1c-4072-a16c-81df61f2f898|prompt|3.0.2|gpm",
         "df328dbe-54ab-4a6d-b7a2-932b0eaee30a|shell_helpers|5.4.1|gpm"
     ],
@@ -20,5 +20,5 @@
     ],
     "name": "gitframe",
     "uuid4": "78d3adc7-fdd5-46c4-ba26-30d987237a51",
-    "version": "7.0.0"
+    "version": "8.0.0"
 }
