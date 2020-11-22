@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from lxml import etree
 from pprint import pprint
 import os
 import sys
@@ -28,7 +29,6 @@ def tag(
 ):
     git=GitLib(direpa=direpa_src)
     git.is_direpa_git(fail_exit=True)
-    prompt_for_commit(commit_message=commit_message)
     repo=Remote_repository()
 
     branch=git.get_active_branch_name()
@@ -44,23 +44,31 @@ def tag(
         if not os.path.isfile(version_file):
             msg.error("version file is not a file '{}'".format(version_file), exit=1)
 
-        filer, ext = os.path.splitext(version_file)
-        if ext == ".json":
+        filer, ext =os.path.splitext(version_file)
+        if os.path.basename(version_file).lower() == "web.config":
+            xml_elem=etree.parse(version_file).getroot().find("./appSettings/add[@key='VERSION']")
+            if xml_elem is None:
+                msg.error("VERSION attribute not found in appsettings '{}'.".format(version_file), exit=1)
+            tag=xml_elem.attrib["value"]
+        elif ext == ".json":
             data=Json_config(version_file).data
-            if "version" not in Json_config(version_file).data:
-                msg.error("There is no 'version' first level key in '{}'".format(version_file), exit=1)
-            tag=data["version"].strip()
+            if not "version" in data:
+                msg.error("version attribute not found in '{}'".format(version_file), exit=1)
+            tag=data["version"]
         else:
             with open(version_file, "r") as f:
                 tag=f.read().strip()
 
+    if ro.Version_regex(tag).match is False:
+        msg.error("tag from does not follow semantic versioning '{}'".format(tag[:50]), exit=1)
+
     if tag in get_all_version_tags():
         msg.error("tag '{}' already exists".format(tag),exit=1)
 
-    if tag == "":
-        msg.error("Tag can't be empty", exit=1)
     if tag[0]!="v":
         tag="v"+tag
+
+    prompt_for_commit(commit_message=commit_message)
 
     git.set_annotated_tags(tag, "Bump release version {}".format(tag.replace("v", "")), remote_names=["origin"])
     branches=git.get_local_branches()
