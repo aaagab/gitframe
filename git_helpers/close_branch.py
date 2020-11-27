@@ -9,7 +9,6 @@ from .branch.features import close_features
 from .branch.draft import close_draft
 from .branch.hotfix import close_hotfix
 from .get_all_version_tags import get_all_version_tags
-from .prompt_for_commit import prompt_for_commit
 
 from ..gpkgs import message as msg
 from ..gpkgs.gitlib import GitLib
