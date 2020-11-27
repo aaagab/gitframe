@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import sys
 
 from . import git_utils as git
@@ -10,8 +11,15 @@ from ..gpkgs.prompt import prompt
 from ..gpkgs import shell_helpers as shell
 
 
-def prompt_for_commit(commit_message=None):
+def prompt_for_commit(commit_message=None, direpa_git=None):
     msg.info("Prompt for commit")
+
+    direpa_current=os.getcwd()
+    toggled=False
+    if direpa_git is not None:
+        if direpa_git != direpa_current:
+            toggled=True
+            os.chdir(direpa_git)
     
     init_local_config()
 
@@ -26,4 +34,7 @@ def prompt_for_commit(commit_message=None):
         shell.cmd_prompt("git add .")
         shell.cmd_prompt("git commit -am \""+commit_message+"\"")
     else:
-        msg.info("Nothing to commit on "+git.get_active_branch_name())
+        msg.info("Nothing to commit on '{}' at '{}'".format(git.get_active_branch_name(), direpa_git))
+    
+    if toggled is True:
+        os.chdir(direpa_current)
