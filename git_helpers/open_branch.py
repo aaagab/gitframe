@@ -31,7 +31,7 @@ def open_branch(
 
     git=GitLib(direpa=direpa_src)
     git.is_direpa_git(fail_exit=True)
-    prompt_for_commit(commit_message=commit_message)
+    prompt_for_commit(commit_message=commit_message, direpa_git=git.get_direpa_root())
     repo=Remote_repository()
 
     if branch_name is None:

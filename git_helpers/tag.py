@@ -68,7 +68,7 @@ def tag(
     if tag[0]!="v":
         tag="v"+tag
 
-    prompt_for_commit(commit_message=commit_message)
+    prompt_for_commit(commit_message=commit_message, direpa_git=git.get_direpa_root())
 
     git.set_annotated_tags(tag, "Bump release version {}".format(tag.replace("v", "")), remote_names=["origin"])
     branches=git.get_local_branches()

@@ -3,7 +3,6 @@ from pprint import pprint
 import sys
 
 from . import git_utils as git
-from .init_local_config import init_local_config
 
 from ..gpkgs import message as msg
 
