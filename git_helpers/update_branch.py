@@ -19,7 +19,7 @@ def update_branch(
     for d, direpa_git in enumerate(projects_paths):
         git=GitLib(direpa=direpa_git)
         git.is_direpa_git(fail_exit=True)
-        prompt_for_commit(commit_message=commit_message)
+        prompt_for_commit(commit_message=commit_message, direpa_git=git.get_direpa_root())
 
         shell.cmd_prompt("git push origin --tags")
         for branch in git.get_local_branches():
