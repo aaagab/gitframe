@@ -26,6 +26,10 @@ def set_project(
         username=prompt("username")
     if email is None:
         email=prompt("email", default="not-set")
+    if shared is None:
+        shared=prompt("shared value from 'false|true|umask|group|all|world|everybody|0xxx'", default="null")
+    if shared == "null":
+        shared=None
 
     if len(direpas) == 0:
         direpas.append(os.getcwd())
