@@ -67,7 +67,7 @@ def clone(
             elif "develop" in branches:
                 git.checkout("develop")
 
-        git.clone(direpa_git, direpa_dst=direpa_dst_full, bare=True, shared=shared)
+        git.clone(direpa_git, direpa_dst=direpa_dst_full, bare=True, shared=shared, default_branch="master")
 
         if git.get_active_branch_name() != branch:
             git.checkout(branch)
