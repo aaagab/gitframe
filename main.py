@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 8.1.1
+# version: 8.2.0
 # name: gitframe
 # license: MIT
 
@@ -81,7 +81,7 @@ gitframe --update . ..\doc
 		elif args.clone_to_directory.here:
 			direpa_dst=args.directory.value
 			projects_paths=args.clone_to_directory.values
-		
+
 		pkg.clone(
 			add_origin=args.add_origin.here,
 			direpa_dst=direpa_dst,
@@ -89,6 +89,7 @@ gitframe --update . ..\doc
 			is_repo=args.repository.here,
 			package_name=args.package.value,
 			projects_paths=projects_paths,
+			shared=args.shared.value,
 			sync=args.sync.here,
 		)
 	elif args.update_gitignore.here:
@@ -101,6 +102,7 @@ gitframe --update . ..\doc
 			direpas=args.set_project.values,
 			email=args.email.value,
 			init=args.init.here,
+			shared=args.shared.value,
 			username=args.username.value,
 		)
 		sys.exit(0)	
