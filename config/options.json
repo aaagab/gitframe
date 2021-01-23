@@ -17,14 +17,14 @@
     },
     "clone_to_directory": {
         "aliases": "--clone-to-directory,--ctd",
-        "args": "directory",
+        "args": "directory,shared",
         "required": "directory",
         "nvalues": "*",
         "values": "PATH"
     },
     "clone_to_repository": {
         "aliases": "--clone-to-repository,--ctr",
-        "args": "repository",
+        "args": "shared,repository",
         "required": "repository",
         "nvalues": "*",
         "type": "directory",
@@ -87,13 +87,19 @@
         "required": "package",
         "values": "PATH"
     },
+    "shared": {
+        "info": "set shared option with 'git config core.sharedRepository'",
+        "nested": true,
+        "nvalues": "1",
+        "values": "false|true|umask|group|all|world|everybody|0xxx"
+    },
     "set_origin": {
         "args": "project,sync",
         "info": "Set given path as origin to project. If no project selected then current path is consider the project",
         "values": "PATH.git"
     },
     "set_project": {
-        "args": "email,init,username",
+        "args": "email,init,shared,username",
         "nvalues": "*",
         "type": "directory",
         "values": "PATHS"
