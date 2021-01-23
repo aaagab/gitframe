@@ -19,6 +19,7 @@ def set_project(
     direpas=[],
     email=None,
     init=False,
+    shared=None,
     username=None,
 ):
     if username is None:
@@ -43,6 +44,8 @@ def set_project(
             git.init()
             git.set_user_name(username)
             git.set_user_email(email)
+            if shared is not None:
+                git.set_shared_repo(shared=shared)
             git.commit_empty("Branch master created")
 
             if os.path.basename(direpa_git) not in ["doc", "mgt"]:

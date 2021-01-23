@@ -20,6 +20,7 @@ def clone(
     is_repo=False,
     package_name=None,
     projects_paths=[],
+    shared=None,
     sync=False,
 ):
     if len(projects_paths) == 0:
@@ -66,7 +67,7 @@ def clone(
             elif "develop" in branches:
                 git.checkout("develop")
 
-        git.clone(direpa_git, direpa_dst=direpa_dst_full, bare=True)
+        git.clone(direpa_git, direpa_dst=direpa_dst_full, bare=True, shared=shared)
 
         if git.get_active_branch_name() != branch:
             git.checkout(branch)
