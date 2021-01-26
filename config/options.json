@@ -63,6 +63,7 @@
         "nested": true
     },
     "open": {
+        "args": "set_upstream",
         "nested": true
     },
     "package": {
@@ -103,6 +104,10 @@
         "nvalues": "*",
         "type": "directory",
         "values": "PATHS"
+    },
+    "set_upstream": {
+        "info": "set upstream for branch if remote.origin.url has been defined",
+        "nested": true
     },
     "synchronize_project": {
         "aliases": "-s,--synchronize-project,--sp",
