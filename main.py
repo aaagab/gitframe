@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 8.2.4
+# version: 8.3.0
 # name: gitframe
 # license: MIT
 
@@ -112,7 +112,7 @@ gitframe --update . ..\doc
 				branch_name=args.branch.value,
 				commit_message=args.commit.value,
 				direpa_src=args.path_src.value,
-
+				set_upstream=args.set_upstream.here,
 			)
 			sys.exit(0)
 		elif args.close.here:
