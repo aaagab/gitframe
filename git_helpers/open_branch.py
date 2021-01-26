@@ -12,12 +12,11 @@ from .get_all_branch_regexes import get_all_branch_regexes
 
 from .remote_repository import Remote_repository
 
-
-
 from ..gpkgs import message as msg
 from ..gpkgs import shell_helpers as shell
 from ..gpkgs.format_text import ft
 from ..gpkgs.gitlib import GitLib
+
 
 def open_branch(
     # repo, 
@@ -26,6 +25,7 @@ def open_branch(
     branch_name=None,
     commit_message=None,
     direpa_src=None,
+    set_upstream=False,
 ):
     msg.info("Open Branch")
 
@@ -57,6 +57,9 @@ def open_branch(
         open_hotfix(repo, get_all_version_tags())
     elif branch_type == "support":
         open_support(repo, get_all_branch_regexes(repo, git), get_all_version_tags())
+
+    if set_upstream is True:
+        shell.cmd_prompt("git push --set-upstream origin {}".format(branch_name))
 
 def get_menu_branch_types():
     menu="""
