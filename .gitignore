@@ -7,3 +7,4 @@ testing/logs
 config/private_config.json
 modules/
 gpkgs/
+/backup/
