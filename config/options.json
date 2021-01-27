@@ -22,15 +22,14 @@
     },
     "clone_to_directory": {
         "aliases": "--clone-to-directory,--ctd",
-        "args": "directory,shared",
+        "args": "diren_git,directory,shared",
         "required": "directory",
         "nvalues": "*",
         "values": "PATH"
     },
     "clone_to_repository": {
         "aliases": "--clone-to-repository,--ctr",
-        "args": "shared,repository",
-        "required": "repository",
+        "args": "diren_git,shared,repository",
         "nvalues": "*",
         "type": "directory",
         "values": "PATH"
@@ -49,6 +48,10 @@
         "args": "package,add_origin",
         "nested": true,
         "values": "PATH"
+    },
+    "diren_git": {
+        "nested": true,
+        "values": "DIREN_GIT_NAME"
     },
     "disable_validator": {
         "aliases": "--disable-validator,--dv",
