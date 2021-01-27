@@ -29,12 +29,16 @@ def clone(
 
     direpa_dst=get_path(direpa_dst, exit_not_found=False)
     for d, direpa_git in enumerate(projects_paths):
+        if diren_git is None:
+            tmp_diren_git=os.path.basename(direpa_git)
+        else:
+            if d > 0:
+                msg.error("diren_git '{}' can only be set for one project paths at a time", exit=1)
+            tmp_diren_git=diren_git
+
         git=GitLib(direpa=direpa_git)
         git.is_direpa_git(fail_exit=True)
         direpa_dst_full=None
-
-        if diren_git is None:
-            diren_git=os.path.basename(direpa_git)
 
         if is_repo is True:
             if index is None:
@@ -46,12 +50,12 @@ def clone(
                         raise Exception()
                 except:
                     msg.error("--clone-to-repository index '{}' must be an integer > 0".format(index), exit=1)
-            direpa_dst_full=os.path.join(direpa_dst, package_name[0], package_name, str(index), diren_git+".git")
+            direpa_dst_full=os.path.join(direpa_dst, package_name[0], package_name, str(index), tmp_diren_git+".git")
         else:
             if package_name is None:
-                direpa_dst_full=os.path.join(direpa_dst, diren_git+".git")
+                direpa_dst_full=os.path.join(direpa_dst, tmp_diren_git+".git")
             else:
-                direpa_dst_full=os.path.join(direpa_dst, package_name, diren_git+".git")
+                direpa_dst_full=os.path.join(direpa_dst, package_name, tmp_diren_git+".git")
 
         os.makedirs(os.path.dirname(direpa_dst_full), exist_ok=True)
 
