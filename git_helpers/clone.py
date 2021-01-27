@@ -15,6 +15,7 @@ from ..gpkgs.gitlib import GitLib
 
 def clone(
     add_origin=False,
+    diren_git=None,
     direpa_dst=None,
     index=None,
     is_repo=False,
@@ -32,7 +33,8 @@ def clone(
         git.is_direpa_git(fail_exit=True)
         direpa_dst_full=None
 
-        diren_git=os.path.basename(direpa_git)
+        if diren_git is None:
+            diren_git=os.path.basename(direpa_git)
 
         if is_repo is True:
             if index is None:
