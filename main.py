@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 9.1.0
+# version: 9.1.1
 # name: gitframe
 # license: MIT
 
