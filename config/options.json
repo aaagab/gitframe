@@ -12,6 +12,11 @@
         "nvalues": "?",
         "values": "NAME"
     },
+    "branches": {
+        "nested": true,
+        "nvalues": "+",
+        "values": "BRANCH_NAME"
+    },
     "close": {
         "nested": true
     },
@@ -100,7 +105,7 @@
         "values": "PATH.git"
     },
     "set_project": {
-        "args": "email,init,shared,username",
+        "args": "branches,email,init,shared,username",
         "nvalues": "*",
         "type": "directory",
         "values": "PATHS"
