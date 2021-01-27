@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 9.0.0
+# version: 9.1.0
 # name: gitframe
 # license: MIT
 
@@ -36,6 +36,8 @@ if __name__ == "__main__":
 	dy_app["platform"]=platform.system()
 
 	args, dy_app=pkg.Options(filenpa_app="gpm.json", filenpa_args="config/options.json").get_argsns_dy_app()
+
+	direpa_repository=os.path.join(os.path.expanduser("~"), "fty", "src")
 
 	if args.update_gitframe.here:
 		pkg.update_gitframe_bin(conf, args.update_gitframe.value)
@@ -76,7 +78,10 @@ gitframe --update . ..\doc
 		direpa_dst=None
 		projects_paths=None
 		if args.clone_to_repository.here:
-			direpa_dst=args.repository.value
+			if args.repository.value is None:
+				direpa_dst=direpa_repository
+			else:
+				direpa_dst=args.repository.value
 			projects_paths=args.clone_to_repository.values
 		elif args.clone_to_directory.here:
 			direpa_dst=args.directory.value
@@ -84,6 +89,7 @@ gitframe --update . ..\doc
 
 		pkg.clone(
 			add_origin=args.add_origin.here,
+			diren_git=args.diren_git.value,
 			direpa_dst=direpa_dst,
 			index=args.index.value,
 			is_repo=args.repository.here,
