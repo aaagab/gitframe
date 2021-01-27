@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 8.3.0
+# version: 9.0.0
 # name: gitframe
 # license: MIT
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
 	elif args.examples.here:
 		print(r"""
-gitframe --set-project . ../doc --username user --email user@email.com --init
+gitframe --set-project . ../doc --username user --email user@email.com --init --branches develop
 gitframe --clone-to-repository . ../doc --repository ~/fty/git --package gitlib --add-origin --sync
 gitframe --clone-to-repository . ..\doc ..\mgt --repository %userprofile%\fty\git --package git_test --add-origin --sync
 gitframe --set-origin ~/fty/git/g/gitframe/1/src.git --project . --sync
@@ -99,6 +99,7 @@ gitframe --update . ..\doc
 		sys.exit(0)	
 	elif args.set_project.here:
 		pkg.set_project(
+			branches=args.branches.values,
 			direpas=args.set_project.values,
 			email=args.email.value,
 			init=args.init.here,
