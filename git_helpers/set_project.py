@@ -16,6 +16,7 @@ from ..gpkgs.prompt import prompt_boolean, prompt
 from ..gpkgs.gitlib import GitLib
 
 def set_project(
+    branches=[],
     direpas=[],
     email=None,
     init=False,
@@ -52,9 +53,9 @@ def set_project(
                 git.set_shared_repo(shared=shared)
             git.commit_empty("Branch master created")
 
-            if os.path.basename(direpa_git) not in ["doc", "mgt"]:
-                git.checkoutb("develop")
-                git.commit_empty("Branch develop created")
+            for branch in branches:
+                git.checkoutb(branch)
+                git.commit_empty("Branch {} created".format(branch))
             msg.success("Path '{}' initialized.".format(direpa_git))
         else:
             git.is_direpa_git(fail_exit=True)
