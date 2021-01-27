@@ -30,6 +30,7 @@
     "clone_to_repository": {
         "aliases": "--clone-to-repository,--ctr",
         "args": "diren_git,shared,repository",
+        "required": "repository",
         "nvalues": "*",
         "type": "directory",
         "values": "PATH"
@@ -91,9 +92,10 @@
     },
     "repository": {
         "args": "add_origin,index,package",
-        "info": "Create path with PATH/first_letter_package/package/index/diren.git. ex: ~/fty/git/a/accessibility/1/src.git",
+        "info": "Create path with PATH/first_letter_package/package/index/diren.git. ex: ~/fty/git/a/accessibility/1/src.git, if repository is not given then defaut repository is set.",
         "nested": true,
         "required": "package",
+        "nvalues": "?",
         "values": "PATH"
     },
     "shared": {
