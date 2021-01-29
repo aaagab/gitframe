@@ -66,13 +66,6 @@ def clone(
         branches=git.get_local_branches()
         branch=git.get_active_branch_name()
         
-        if branch != "master":
-            # you have to checkout to the branch that you want as head on repository, it can only be done when cloning.
-            if "master" in branches:
-                git.checkout("master")
-            elif "develop" in branches:
-                git.checkout("develop")
-
         git.clone(direpa_git, direpa_dst=direpa_dst_full, bare=True, shared=shared, default_branch="master")
 
         if git.get_active_branch_name() != branch:
