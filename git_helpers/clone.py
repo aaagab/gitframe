@@ -17,12 +17,12 @@ def clone(
     add_origin=False,
     diren_git=None,
     direpa_dst=None,
-    index=None,
     is_repo=False,
     package_name=None,
     projects_paths=[],
     shared=None,
     sync=False,
+    uuid4=None,
 ):
     if len(projects_paths) == 0:
         projects_paths=[os.getcwd()]
@@ -41,16 +41,10 @@ def clone(
         direpa_dst_full=None
 
         if is_repo is True:
-            if index is None:
-                index=1
-            else:
-                try:
-                    index=int(index)
-                    if index <= 0:
-                        raise Exception()
-                except:
-                    msg.error("--clone-to-repository index '{}' must be an integer > 0".format(index), exit=1)
-            direpa_dst_full=os.path.join(direpa_dst, package_name[0], package_name, str(index), tmp_diren_git+".git")
+            if uuid4 is None:
+                msg.error("You have to provide a uuid4 for the package location when is_repo is True", exit=1)
+            uuid4=uuid4.replace("-", "")
+            direpa_dst_full=os.path.join(direpa_dst, package_name[0], package_name, uuid4, tmp_diren_git+".git")
         else:
             if package_name is None:
                 direpa_dst_full=os.path.join(direpa_dst, tmp_diren_git+".git")
