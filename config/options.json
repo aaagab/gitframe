@@ -63,10 +63,6 @@
         "values": "EMAIL"
     },
     "examples": {},
-    "index": {
-        "info": "Repository Index For multiple package with same name. If index is not given, then index is 1",
-        "nested": true
-    },
     "init": {
         "info": "Create new git project with master and develop branches.",
         "nested": true
@@ -91,10 +87,10 @@
         "values": "PATH"
     },
     "repository": {
-        "args": "add_origin,index,package",
-        "info": "Create path with PATH/first_letter_package/package/index/diren.git. ex: ~/fty/git/a/accessibility/1/src.git, if repository is not given then defaut repository is set.",
+        "args": "add_origin,uuid4,package",
+        "info": "Create path with PATH/first_letter_package/package/uuid4/diren.git. ex: ~/fty/git/a/accessibility/78d3adc7fdd546c4ba2630d987237a51/src.git, if repository is not given then defaut repository is set.",
         "nested": true,
-        "required": "package",
+        "required": "uuid4,package",
         "nvalues": "?",
         "values": "PATH"
     },
@@ -148,6 +144,10 @@
         "nvalues": "*",
         "type": "directory",
         "values": "PATH"
+    },
+    "uuid4": {
+        "nested": true,
+        "values": "UUID4"
     },
     "update_gitframe": {
         "aliases": "--update-gitframe,--ug",
