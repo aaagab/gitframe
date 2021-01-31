@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 9.1.3
+# version: 10.0.0
 # name: gitframe
 # license: MIT
 
@@ -91,12 +91,12 @@ gitframe --update . ..\doc
 			add_origin=args.add_origin.here,
 			diren_git=args.diren_git.value,
 			direpa_dst=direpa_dst,
-			index=args.index.value,
 			is_repo=args.repository.here,
 			package_name=args.package.value,
 			projects_paths=projects_paths,
 			shared=args.shared.value,
 			sync=args.sync.here,
+			uuid4=args.uuid4.value,
 		)
 	elif args.update_gitignore.here:
 		pkg.update_gitignore(
