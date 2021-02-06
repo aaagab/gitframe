@@ -18,7 +18,7 @@ def clone(
     diren_git=None,
     direpa_dst=None,
     is_repo=False,
-    package_name=None,
+    package_alias=None,
     projects_paths=[],
     shared=None,
     sync=False,
@@ -44,12 +44,12 @@ def clone(
             if uuid4 is None:
                 msg.error("You have to provide a uuid4 for the package location when is_repo is True", exit=1)
             uuid4=uuid4.replace("-", "")
-            direpa_dst_full=os.path.join(direpa_dst, package_name[0], package_name, uuid4, tmp_diren_git+".git")
+            direpa_dst_full=os.path.join(direpa_dst, package_alias[0], package_alias, uuid4, tmp_diren_git+".git")
         else:
-            if package_name is None:
+            if package_alias is None:
                 direpa_dst_full=os.path.join(direpa_dst, tmp_diren_git+".git")
             else:
-                direpa_dst_full=os.path.join(direpa_dst, package_name, tmp_diren_git+".git")
+                direpa_dst_full=os.path.join(direpa_dst, package_alias, tmp_diren_git+".git")
 
         os.makedirs(os.path.dirname(direpa_dst_full), exist_ok=True)
 
