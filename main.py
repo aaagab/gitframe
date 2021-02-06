@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 10.0.0
+# version: 10.1.0
 # name: gitframe
 # license: MIT
 
@@ -92,7 +92,7 @@ gitframe --update . ..\doc
 			diren_git=args.diren_git.value,
 			direpa_dst=direpa_dst,
 			is_repo=args.repository.here,
-			package_name=args.package.value,
+			package_alias=args.package.value,
 			projects_paths=projects_paths,
 			shared=args.shared.value,
 			sync=args.sync.here,
