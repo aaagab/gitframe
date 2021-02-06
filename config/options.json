@@ -73,7 +73,7 @@
     },
     "package": {
         "nested": true,
-        "values": "NAME"
+        "values": "ALIAS"
     },
     "path_src": {
         "info": "path of the git project, it doesn't have to be the root path",
