@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from distutils.dir_util import copy_tree
 import json
 from pprint import pprint
 import os
@@ -69,7 +68,7 @@ def update_gitframe_bin(conf, parameters=None):
 
 	os.makedirs(direpa_source_dst)
 
-	copy_tree(direpa_source_app, direpa_source_dst)
+	shutil.copy_tree(direpa_source_app, direpa_source_dst)
 	shutil.rmtree(os.path.join(direpa_source_dst,".git"))
 	shutil.rmtree(os.path.join(direpa_source_dst,".env"))
 	shutil.rmtree(os.path.join(direpa_source_dst,".pytest_cache"))

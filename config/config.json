@@ -72,6 +72,7 @@
         "txt_screen_log_eof": "++ end unit ++",
         "waiting_time_between_cmds": 20
     },
+    "timestamp": 1697033404.1556592,
     "validator": false,
-    "version": "10.1.0"
+    "version": "10.1.1"
 }
