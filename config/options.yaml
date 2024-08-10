@@ -100,6 +100,15 @@ args:
 
   update:
     _need_child: true
+
+    branches:
+      _info: update local branches in a project
+      _type: dir
+      _values: "?"
+      _label: PATH
+      msg:
+        _info: add a commit message if commit is needed
+        _label: COMMIT_MESSAGE
     
     gitframe:
       _info: "this is for gitframe developers only. This command is needed in order to allow development on gitframe with gitframe. It copies the src code to a beta version folder and put gitframe in the path."
