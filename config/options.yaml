@@ -1,0 +1,111 @@
+args:
+  _info: Python wrapper for git. It applies a git workflow close to GitFlow model from nvie.com. It uses semantic versioning 2.0.0
+  _examples: |
+    gitframe --clone /home/user/$USER/fty/wrk/m/mockpkg/f011c235e19c49a2a34f9b4b1c53f37b/src --to-directory /tmp --package clone --diren-git test --add-origin
+    gitframe --clone /home/user/$USER/fty/wrk/m/mockpkg/f011c235e19c49a2a34f9b4b1c53f37b/src --to-repository /tmp --package clone --uuid4 f011c235e19c49a2a34f9b4b1c53f37b --add-origin
+    gitframe --tag --path-src /home/user/$USER/fty/wrk/m/mockpkg/f011c235e19c49a2a34f9b4b1c53f37b/src --file gpm.json --increment patch --msg edit --pull
+    gitframe --set-project /tmp/test --username user/$USER --email not-set --init --shared group --branches dev
+    gitframe --update --gitignore /home/user/$USER/fty/wrk/m/mockpkg/f011c235e19c49a2a34f9b4b1c53f37b/src
+    gitframe --update --gitframe
+
+  clone:
+    _need_child: true
+    _xor: "to_directory,to_repository"
+    _values: "?"
+    _type: dir
+    _label: GIT_SOURCES_FOLDER
+      
+    add_origin:
+      _info: add path to origin
+
+    diren_git:
+      _info: It allows to provide an alias for the git directory at destination. For instance with diren_git="test", bare repository at destination is going to be "test.git". If diren_git is not provided then CHILD_SCR_FOLDER name is going to be the alias for the destination bare repositoryl
+      _type: str
+
+    shared:
+      _info: set shared option with 'git config core.sharedRepository'
+      _values: "1"
+      _in: "false,true,umask,group,all,world,everybody,0xxx"
+
+    to_directory:
+      _label: PARENT_DST_FOLDER
+      _type: dir
+      
+      package:
+        _label: ALIAS
+
+    to_repository:
+      _info: "Create path with REPOSITORY_PATH/first_letter_package/package/uuid4/diren.git. ex: ~/fty/src/git/a/accessibility/78d3adc7fdd546c4ba2630d987237a51/src.git, if repository is not given then defaut repository is set."
+      _values: "?"
+      _label: REPOSITORY_PATH
+
+      package:
+        _required: true
+        _label: ALIAS
+
+      uuid4:
+        _required: true
+        _label: UUID4
+
+  set_project:
+    _values: "?"
+    _type: dir
+    _label: GIT_SOURCES_FOLDER
+    branches:
+      _info: choose any branch name except main or master i.e. dev. main/master branch is created automatically.
+      _values: "+"
+      _label: BRANCH_NAME
+    email:
+      _label: EMAIL
+    init:
+      _info: Create new git project with a main branch and a dev branch.
+    username:
+      _label: NAME
+    shared:
+      _info: set shared option with 'git config core.sharedRepository'
+      _values: "1"
+      _in: "false,true,umask,group,all,world,everybody,0xxx"
+
+  tag:
+    _info: Create a git version tag.
+    msg:
+      _info: add a default commit message if commit is needed
+      _label: COMMIT_MESSAGE
+    path_src:
+      _info: path of the git project, it doesn't have to be the root path
+      _type: dir
+      _label: PATH
+    pull:
+      _info: pull development branch and principal branch before merge
+
+    file:
+      _info: Version file to set or get the version from. Multiple version file can be provided i.e. --file gpm.json --file __init__.py. The first file of the list is where the version is fetched. 
+      _values: 1
+      _type: str
+      _repeat: fork
+      json_keys:
+        _info: For JSON file the default key is version i.e. dict(version="1.0.0") but a list of keys can be provided for different schemas. Examples for JSON schema dict(app=dict(info=dict(version="1.0.0"))) then provide json_keys ['app', 'info', 'version']
+        _values: "*"
+      filetype:
+        _info: Only certain filetypes are managed to get and set version. If filetype is not provided then filetype is going to be detected automatically.
+        _values: "?"
+        _in: gradle,js,json,py,txt,web_config
+    increment:
+      _info: Increment version. If no value is provided then a prompt pops-up to request for the increment type.
+      _values: "?"
+      _in: major,minor,patch
+    version:
+      _info: Provide version to set.
+      _values: "?"
+
+  update:
+    _need_child: true
+    
+    gitframe:
+      _info: "this is for gitframe developers only. This command is needed in order to allow development on gitframe with gitframe. It copies the src code to a beta version folder and put gitframe in the path."
+
+    gitignore:
+      _info: refresh gitignore cache
+      _type: dir
+      _values: "?"
+      _label: PATH
