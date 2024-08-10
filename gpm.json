@@ -3,15 +3,14 @@
         "Gabriel Auger"
     ],
     "deps": [
-        "a30e109e-650f-4636-83e4-e18320c60788|format_text|0.3.0|gpm",
-        "0573e36e-e267-4200-a666-11c5b27cb9a2|gitlib|0.5.2|gpm",
-        "44878e31-5356-49d9-af95-d9d24f2d5310|json_config|2.0.0|gpm",
+        "6de5a679-f1de-49b6-adb2-152434867a27|bump_version|1.2.1|gpm",
+        "0573e36e-e267-4200-a666-11c5b27cb9a2|gitlib|0.11.1|gpm",
         "cf09346e-b436-4259-b6dd-e56516b508a5|message|5.0.8|gpm",
-        "ca72f0a9-8a9b-4ff6-a013-e5d0974cb1e5|options|8.6.0|gpm",
-        "b1a980c3-6e1c-4072-a16c-81df61f2f898|prompt|3.0.2|gpm",
-        "df328dbe-54ab-4a6d-b7a2-932b0eaee30a|shell_helpers|5.4.1|gpm"
+        "89d8676a-6b02-43fa-8694-e97de5680cd0|nargs|5.1.2|gpm",
+        "b1a980c3-6e1c-4072-a16c-81df61f2f898|prompt|3.2.2|gpm",
+        "df328dbe-54ab-4a6d-b7a2-932b0eaee30a|shell_helpers|5.4.2|gpm"
     ],
-    "description": "Python wrapper for git. It applies a git workflow close to GitFlow model from nvie.com. It uses semantic versioning 2.0.0",
+    "description": "Git Helpers for software development.",
     "filen_main": "main.py",
     "gpm_version": "0.2.0",
     "installer": "gpm",
@@ -19,7 +18,7 @@
         "MIT"
     ],
     "name": "gitframe",
-    "timestamp": 1697033404.1556592,
+    "timestamp": 1723304612.5006027,
     "uuid4": "78d3adc7-fdd5-46c4-ba26-30d987237a51",
-    "version": "10.1.1"
+    "version": "11.0.0"
 }
