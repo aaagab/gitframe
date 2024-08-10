@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 11.0.1
+# version: 11.1.0
 # name: gitframe
 # license: MIT
 
-__version__= "11.0.1"
+__version__= "11.1.0"
 
 from .dev.set_project import set_project
 from .dev.update_gitignore import update_gitignore
