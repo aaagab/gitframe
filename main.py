@@ -103,8 +103,13 @@ if __name__ == "__main__":
         if args.update.gitframe._here:
             pkg.update_gitframe_bin()
         
-        if args.update.gitignore._here:
+        elif args.update.gitignore._here:
             pkg.update_gitignore(
                 direpa=args.update.gitignore._value,
+            )
+        elif args.update.branches._here:
+            pkg.update_branches(
+                project_path=args.update.branches._value,
+                commit_message=args.update.branches.msg._value,
             )
 
