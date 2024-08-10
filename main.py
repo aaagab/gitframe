@@ -1,9 +1,4 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 10.1.1
-# name: gitframe
-# license: MIT
-
 import argparse
 import getopt
 import getpass  
