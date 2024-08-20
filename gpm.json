@@ -4,7 +4,7 @@
     ],
     "deps": [
         "6de5a679-f1de-49b6-adb2-152434867a27|bump_version|1.2.2|gpm",
-        "0573e36e-e267-4200-a666-11c5b27cb9a2|gitlib|0.11.1|gpm",
+        "0573e36e-e267-4200-a666-11c5b27cb9a2|gitlib|3.4.0|gpm",
         "cf09346e-b436-4259-b6dd-e56516b508a5|message|9.0.0|gpm",
         "89d8676a-6b02-43fa-8694-e97de5680cd0|nargs|5.1.2|gpm",
         "b1a980c3-6e1c-4072-a16c-81df61f2f898|prompt|3.2.2|gpm",
@@ -18,7 +18,7 @@
         "MIT"
     ],
     "name": "gitframe",
-    "timestamp": 1723324033.888494,
+    "timestamp": 1724191148.265957,
     "uuid4": "78d3adc7-fdd5-46c4-ba26-30d987237a51",
-    "version": "11.2.0"
+    "version": "12.0.0"
 }
