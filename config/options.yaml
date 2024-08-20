@@ -1,8 +1,8 @@
 args:
   _info: Python wrapper for git. It applies a git workflow close to GitFlow model from nvie.com. It uses semantic versioning 2.0.0
   _examples: |
-    gitframe --clone /home/user/$USER/fty/wrk/m/mockpkg/f011c235e19c49a2a34f9b4b1c53f37b/src --to-directory /tmp --package clone --diren-git test --add-origin
-    gitframe --clone /home/user/$USER/fty/wrk/m/mockpkg/f011c235e19c49a2a34f9b4b1c53f37b/src --to-repository /tmp --package clone --uuid4 f011c235e19c49a2a34f9b4b1c53f37b --add-origin
+    gitframe --clone /home/user/$USER/fty/wrk/m/mockpkg/f011c235e19c49a2a34f9b4b1c53f37b/src --to-directory /tmp --package clone --diren-git test --remote origin
+    gitframe --clone /home/user/$USER/fty/wrk/m/mockpkg/f011c235e19c49a2a34f9b4b1c53f37b/src --to-repository /tmp --package clone --uuid4 f011c235e19c49a2a34f9b4b1c53f37b
     gitframe --tag --path-src /home/user/$USER/fty/wrk/m/mockpkg/f011c235e19c49a2a34f9b4b1c53f37b/src --file gpm.json --increment patch --msg edit --pull
     gitframe --set-project /tmp/test --username user/$USER --email not-set --init --shared group --branches dev
     gitframe --update --gitignore /home/user/$USER/fty/wrk/m/mockpkg/f011c235e19c49a2a34f9b4b1c53f37b/src
@@ -15,8 +15,9 @@ args:
     _type: dir
     _label: GIT_SOURCES_FOLDER
       
-    add_origin:
-      _info: add path to origin
+    remote:
+      _info: provide remote name i.e. origin
+      _type: str
 
     diren_git:
       _info: It allows to provide an alias for the git directory at destination. For instance with diren_git="test", bare repository at destination is going to be "test.git". If diren_git is not provided then CHILD_SCR_FOLDER name is going to be the alias for the destination bare repositoryl
@@ -71,6 +72,9 @@ args:
     msg:
       _info: add a default commit message if commit is needed
       _label: COMMIT_MESSAGE
+    remote:
+      _info: provide remote name i.e. origin
+      _type: str
     path_src:
       _info: path of the git project, it doesn't have to be the root path
       _type: dir
@@ -109,6 +113,9 @@ args:
       msg:
         _info: add a commit message if commit is needed
         _label: COMMIT_MESSAGE
+      remote:
+        _info: provide remote name i.e. origin
+        _type: str
     
     gitframe:
       _info: "this is for gitframe developers only. This command is needed in order to allow development on gitframe with gitframe. It copies the src code to a beta version folder and put gitframe in the path."
@@ -118,3 +125,15 @@ args:
       _type: dir
       _values: "?"
       _label: PATH
+    
+    mgt:
+      _info: update mgt folder, commit and push
+      _type: dir
+      _values: "?"
+      _label: PATH
+      msg:
+        _info: add a commit message if commit is needed
+        _label: COMMIT_MESSAGE
+      remote:
+        _info: provide remote name i.e. origin
+        _type: str
