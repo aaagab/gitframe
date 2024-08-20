@@ -24,14 +24,14 @@ if __name__ == "__main__":
     ).get_args()
 
     if args.clone._here is True:
-        add_origin=args.clone.add_origin._here
+        remote_name=args.clone.remote._value
         diren_git=args.clone.diren_git._value
         direpa_src=args.clone._value
         shared=args.clone.shared._value
 
         if args.clone.to_directory._here:
             pkg.clone_to_directory(
-                add_origin=add_origin,
+                remote_name=remote_name,
                 diren_git=diren_git,
                 direpa_dst=args.clone.to_directory._value,
                 direpa_src=direpa_src,
@@ -41,7 +41,7 @@ if __name__ == "__main__":
             
         elif args.clone.to_repository._here:
             pkg.clone_to_repository(
-                add_origin=add_origin,
+                remote_name=remote_name,
                 diren_git=diren_git,
                 direpa_dst=args.clone.to_repository._value,
                 direpa_src=direpa_src,
@@ -96,8 +96,7 @@ if __name__ == "__main__":
             increment_type=increment_type,
             files=files,
             version=args.tag.version._value,
-
-
+            remote_name=args.tag.remote._value,
         )
     elif args.update._here:
         if args.update.gitframe._here:
@@ -111,5 +110,12 @@ if __name__ == "__main__":
             pkg.update_branches(
                 project_path=args.update.branches._value,
                 commit_message=args.update.branches.msg._value,
+                remote_name=args.update.branches.remote._value,
+            )
+        elif args.update.mgt._here:
+            pkg.update_mgt(
+                project_path=args.update.mgt._value,
+                commit_message=args.update.mgt.msg._value,
+                remote_name=args.update.mgt.remote._value,
             )
 

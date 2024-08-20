@@ -17,11 +17,11 @@ def get_path(path_elem, exit_not_found=True)-> str:
 
 def clone_to_directory(
     direpa_dst:str,
-    add_origin:bool=False,
     diren_git:str|None=None,
     direpa_src:str|None=None,
     package_alias:str|None=None,
     shared:str|None=None,
+    remote_name: str|None=None,
 ):
     if direpa_src is None:
         direpa_src=os.getcwd()
@@ -42,16 +42,16 @@ def clone_to_directory(
     elems.append(f"{diren_git}.git")
 
     direpa_dst_full=os.path.join(*elems)
-    finalize_clone(add_origin, git, direpa_src, direpa_dst_full, shared)
+    finalize_clone(git, direpa_src, direpa_dst_full, shared, remote_name)
 
 def clone_to_repository(
-    add_origin:bool=False,
     diren_git:str|None=None,
     direpa_dst:str|None=None,
     direpa_src:str|None=None,
     package_alias:str|None=None,
     shared:str|None=None,
     uuid4:str|None=None,
+    remote_name: str|None=None,
 ):
     if direpa_src is None:
         direpa_src=os.getcwd()
@@ -76,14 +76,14 @@ def clone_to_repository(
     uuid4=uuid4.replace("-", "")
     direpa_dst_full=os.path.join(tmp_direpa_dst, package_alias[0], package_alias, uuid4, diren_git+".git")
 
-    finalize_clone(add_origin, git, direpa_src, direpa_dst_full, shared)
+    finalize_clone(git, direpa_src, direpa_dst_full, shared, remote_name)
 
 def finalize_clone(
-    add_origin: bool,
     git: GitLib,
     direpa_src: str,
     direpa_dst: str,
     shared: str|None,
+    remote_name: str|None,
 ):
     os.makedirs(os.path.dirname(direpa_dst), exist_ok=True)
     if os.path.exists(direpa_dst):
@@ -91,7 +91,8 @@ def finalize_clone(
     
     default_branch=git.get_principal_branch_name()
 
-    git.clone(direpa_src, direpa_dst=direpa_dst, bare=True, shared=shared, default_branch=default_branch)
+    git.clone(direpa_src, direpa_dst=direpa_dst, bare=True, shared=shared, remote_name=remote_name, default_branch=default_branch)
 
-    if add_origin is True:
-        git.set_remote(name="origin", repository_path=direpa_dst)    
+    if remote_name is None:
+        remote_name=git.get_remote_name()
+    git.set_remote(name=remote_name, repository_path=direpa_dst)    
