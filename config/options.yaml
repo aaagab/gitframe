@@ -137,3 +137,16 @@ args:
       remote:
         _info: provide remote name i.e. origin
         _type: str
+
+  set_eol:
+    _label: PATH
+    _values: "?"
+    _info: Set end of lines at project path
+    _xor: lf,crlf
+    global: 
+      _info: |
+        set settings globally.
+    crlf:
+    lf:
+    parse:
+      _info: parse git files in current git project and modify line endings if needed.

@@ -10,10 +10,15 @@ from pprint import pprint
 import sys
 
 if __name__ == "__main__":
+    import typing
     direpa_script_parent=os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     module_name=os.path.basename(os.path.dirname(os.path.realpath(__file__)))
     sys.path.insert(0, direpa_script_parent)
-    pkg = importlib.import_module(module_name)
+
+    if typing.TYPE_CHECKING:
+        import __init__ as package #type:ignore
+        from __init__ import VersionFile, LineEnding
+    pkg:"package" = importlib.import_module(module_name) #type:ignore
     del sys.path[0]
 
     args=pkg.Nargs(
@@ -68,7 +73,7 @@ if __name__ == "__main__":
         if direpa_src is not None and direpa_previous != direpa_src:
             os.chdir(direpa_src)
             
-        files:list[pkg.VersionFile]=[]
+        files:list["VersionFile"]=[]
         for branch in args.tag.file._branches:
             if branch._here is True:
                 filetype=branch.filetype._value
@@ -118,4 +123,17 @@ if __name__ == "__main__":
                 commit_message=args.update.mgt.msg._value,
                 remote_name=args.update.mgt.remote._value,
             )
-
+    elif args.set_eol._here:
+        ending:"LineEnding"
+        if args.set_eol.crlf._here:
+            ending=pkg.LineEnding.CRLF
+        elif args.set_eol.lf._here:
+            ending=pkg.LineEnding.LF
+        else:
+            raise Exception("--set-eol line ending must be selected.")
+        pkg.set_eol(
+            direpa_project=args.set_eol._value,
+            ending=ending,
+            isglobal=args.set_eol._["global"]._here,
+            parse=args.set_eol.parse._here,
+        )
