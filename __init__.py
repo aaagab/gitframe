@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 12.1.0
+# version: 12.1.1
 # name: gitframe
 # license: MIT
 
-__version__= "12.1.0"
+__version__= "12.1.1"
 
 from .dev.set_eol import set_eol, LineEnding
 from .dev.set_project import set_project

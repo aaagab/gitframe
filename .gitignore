@@ -8,3 +8,4 @@ config/private_config.json
 modules/
 gpkgs/
 /backup/
+nargs-cache.json
